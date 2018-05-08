@@ -1,0 +1,22 @@
+module "forensic-report-processor-small" {
+  source                        = "../../modules/lambdaProcessor-module"
+  env-name                      = "${var.env-name}"
+  aws-region                    = "${var.aws-region}"
+  aws-account-id                = "${var.aws-account-id}"
+  lambda-filename               = "ForensicReportParser.zip"
+  source-code-hash              = "${base64sha256(file("ForensicReportParser.zip"))}"
+  lambda-function-name          = "TF-${var.env-name}-forensic-report-parser-small"
+  handler                       = "Dmarc.ForensicReport.Parser.Lambda::Dmarc.ForensicReport.Parser.Lambda.ForensicReportProcessor::HandleScheduledEvent"
+  connection-string             = "Server = ${aws_rds_cluster.rds-cluster.endpoint}; Port = 3306; Database = dmarc; Uid = ${var.env-name}_${lookup(var.db-users,"forensicparser")};Connection Timeout=5;"
+  subnet-ids                    = "${join(",", aws_subnet.dmarc-env-subnet.*.id)}"
+  security-group-ids            = "${aws_security_group.lambda-parser.id}"
+  lambda-memory                 = "128"
+  lambda-timeout                = "300"
+  scheduler-interval            = "1"
+  RemainingTimeThresholdSeconds = "30"
+  QueueUrl                      = "${aws_sqs_queue.forensic-report-queue1.id}"
+  sqs-queue-arns                = "${aws_sqs_queue.forensic-report-queue1.arn}"
+  sqs-queue-count               = 1
+  s3-bucket-arns                = "arn:aws:s3:::${var.forensic-report-bucket}/*"
+  MaxS3ObjectSizeKilobytes      = "100"
+}

@@ -1,0 +1,1 @@
+ALTER TABLE dns_record_mx MODIFY preference int(11) DEFAULT NULL;

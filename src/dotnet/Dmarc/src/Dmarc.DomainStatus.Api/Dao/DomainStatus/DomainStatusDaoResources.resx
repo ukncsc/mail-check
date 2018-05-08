@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SelectAggregateExportData" xml:space="preserve">
+    <value>SELECT
+header_from,
+source_ip,
+NULL ptr,
+count,
+spf,
+dkim,
+disposition,
+org_name,
+effective_date
+FROM record
+JOIN aggregate_report ar ON record.aggregate_report_id = ar.id 
+JOIN derived_domain_tree ddt ON record.header_from_domain_id = ddt.child_id
+WHERE ar.effective_date = @date 
+AND ddt.parent_id = @domainId;</value>
+  </data>
+  <data name="SelectAggregateReportSummary" xml:space="preserve">
+    <value>SELECT
+ad.effective_date as 'effective_date',
+ad.full_compliance_count as 'fully_trusted',
+(ad.dkim_only_count + ad.spf_only_count) as 'partially_trusted',
+ad.untrusted_pass_count as 'untrusted',
+ad.untrusted_quarantine_count as 'quarantined',
+ad.untrusted_reject_count as  'rejected',
+ad.total_email_count as 'total'
+FROM derived_aggregate_daily_rollup ad
+WHERE ad.domain_id = @domainId
+AND ad.effective_date BETWEEN @startDate AND @endDate;</value>
+  </data>
+  <data name="SelectAggregateReportTotalEmailCount" xml:space="preserve">
+    <value>SELECT SUM(ad.total_email_count) as 'total_email'
+FROM derived_aggregate_daily_rollup ad
+WHERE ad.domain_id = @domainId
+AND ad.effective_date BETWEEN @startDate AND @endDate;</value>
+  </data>
+  <data name="SelectDmarcReadModelByDomainId" xml:space="preserve">
+    <value>SELECT d.id as domain_id,
+d.name as domain_name,
+dr.record IS NOT NULL as has_dmarc,
+rm.model as read_model
+FROM dns_record_dmarc_read_model rm
+JOIN domain d ON rm.domain_id = d.id
+LEFT JOIN dns_record_dmarc dr ON dr.domain_id = d.id AND dr.end_date IS NULL
+WHERE d.id = @domainId
+GROUP BY d.id;</value>
+  </data>
+  <data name="SelectDmarcReadModelByDomainName" xml:space="preserve">
+    <value>SELECT d.id as domain_id,
+d.name as domain_name,
+dr.record IS NOT NULL as has_dmarc,
+rm.model as read_model
+FROM dns_record_dmarc_read_model rm
+JOIN domain d ON rm.domain_id = d.id
+LEFT JOIN dns_record_dmarc dr ON dr.domain_id = d.id AND dr.end_date IS NULL
+WHERE d.name = @domainName
+GROUP BY d.id;</value>
+  </data>
+  <data name="SelectDomainById" xml:space="preserve">
+    <value>SELECT 
+d.id AS domain_id, 
+d.name AS domain_name 
+FROM domain d
+WHERE d.id = @domainId AND (d.publish=b'1' OR d.monitor=b'1');</value>
+  </data>
+  <data name="SelectReceivingEncryptedById" xml:space="preserve">
+    <value>SELECT 
+d.id domain_id,
+d.name domain_name,
+mx.id mx_record_id,
+mx.preference preference,
+mx.hostname hostname,
+mx.last_checked mx_last_checked,
+tls.last_checked tls_last_checked,
+tls.sslv3_support sslv3_support,
+tls.sslv3_cipher sslv3_cipher,
+tls.tlsv1_support tlsv1_support,
+tls.tlsv1_cipher  tlsv1_cipher,
+tls.tlsv11_support tlsv11_support,
+tls.tlsv11_cipher  tlsv11_cipher,
+tls.tlsv12_support tlsv12_support,
+tls.tlsv12_cipher  tlsv12_cipher,
+cert.thumb_print thumb_print,
+cert.issuer issuer,
+cert.subject subject,
+cert.start_date start_date,
+cert.end_date end_date,
+cert.algorithm algorithm,
+cert.serial_number serial_number,
+cert.version version,
+cert.valid valid
+FROM dns_record_mx mx
+JOIN domain d on d.id = mx.domain_id AND  (d.publish=b'1' OR d.monitor=b'1')
+LEFT JOIN dns_record_mx_tls_profile tls on mx.id = tls.mx_record_id
+LEFT JOIN certificate cert on tls.certificate_thumb_print = cert.thumb_print
+WHERE mx.domain_id = @domainId
+AND mx.end_date IS NULL
+AND tls.end_date IS NULL</value>
+  </data>
+  <data name="SelectSpfReadModel" xml:space="preserve">
+    <value>SELECT model 
+FROM dns_record_spf_read_model
+WHERE domain_id = @domainId;</value>
+  </data>
+  <data name="SelectTlsEvaluatorResults" xml:space="preserve">
+    <value>SELECT d.id, d.name, dnm.hostname, ter.*  
+FROM dmarc.dns_record_mx_tls_evaluator_results ter
+JOIN dmarc.dns_record_mx dnm
+ON ter.mx_record_id = dnm.id
+JOIN dmarc.domain d
+ON dnm.domain_id = d.id
+WHERE d.id = @domainId
+AND dnm.end_date IS NULL;</value>
+  </data>
+</root>

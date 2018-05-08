@@ -60,7 +60,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to INSERT INTO `aggregate_report`
+        ///    Looks up a localized string similar to  INSERT INTO `aggregate_report`
         ///(`request_id`,
         ///`original_uri`,
         ///`attachment_filename`,
@@ -68,6 +68,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao {
         ///`email`,
         ///`report_id`,
         ///`extra_contact_info`,
+        ///`effective_date`,
         ///`begin_date`,
         ///`end_date`,
         ///`domain`,
@@ -86,6 +87,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao {
         ///@email,
         ///@report_id,
         ///@extra_contact_info,
+        ///@effective_date,
         ///@begin_date,
         ///@end_date,
         ///@domain,
@@ -95,7 +97,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao {
         ///@sp,
         ///@pct,
         ///@created_date)
-        ///ON DUPLICATE KEY UPDATE id = id;.
+        ///ON DUPLICATE KEY UPDATE [rest of string was truncated]&quot;;.
         /// </summary>
         public static string InsertAggregateReport {
             get {

@@ -1,11 +1,11 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
-using Dmarc.AggregateReport.Parser.Lambda.Evnts;
 using Dmarc.AggregateReport.Parser.Lambda.Factory;
-using Dmarc.AggregateReport.Parser.Lambda.Logging;
-using Dmarc.AggregateReport.Parser.Lambda.QueueProcessing;
-using Dmarc.Common.Logging;
+using Dmarc.Common.Interface.Logging;
+using Dmarc.Common.Report.Evnts;
+using Dmarc.Common.Report.Logger;
+using Dmarc.Common.Report.QueueProcessing;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 

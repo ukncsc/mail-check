@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Dmarc.Common.Interface.Logging;
 using Dmarc.Common.Logging;
 using NUnit.Framework;
 

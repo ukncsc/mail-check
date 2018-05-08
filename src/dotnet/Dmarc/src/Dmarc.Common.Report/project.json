@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Amazon.Lambda.Core": "1.0.0",
+    "Amazon.Lambda.S3Events": "1.0.0",
+    "Amazon.Lambda.Serialization.Json": "1.1.0",
+    "AWSSDK.S3": "3.3.5.9",
+    "AWSSDK.SQS": "3.3.1.9",
+    "Dmarc.Common": "1.0.0-*",
+    "FluentValidation": "6.4.0",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.5"
+    },
+    "MimeKit": "1.10.1"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": "dnxcore50"
+    }
+  }
+}

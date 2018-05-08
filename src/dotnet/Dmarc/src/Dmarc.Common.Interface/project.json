@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "AWSSDK.SQS": "3.3.1.9",
+    "NETStandard.Library": "1.6.0",
+    "System.Net.Sockets": "4.3.0"
+  },
+
+  "frameworks": {
+    "netstandard1.0": {
+      "imports": "dnxcore50"
+    }
+  }
+}

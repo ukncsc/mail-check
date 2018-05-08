@@ -11,7 +11,7 @@ namespace Dmarc.Common.Tasks
         {
             var timeoutCancellationTokenSource = new CancellationTokenSource();
 
-            var completedTask = await Task.WhenAny(task, Task.Delay(timeout, timeoutCancellationTokenSource.Token));
+            var completedTask = await Task.WhenAny(task, Task.Delay(timeout, timeoutCancellationTokenSource.Token)).ConfigureAwait(false);
             if (completedTask == task)
             {
                 timeoutCancellationTokenSource.Cancel();

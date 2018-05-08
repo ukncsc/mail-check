@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "AWSSDK.SimpleNotificationService": "3.3.0.22",
+    "Dmarc.Common.Interface": "1.0.0-*",
+    "NETStandard.Library": "1.6.0",
+    "Newtonsoft.Json": "9.0.1"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": "dnxcore50"
+    }
+  }
+}

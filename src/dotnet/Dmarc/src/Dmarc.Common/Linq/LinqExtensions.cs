@@ -11,6 +11,12 @@ namespace Dmarc.Common.Linq
             foreach (T item in sequence) action(item);
         }
 
+        public static void ForEach<T>(this IEnumerable<T> sequence, Action<T, int> action)
+        {
+            var i = 0;
+            foreach (T item in sequence) action(item, i++);
+        }
+
         //Credited to Sergey Berezovskiy : http://stackoverflow.com/questions/13731796/create-batches-in-linq
         public static IEnumerable<IEnumerable<TSource>> Batch<TSource>(
                   this IEnumerable<TSource> source, int size)

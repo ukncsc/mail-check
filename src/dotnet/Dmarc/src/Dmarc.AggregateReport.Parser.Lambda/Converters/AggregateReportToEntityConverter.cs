@@ -1,29 +1,24 @@
 ﻿using System.Linq;
-using Dmarc.AggregateReport.Parser.Common.Domain;
-using Dmarc.AggregateReport.Parser.Common.Domain.Dmarc;
-using Dmarc.AggregateReport.Parser.Common.Utils.Conversion;
-using AggregateReportEntity = Dmarc.AggregateReport.Parser.Lambda.Dao.Entities.AggregateReport;
-using DkimAuthResultEntity = Dmarc.AggregateReport.Parser.Lambda.Dao.Entities.DkimAuthResult;
-using EntityAlignment = Dmarc.AggregateReport.Parser.Lambda.Dao.Entities.Alignment;
-using EntityDisposition = Dmarc.AggregateReport.Parser.Lambda.Dao.Entities.Disposition;
-using EntityDkimResult = Dmarc.AggregateReport.Parser.Lambda.Dao.Entities.DkimResult;
-using EntityDmarcResult = Dmarc.AggregateReport.Parser.Lambda.Dao.Entities.DmarcResult;
-using EntityPolicyOverride = Dmarc.AggregateReport.Parser.Lambda.Dao.Entities.PolicyOverride;
-using EntitySpfResult = Dmarc.AggregateReport.Parser.Lambda.Dao.Entities.SpfResult;
-using PolicyOverrideReasonEntity = Dmarc.AggregateReport.Parser.Lambda.Dao.Entities.PolicyOverrideReason;
-using RecordEntity = Dmarc.AggregateReport.Parser.Lambda.Dao.Entities.Record;
-using SpfAuthResultEntity = Dmarc.AggregateReport.Parser.Lambda.Dao.Entities.SpfAuthResult;
+using Dmarc.AggregateReport.Parser.Lambda.Dao.Entities;
+using Dmarc.AggregateReport.Parser.Lambda.Domain;
+using Dmarc.AggregateReport.Parser.Lambda.Utils.Conversion;
+using Dmarc.Common.Report.Conversion;
+using Alignment = Dmarc.AggregateReport.Parser.Lambda.Domain.Dmarc.Alignment;
+using Disposition = Dmarc.AggregateReport.Parser.Lambda.Domain.Dmarc.Disposition;
+using DkimAuthResult = Dmarc.AggregateReport.Parser.Lambda.Domain.Dmarc.DkimAuthResult;
+using DkimResult = Dmarc.AggregateReport.Parser.Lambda.Domain.Dmarc.DkimResult;
+using DmarcResult = Dmarc.AggregateReport.Parser.Lambda.Domain.Dmarc.DmarcResult;
+using PolicyOverride = Dmarc.AggregateReport.Parser.Lambda.Domain.Dmarc.PolicyOverride;
+using PolicyOverrideReason = Dmarc.AggregateReport.Parser.Lambda.Domain.Dmarc.PolicyOverrideReason;
+using Record = Dmarc.AggregateReport.Parser.Lambda.Domain.Dmarc.Record;
+using SpfAuthResult = Dmarc.AggregateReport.Parser.Lambda.Domain.Dmarc.SpfAuthResult;
+using SpfResult = Dmarc.AggregateReport.Parser.Lambda.Domain.Dmarc.SpfResult;
 
 namespace Dmarc.AggregateReport.Parser.Lambda.Converters
 {
-    internal interface IAggregateReportToEntityConverter
+    internal class AggregateReportToEntityConverter : IToEntityConverter<AggregateReportInfo, AggregateReportEntity>
     {
-        AggregateReportEntity ConvertToEntity(AggregateReportInfo aggregateReport);
-    }
-
-    internal class AggregateReportToEntityConverter : IAggregateReportToEntityConverter
-    {
-        public AggregateReportEntity ConvertToEntity(AggregateReportInfo aggregateReport)
+        public AggregateReportEntity Convert(AggregateReportInfo aggregateReport)
         {
             return new AggregateReportEntity
             {
@@ -36,6 +31,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Converters
                 ExtraContactInfo = aggregateReport.AggregateReport.ReportMetadata?.ExtraContactInfo,
                 BeginDate = ConversionUtils.UnixTimeStampToDateTime(aggregateReport.AggregateReport.ReportMetadata.Range.Begin),
                 EndDate = ConversionUtils.UnixTimeStampToDateTime(aggregateReport.AggregateReport.ReportMetadata.Range.End),
+                EffectiveDate = ConversionUtils.UnixTimeStampToDateTime(aggregateReport.AggregateReport.ReportMetadata.Range.EffectiveDate),
                 Domain = aggregateReport.AggregateReport.PolicyPublished?.Domain,
                 Adkim = Convert(aggregateReport.AggregateReport.PolicyPublished?.Adkim),
                 Aspf = Convert(aggregateReport.AggregateReport.PolicyPublished?.Aspf),

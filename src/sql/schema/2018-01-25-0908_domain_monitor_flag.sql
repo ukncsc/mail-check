@@ -1,0 +1,4 @@
+ALTER TABLE domain ADD COLUMN (monitor BIT NOT NULL DEFAULT b'1');
+
+
+

@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "optimize": true
+  },
+
+  "dependencies": {
+    "Dmarc.Common.Interface": "1.0.0-*",
+    "Dmarc.Common.Messaging.Sns": "1.0.0-*",
+    "Dmarc.Common.Report": "1.0.0-*",
+    "Dmarc.Common.Tls.BouncyCastle": "1.0.0-*",
+    "Dmarc.MxSecurityTester.Contract": "1.0.0-*",
+    "Microsoft.Extensions.CommandLineUtils": "1.0.0",
+    "Microsoft.Extensions.DependencyInjection": "1.0.2",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.5"
+    },
+    "StackExchange.Redis": "1.2.3"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": "dnxcore50"
+    }
+  }
+}

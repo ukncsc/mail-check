@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Dmarc.Common.Tasks;
-using Dmarc.Common.Test.Utils;
 using NUnit.Framework;
 
 namespace Dmarc.Common.Test.Tasks
@@ -19,10 +18,10 @@ namespace Dmarc.Common.Test.Tasks
         }
 
         [Test]
-        public async Task TimeoutCompleteBeforeTaskThrowsTimeoutException()
+        public void TimeoutCompleteBeforeTaskThrowsTimeoutException()
         {
             Task<bool> task = new TaskCompletionSource<bool>().Task;
-            await AssertEx.ThrowsAsync<TimeoutException>(() => task.TimeoutAfter(TimeSpan.FromTicks(1)));
+            Assert.ThrowsAsync<TimeoutException>(async () => await task.TimeoutAfter(TimeSpan.FromTicks(1)));
         }
     }
 }

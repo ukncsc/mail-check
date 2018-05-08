@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Dmarc.Common.Interface.Logging;
 
 namespace Dmarc.Common.Logging
 {

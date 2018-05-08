@@ -1,0 +1,128 @@
+#!/bin/bash
+#set -e
+uname=$(cat $1 | grep db-username | awk '{print $3}' FS='[="]')
+pw=$(cat $1 | grep db-password | awk '{print $3}' FS='[="]')
+dbname=$(cat $1 | grep db-name | awk '{print $3}' FS='[="]')
+envname=$(cat $1 | grep env-name | awk '{print $3}' FS='[="]')
+dbhost="dmdbrwep.$(cat $1 | grep parent-zone | awk '{print $3}' FS='[="]')"
+
+dbusers=($( cat Terraform/prod-env/prod-env/variables.tf | sed -e '/db-users/,/}/!d' -e '/db-users/d' -e '/map/d' -e '/}/d' -e '/=/!d' -e '/default/d' | tr -d ' ' | awk '{ print $2 }' FS='=' | tr -dc '\na-zA-Z0-9_-'))
+dbtokens=($( cat Terraform/prod-env/prod-env/variables.tf | sed -e '/db-users/,/}/!d' -e '/db-users/d' -e '/map/d' -e '/}/d' -e '/=/!d' -e '/default/d' | tr -d ' ' | awk '{ print $1 }' FS='=' | tr -dc '\na-zA-Z0-9_-'))
+
+
+unum=0
+sedtokencmd="|"
+while [ -n "${dbusers[$unum]}" ]; do
+dbuser="${envname}_${dbusers[$unum]}"
+dbtoken="!db-${dbtokens[$unum]}-uname"
+dbuserhost="'${dbuser}'@'10.%'"
+echo "retrieving password for ${dbuser} from parameter store"
+dbpasswd=`$4 ssm get-parameters --names "${dbuser}" --region=$5 --with-decryption | jq -r '.Parameters[0].Value'`
+if [ "${dbpasswd}" == "null" ]; then
+	echo "No password in parameter store for user ${dbuser}"
+	exit 1
+fi
+
+
+echo "Will replace ${dbtoken} with ${dbuser}"
+sedtokencmd="${sedtokencmd} sed -E \"s/(${dbtoken})/${dbuser}/g\" |"
+
+
+echo "Creating user $dbuserhost"
+SQL="CREATE USER ${dbuserhost} IDENTIFIED BY '${dbpasswd}'"
+sqlcmd="\"$3\" -ss -r --user=$uname --password=$pw -h $dbhost -e \"${SQL}\" "
+
+eval $sqlcmd || true
+
+
+echo "Updating password for user $dbuserhost"
+SQL="SET PASSWORD FOR ${dbuserhost} = PASSWORD('${dbpasswd}')"
+echo "Running $SQL"
+sqlcmd="\"$3\" -ss -r --user=$uname --password=$pw -h $dbhost -e \"${SQL}\" "
+eval $sqlcmd || true
+
+
+((unum++))
+done
+
+echo "Will run the following command to replace user tokens: ${sedtokencmd}"
+
+SQL="show databases;"
+sqlcmd="\"$3\" -ss -r --user=$uname --password=$pw -h $dbhost -e \"${SQL}\" "
+databases=$(eval $sqlcmd | tr '\r' ' ')
+
+mysqlexists=`echo $databases | grep -o information_schema | wc -l`
+dbnameexists=`echo $databases | grep -o $dbname | wc -l`
+echo "Databases found: $databases"
+echo "Found MySQL database (sanity check): $mysqlexists"
+echo "Found $dbname : $dbnameexists"
+
+if [ "$mysqlxists" == "0" ]
+  then
+    echo "Connection failed to database"
+    exit 1
+fi
+
+if [ "$dbnameexists" == "0" ]
+  then
+    echo "Database does not exist, should have been created by terraform"
+    exit 1
+fi 
+
+OIFS="$IFS"
+IFS=$'\n'
+
+ls $2/schema/*.sql | sort -V > /tmp/sqlfiles
+ls $2/data/*.sql | sort -V >> /tmp/sqlfiles
+
+
+for sqlfile in `cat /tmp/sqlfiles`
+  do
+      sqlfile_ver=$( basename $sqlfile | tr -dc '0-9' | head -c 12 )
+      sqlfile_desc=$( basename $sqlfile | tr '_' ' ' | tr -dc '[a-zA-Z ]' | sed 's/^[[:blank:]]*//; s/sql$//')
+
+      echo "Checking history - $sqlfile_ver : $sqlfile_desc"
+      SQL="select AppliedOn from VersionInfo where Version=$sqlfile_ver and Description='$sqlfile_desc';"
+      sqlcmd="\"$3\" -ss -r --user=$uname --password=$pw -h $dbhost -e \"${SQL}\" $dbname"
+      appliedon=$(eval $sqlcmd | tr -dc '[0-9\-: ]')
+      if [ -z $appliedon ]
+        then
+	  echo "Applying:  $sqlfile_ver - $sqlfile_desc"
+          sqlcmd="cat $sqlfile ${sedtokencmd} \"$3\" -ss -r --user=$uname --password=$pw -h $dbhost $dbname"
+		  echo "Running command: $sqlcmd"
+          if eval $sqlcmd
+		  then
+			 echo "SQL applied ok"
+		 else
+			 exit 1
+		  fi
+		
+
+	  SQL="insert into VersionInfo (Version, Description, AppliedOn) values ('$sqlfile_ver', '$sqlfile_desc', CURRENT_TIMESTAMP);"
+          sqlcmd="\"$3\" -ss -r --user=$uname --password=$pw -h $dbhost -e \"${SQL}\" $dbname"
+          eval $sqlcmd 
+      else
+          echo "$appliedon: $sqlfile_ver - $sqlfile_desc"
+      fi
+
+  done
+
+for sqlfile in `ls $2/grants/*.sql | sort -V`
+ do
+    sqlfile_ver=$( basename $sqlfile | tr -dc '0-9' | head -c 12 )
+    sqlfile_desc=$( basename $sqlfile | tr '_' ' ' | tr -dc '[a-zA-Z ]' | sed 's/^[[:blank:]]*//; s/sql$//')
+
+    echo "Applying:  $sqlfile_ver - $sqlfile_desc"
+          sqlcmd="cat $sqlfile ${sedtokencmd} \"$3\" -ss -r --user=$uname --password=$pw -h $dbhost $dbname"
+		echo "Running command: $sqlcmd"
+        if eval $sqlcmd
+		then
+			 echo "SQL applied ok"
+		else
+			 exit 1
+		fi
+done
+
+
+
+IFS=OIFS

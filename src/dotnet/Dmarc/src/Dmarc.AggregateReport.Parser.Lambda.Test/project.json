@@ -3,7 +3,7 @@
 
   "dependencies": {
     "NUnit": "3.5.0",
-    "FakeItEasy": "3.0.0-beta002-build000066",
+    "FakeItEasy": "4.0.0",
     "dotnet-test-nunit": "3.4.0-beta-3",
     "Dmarc.AggregateReport.Parser.Lambda": "1.0.0-*",
     "Amazon.Lambda.TestUtilities": "1.0.0"
@@ -16,7 +16,7 @@
       "imports": "portable-net45+win8",
       "dependencies": {
         "Microsoft.NETCore.App": {
-          "version": "1.0.0-*",
+          "version": "1.0.5",
           "type": "platform"
         }
       }

@@ -1,9 +1,9 @@
-﻿using Dmarc.AggregateReport.Api.Messages;
+﻿using Dmarc.AggregateReport.Api.Domain;
 using FluentValidation;
 
 namespace Dmarc.AggregateReport.Api.Validation
 {
-    internal class DateRangeDomainRequestValidator : AbstractValidator<DateRangeDomainRequest>, IValidator<DateRangeDomainRequest>
+    internal class DateRangeDomainRequestValidator : AbstractValidator<DateRangeDomainRequest>
     {
         public DateRangeDomainRequestValidator()
         {

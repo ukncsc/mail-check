@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyProduct("Dmarc")]
@@ -6,5 +7,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Dmarc.Common")]
 [assembly: AssemblyDescription("Dmarc.Common")]
 [assembly: ComVisible(false)]
-[assembly: AssemblyVersion("1.0.0")]
-[assembly: AssemblyFileVersion("1.0.0")]
+
+[assembly: InternalsVisibleTo("Dmarc.ForensicReport.Parser.Lambda.Test")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

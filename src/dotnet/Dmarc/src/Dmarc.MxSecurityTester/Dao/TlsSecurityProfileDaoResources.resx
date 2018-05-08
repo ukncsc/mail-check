@@ -1,0 +1,418 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="InsertCertificates" xml:space="preserve">
+    <value>INSERT INTO `certificate`
+(`thumb_print`,
+`issuer`,
+`subject`,
+`start_date`,
+`end_date`,
+`key_length`,
+`algorithm`,
+`serial_number`,
+`version`,
+`valid`)
+VALUES</value>
+  </data>
+  <data name="InsertCertificatesOnDuplicateKey" xml:space="preserve">
+    <value>ON DUPLICATE KEY UPDATE `thumb_print` = VALUES(`thumb_print`);</value>
+  </data>
+  <data name="InsertCertificateValuesFormatString" xml:space="preserve">
+    <value>(@a{0},
+@b{0},
+@c{0},
+@d{0},
+@e{0},
+@f{0},
+@g{0},
+@h{0},
+@i{0},
+@j{0})</value>
+  </data>
+  <data name="InsertMapping" xml:space="preserve">
+    <value>INSERT INTO `certificate_mapping`
+(`sequence`,
+`dns_record_mx_tls_profile_2_id`,
+`certificate_thumb_print`)
+VALUES</value>
+  </data>
+  <data name="InsertMappingOnDuplicateKey" xml:space="preserve">
+    <value>ON DUPLICATE KEY UPDATE `sequence` = VALUES(`sequence`);
+</value>
+  </data>
+  <data name="InsertMappingValueFormatString" xml:space="preserve">
+    <value>(@a{0},
+@b{0},
+@c{0})</value>
+  </data>
+  <data name="InsertRecord" xml:space="preserve">
+    <value>INSERT INTO `dns_record_mx_tls_profile_2`
+(`id`,`mx_record_id`,
+`end_date`,
+`failure_count`,
+`test1_tls_version`,
+`test1_cipher_suite`,
+`test1_curve_group`,
+`test1_signature_hash_alg`,
+`test1_error`,
+`test2_tls_version`,
+`test2_cipher_suite`,
+`test2_curve_group`,
+`test2_signature_hash_alg`,
+`test2_error`,
+`test3_tls_version`,
+`test3_cipher_suite`,
+`test3_curve_group`,
+`test3_signature_hash_alg`,
+`test3_error`,
+`test4_tls_version`,
+`test4_cipher_suite`,
+`test4_curve_group`,
+`test4_signature_hash_alg`,
+`test4_error`,
+`test5_tls_version`,
+`test5_cipher_suite`,
+`test5_curve_group`,
+`test5_signature_hash_alg`,
+`test5_error`,
+`test6_tls_version`,
+`test6_cipher_suite`,
+`test6_curve_group`,
+`test6_signature_hash_alg`,
+`test6_error`,
+`test7_tls_version`,
+`test7_cipher_suite`,
+`test7_curve_group`,
+`test7_signature_hash_alg`,
+`test7_error`,
+`test8_tls_version`,
+`test8_cipher_suite`,
+`test8_curve_group`,
+`test8_signature_hash_alg`,
+`test8_error`,
+`test9_tls_version`,
+`test9_cipher_suite`,
+`test9_curve_group`,
+`test9_signature_hash_alg`,
+`test9_error`,
+`test10_tls_version`,
+`test10_cipher_suite`,
+`test10_curve_group`,
+`test10_signature_hash_alg`,
+`test10_error`,
+`test11_tls_version`,
+`test11_cipher_suite`,
+`test11_curve_group`,
+`test11_signature_hash_alg`,
+`test11_error`,
+`test12_tls_version`,
+`test12_cipher_suite`,
+`test12_curve_group`,
+`test12_signature_hash_alg`,
+`test12_error`,
+`test13_tls_version`,
+`test13_cipher_suite`,
+`test13_curve_group`,
+`test13_signature_hash_alg`,
+`test13_error`)
+VALUES</value>
+  </data>
+  <data name="InsertRecordOnDuplicateKey" xml:space="preserve">
+    <value>ON DUPLICATE KEY UPDATE `end_date` = VALUES(`end_date`),
+`failure_count` = VALUES(`failure_count`),
+`last_checked` = UTC_TIMESTAMP();
+SELECT LAST_INSERT_ID();</value>
+  </data>
+  <data name="InsertRecordValueFormatString" xml:space="preserve">
+    <value>(@a{0},
+@b{0},
+@c{0},
+@d{0},
+@e{0},
+@f{0},
+@g{0},
+@h{0},
+@i{0},
+@j{0},
+@k{0},
+@l{0},
+@m{0},
+@n{0},
+@o{0},
+@p{0},
+@q{0},
+@r{0},
+@s{0},
+@t{0},
+@u{0},
+@v{0},
+@w{0},
+@x{0},
+@y{0},
+@z{0},
+@aa{0},
+@ab{0},
+@ac{0},
+@ad{0},
+@ae{0},
+@af{0},
+@ag{0},
+@ah{0},
+@ai{0},
+@aj{0},
+@ak{0},
+@al{0},
+@am{0},
+@an{0},
+@ao{0},
+@ap{0},
+@aq{0},
+@ar{0},
+@as{0},
+@at{0},
+@au{0},
+@av{0},
+@aw{0},
+@ax{0},
+@ay{0},
+@az{0},
+@ba{0},
+@bb{0},
+@bc{0},
+@bd{0},
+@be{0},
+@bf{0},
+@bg{0},
+@bh{0},
+@bi{0},
+@bj{0},
+@bk{0},
+@bl{0},
+@bm{0},
+@bn{0},
+@bo{0},
+@bp{0},
+@bq{0})</value>
+  </data>
+  <data name="SelectSecurityProfilesToUpdate" xml:space="preserve">
+    <value>SELECT 
+    temp.domain_id,
+    temp.domain_name,
+    mx.id AS 'mx_record_id',
+    mx.hostname AS 'mx_record_hostname',
+    tls.id AS 'tls_security_profile_id',
+    tls.failure_count as 'failure_count',
+	tls.test1_tls_version as 'test1_tls_version',
+	tls.test1_cipher_suite as 'test1_cipher_suite',
+	tls.test1_curve_group as 'test1_curve_group',
+	tls.test1_signature_hash_alg as 'test1_signature_hash_alg',
+	tls.test1_error as 'test1_error',
+	tls.test2_tls_version as 'test2_tls_version',
+	tls.test2_cipher_suite as 'test2_cipher_suite',
+	tls.test2_curve_group as 'test2_curve_group',
+	tls.test2_signature_hash_alg as 'test2_signature_hash_alg',
+	tls.test2_error as 'test2_error',
+	tls.test3_tls_version as 'test3_tls_version',
+	tls.test3_cipher_suite as 'test3_cipher_suite',
+	tls.test3_curve_group as 'test3_curve_group',
+	tls.test3_signature_hash_alg as 'test3_signature_hash_alg', 
+	tls.test3_error as 'test3_error',
+	tls.test4_tls_version as 'test4_tls_version',
+	tls.test4_cipher_suite as 'test4_cipher_suite',
+	tls.test4_curve_group as 'test4_curve_group',
+	tls.test4_signature_hash_alg as 'test4_signature_hash_alg',
+	tls.test4_error as 'test4_error',
+	tls.test5_tls_version as 'test5_tls_version',
+	tls.test5_cipher_suite as 'test5_cipher_suite',
+	tls.test5_curve_group as 'test5_curve_group',
+	tls.test5_signature_hash_alg as 'test5_signature_hash_alg', 
+	tls.test5_error as 'test5_error',
+	tls.test6_tls_version as 'test6_tls_version',
+	tls.test6_cipher_suite as 'test6_cipher_suite',
+	tls.test6_curve_group as 'test6_curve_group',
+	tls.test6_signature_hash_alg as 'test6_signature_hash_alg',
+	tls.test6_error as 'test6_error',
+	tls.test7_tls_version as 'test7_tls_version',
+	tls.test7_cipher_suite as 'test7_cipher_suite',
+	tls.test7_curve_group as 'test7_curve_group',
+	tls.test7_signature_hash_alg as 'test7_signature_hash_alg',
+	tls.test7_error as 'test7_error',
+	tls.test8_tls_version as 'test8_tls_version',
+	tls.test8_cipher_suite as 'test8_cipher_suite',
+	tls.test8_curve_group as 'test8_curve_group',
+	tls.test8_signature_hash_alg as 'test8_signature_hash_alg',
+	tls.test8_error as 'test8_error',
+	tls.test9_tls_version as 'test9_tls_version',
+	tls.test9_cipher_suite as 'test9_cipher_suite',
+	tls.test9_curve_group as 'test9_curve_group', 
+	tls.test9_signature_hash_alg as 'test9_signature_hash_alg',
+	tls.test9_error as 'test9_error',
+	tls.test10_tls_version as 'test10_tls_version',
+	tls.test10_cipher_suite as 'test10_cipher_suite',
+	tls.test10_curve_group as 'test10_curve_group',
+	tls.test10_signature_hash_alg as 'test10_signature_hash_alg',
+	tls.test10_error as 'test10_error',
+	tls.test11_tls_version as 'test11_tls_version',
+	tls.test11_cipher_suite as 'test11_cipher_suite',
+	tls.test11_curve_group as 'test11_curve_group',
+	tls.test11_signature_hash_alg as 'test11_signature_hash_alg',
+	tls.test11_error as 'test11_error',
+	tls.test12_tls_version as 'test12_tls_version',
+	tls.test12_cipher_suite as 'test12_cipher_suite',
+	tls.test12_curve_group as 'test12_curve_group',
+	tls.test12_signature_hash_alg as 'test12_signature_hash_alg',
+	tls.test12_error as 'test12_error',
+	tls.test13_tls_version as 'test13_tls_version',
+	tls.test13_cipher_suite as 'test13_cipher_suite',
+	tls.test13_curve_group as 'test13_curve_group',
+	tls.test13_signature_hash_alg as 'test13_signature_hash_alg',
+	tls.test13_error as 'test13_error',
+    temp.lst_checked AS 'last_checked',
+    c.thumb_print AS 'certificate_thumb_print',
+    c.issuer AS 'certificate_issuer',
+    c.subject AS 'certificate_subject',
+    c.start_date AS 'certificate_start_date',
+    c.end_date AS 'certificate_end_date',
+    c.key_length AS 'certifcate_key_length',
+    c.algorithm AS 'certificate_algorithm',
+    c.serial_number AS 'certificate_serial_number',
+    c.version AS 'certificate_version',
+    c.valid AS 'certificate_valid'
+FROM (
+	SELECT d1.id as domain_id,
+	d1.name as domain_name,
+	MAX(COALESCE(tls1.last_checked, '1900-01-01')) as lst_checked
+	FROM domain d1
+	JOIN dns_record_mx mx1 ON mx1.domain_id = d1.id AND (d1.monitor = b'1' OR d1.publish = b'1') AND mx1.end_date IS NULL
+	LEFT JOIN dns_record_mx_tls_profile_2 tls1 ON mx1.id = tls1.mx_record_id AND tls1.end_date IS NULL
+	WHERE (tls1.id IS NULL ||
+		(UTC_TIMESTAMP() &gt; DATE_ADD(tls1.last_checked, INTERVAL @refreshIntervalSeconds SECOND) &amp;&amp; (tls1.failure_count = 0 || tls1.failure_count &gt;= 3)) ||
+		(UTC_TIMESTAMP() &gt; DATE_ADD(tls1.last_checked, INTERVAL @failureRefreshIntervalSeconds SECOND) &amp;&amp;  (tls1.failure_count &gt; 0 &amp;&amp; tls1.failure_count &lt;= 2)))
+	GROUP BY d1.id
+	ORDER BY lst_checked, d1.id
+	LIMIT @limit
+) AS temp
+JOIN dns_record_mx mx ON temp.domain_id = mx.domain_id AND mx.end_date IS NULL
+LEFT JOIN dns_record_mx_tls_profile_2 tls ON mx.id = tls.mx_record_id AND tls.end_date IS NULL
+LEFT JOIN certificate_mapping cm on cm.dns_record_mx_tls_profile_2_id = tls.id
+LEFT JOIN certificate c on c.thumb_print = cm.certificate_thumb_print
+ORDER BY temp.lst_checked, mx.id, cm.sequence;</value>
+  </data>
+</root>

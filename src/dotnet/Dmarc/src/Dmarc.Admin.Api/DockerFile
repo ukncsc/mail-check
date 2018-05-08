@@ -1,0 +1,7 @@
+FROM microsoft/dotnet:1.0.5-core
+ARG publish_dir
+
+WORKDIR /app
+COPY $publish_dir .
+
+ENTRYPOINT ["dotnet", "Dmarc.Admin.Api.dll"]

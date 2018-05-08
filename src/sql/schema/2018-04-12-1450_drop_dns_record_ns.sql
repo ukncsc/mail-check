@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS dns_record_ns;
