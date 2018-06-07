@@ -38,6 +38,27 @@ ${var.launch-packages}
 runcmd: 
 ${var.launch-runcmd}
 
+--==BOUNDARY==
+MIME-Version: 1.0
+Content-Type: text/x-shellscript; charset="us-ascii"
+#!/bin/bash
+# Install package to take ssh public keys from IAM
+yum install -y https://s3-eu-west-1.amazonaws.com/widdix-aws-ec2-ssh-releases-eu-west-1/aws-ec2-ssh-1.7.0-1.el7.centos.noarch.rpm
+
+cat <<'EOF' > /etc/aws-ec2-ssh.conf
+IAM_AUTHORIZED_GROUPS="iam-ssh-users"
+LOCAL_MARKER_GROUP="iam-synced-users"
+LOCAL_GROUPS=""
+SUDOERS_GROUPS="iam-ssh-sudoers"
+ASSUMEROLE=""
+
+# Remove or set to 0 if you are done with configuration
+# To change the interval of the sync change the file
+# /etc/cron.d/aws-ec2-ssh
+DONOTSYNC=0
+
+
+EOF
 
 
 --==BOUNDARY==

@@ -52,8 +52,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.RecordProcessor
 
                 if (entitiesToUpdate.Any())
                 {
-                    List<RecordEntity> updatedEntities = await _dnsRecordUpdater.UpdateRecord(entitiesToUpdate);
-                    await _dnsRecordDao.InsertOrUpdateRecords(updatedEntities);
+                    await _dnsRecordUpdater.UpdateRecord(entitiesToUpdate);
                     _log.Debug($"Processing {entitiesToUpdate.Count} took: {stopwatch.Elapsed}");
                 }
                 stopwatch.Restart();

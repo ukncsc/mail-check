@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityTester.Util;
 
 namespace Dmarc.MxSecurityTester.Tls.Tests
 {
     public class Ssl3FailsWithBadCipherSuite : ITlsTest
     {
-        public int Id => 10;
+        public int Id => (int) TlsTestType.Ssl3FailsWithBadCipherSuite;
 
         public string Name => nameof(Ssl3FailsWithBadCipherSuite);
 

@@ -34,7 +34,7 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Parsers
                 }
             }
 
-            DmarcConfig dmarcConfig = new DmarcConfig(records, dmarcDomainConfig.Domain.Name);
+            DmarcConfig dmarcConfig = new DmarcConfig(records, dmarcDomainConfig.Domain.Name, dmarcDomainConfig.LastChecked);
 
             dmarcConfig.AddErrors(_configRuleEvaluator.Evaluate(dmarcConfig));
 

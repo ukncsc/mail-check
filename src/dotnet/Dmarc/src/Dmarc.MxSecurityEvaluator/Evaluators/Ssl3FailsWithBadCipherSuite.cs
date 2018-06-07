@@ -1,16 +1,19 @@
-﻿using Dmarc.Common.Interface.Tls.Domain;
+﻿using System.Collections.Generic;
+using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Domain;
+using Dmarc.MxSecurityEvaluator.Util;
 
 namespace Dmarc.MxSecurityEvaluator.Evaluators
 {
-    public interface ISsl3FailsWithBadCipherSuite : ITlsEvaluator { }
-
-    public class Ssl3FailsWithBadCipherSuite : ISsl3FailsWithBadCipherSuite
+    public class Ssl3FailsWithBadCipherSuite : ITlsEvaluator
     {
         private readonly string advice = "SSL 3.0 is an insecure protocol and should be not supported.";
         private readonly string intro = "When testing SSL 3.0 with a range of cipher suites";
 
-        public TlsEvaluatorResult Test(TlsConnectionResult tlsConnectionResult)
+        public TlsEvaluatorResult Test(ConnectionResults tlsConnectionResults)
         {
+            TlsConnectionResult tlsConnectionResult = tlsConnectionResults.Ssl3FailsWithBadCipherSuite;
+
             switch (tlsConnectionResult.Error)
             {
                 case Error.HANDSHAKE_FAILURE:
@@ -56,5 +59,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 
             return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} there was a problem and we are unable to provide additional information.");
         }
+
+        public TlsTestType Type => TlsTestType.Ssl3FailsWithBadCipherSuite;
     }
 }

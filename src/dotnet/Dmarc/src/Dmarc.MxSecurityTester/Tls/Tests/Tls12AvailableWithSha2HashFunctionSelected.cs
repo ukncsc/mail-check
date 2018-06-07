@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityTester.Util;
 
 namespace Dmarc.MxSecurityTester.Tls.Tests
 {
     public class Tls12AvailableWithSha2HashFunctionSelected : ITlsTest
     {
-        public int Id => 3;
+        public int Id => (int)TlsTestType.Tls12AvailableWithSha2HashFunctionSelected + 1;
 
         public string Name => nameof(Tls12AvailableWithSha2HashFunctionSelected);
 

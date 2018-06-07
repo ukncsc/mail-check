@@ -87,12 +87,12 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatusList {
         ///    Looks up a localized string similar to  SELECT 
         ///d.id as domain_id,
         ///d.name as domain_name,
-        ///MAX(IF(tls.mx_record_id IS NULL, 4, COALESCE(GREATEST(test1_result,test2_result,test3_result, test4_result, test5_result, test6_result, test7_result, test8_result, test9_result, test10_result, test11_result, test12_result, test13_result), 0))) as tls_status,
+        ///MAX(IF(tls.mx_record_id IS NULL, 4, COALESCE(GREATEST(test1_result,test2_result,test3_result, test4_result, test5_result, test6_result, test7_result, test8_result, test9_result, test10_result, test11_result, test12_result), 0))) as tls_status,
         ///dmarc.record IS NOT NULL as has_dmarc,
         ///COALESCE(dmarc_rm.max_error_severity, 
         ///IF(COUNT(DISTINCT(dmarc.id)) = 0, &apos;none&apos;,
         ///IF(dmarc_rm.domain_id IS NULL,&apos;pending&apos;,&apos;success&apos;))) as dmarc_status,
-        ///COALE [rest of string was truncated]&quot;;.
+        ///COALESCE(spf_rm.max_ [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SelectDomainSecurityInfoByDomainNames {
             get {
@@ -104,12 +104,12 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatusList {
         ///    Looks up a localized string similar to  SELECT 
         ///d.id as domain_id,
         ///d.name as domain_name,
-        ///MAX(IF(tls.mx_record_id IS NULL, 4, COALESCE(GREATEST(test1_result,test2_result,test3_result, test4_result, test5_result, test6_result, test7_result, test8_result, test9_result, test10_result, test11_result, test12_result, test13_result), 0))) as tls_status,
+        ///MAX(IF(tls.mx_record_id IS NULL, 4, COALESCE(GREATEST(test1_result,test2_result,test3_result, test4_result, test5_result, test6_result, test7_result, test8_result, test9_result, test10_result, test11_result, test12_result), 0))) as tls_status,
         ///dmarc.record IS NOT NULL as has_dmarc,
         ///COALESCE(dmarc_rm.max_error_severity, 
         ///	IF(COUNT(DISTINCT(dmarc.id)) = 0, &apos;none&apos;,
         ///		IF(dmarc_rm.domain_id IS NULL,&apos;pending&apos;,&apos;success&apos;))) as dmarc_status,
-        ///CO [rest of string was truncated]&quot;;.
+        ///COALESCE(spf_rm.m [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SelectDomainsSecurityInfo {
             get {
@@ -121,12 +121,12 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatusList {
         ///    Looks up a localized string similar to  SELECT 
         ///d.id as domain_id,
         ///d.name as domain_name,
-        ///MAX(IF(tls.mx_record_id IS NULL, 4, COALESCE(GREATEST(test1_result,test2_result,test3_result, test4_result, test5_result, test6_result, test7_result, test8_result, test9_result, test10_result, test11_result, test12_result, test13_result), 0))) as tls_status,
+        ///MAX(IF(tls.mx_record_id IS NULL, 4, COALESCE(GREATEST(test1_result,test2_result,test3_result, test4_result, test5_result, test6_result, test7_result, test8_result, test9_result, test10_result, test11_result, test12_result), 0))) as tls_status,
         ///dmarc.record IS NOT NULL as has_dmarc,
         ///COALESCE(dmarc_rm.max_error_severity, 
         ///IF(COUNT(DISTINCT(dmarc.id)) = 0, &apos;none&apos;,
         ///IF(dmarc_rm.domain_id IS NULL,&apos;pending&apos;,&apos;success&apos;))) as dmarc_status,
-        ///COALE [rest of string was truncated]&quot;;.
+        ///COALESCE(spf_rm.max_ [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SelectDomainsSecurityInfoByUserId {
             get {

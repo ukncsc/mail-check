@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainSecurityPill when getting a success pill it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui green large circular label"
+  >
+    <span
+      class="DomainSecurityPill"
+    >
+      1 success!
+    </span>
+  </div>
+</div>
+`;
+
+exports[`DomainSecurityPill when getting a warning pill it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui yellow large circular label"
+  >
+    <span
+      class="DomainSecurityPill"
+    >
+      1 warning!
+    </span>
+  </div>
+</div>
+`;
+
+exports[`DomainSecurityPill when getting an error pill it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui red large circular label"
+  >
+    <span
+      class="DomainSecurityPill"
+    >
+      1 error!
+    </span>
+  </div>
+</div>
+`;
+
+exports[`DomainSecurityPill when getting an information pill it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui red large circular label"
+  >
+    <span
+      class="DomainSecurityPill"
+    >
+      1 info!
+    </span>
+  </div>
+</div>
+`;

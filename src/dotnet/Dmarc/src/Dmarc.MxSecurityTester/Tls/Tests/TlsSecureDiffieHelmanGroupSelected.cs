@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityTester.Util;
 
 namespace Dmarc.MxSecurityTester.Tls.Tests
 {
     public class TlsSecureDiffieHelmanGroupSelected : ITlsTest
     {
-        public int Id => 12;
+        public int Id => (int)TlsTestType.TlsSecureDiffieHellmanGroupSelected;
 
         public string Name => nameof(TlsSecureDiffieHelmanGroupSelected);
 

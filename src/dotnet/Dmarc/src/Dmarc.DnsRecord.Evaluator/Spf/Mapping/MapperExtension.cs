@@ -29,7 +29,7 @@ namespace Dmarc.DnsRecord.Evaluator.Spf.Mapping
                 ? errors.Min(_ => _.ErrorType)
                 : (ErrorType?)null;
 
-            return new SpfConfig(spfRecords, errors, domainSpfConfig.AllErrorCount, maxErrorSeverity);
+            return new SpfConfig(spfRecords, errors, domainSpfConfig.AllErrorCount, maxErrorSeverity, domainSpfConfig.LastChecked);
         }
 
         public static SpfRecord ToSpfRecord(this DomainSpfRecord domainSpfRecord, int index)

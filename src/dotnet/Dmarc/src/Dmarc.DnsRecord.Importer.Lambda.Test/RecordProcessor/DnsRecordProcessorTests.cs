@@ -59,7 +59,6 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.RecordProcessor
 
             A.CallTo(() => _dnsRecordDao.GetRecordsForUpdate()).MustHaveHappened(Repeated.Exactly.Twice);
             A.CallTo(() => _dnsRecordUpdater.UpdateRecord(A<Dictionary<DomainEntity, List<RecordEntity>>>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => _dnsRecordDao.InsertOrUpdateRecords(A<List<RecordEntity>>._)).MustHaveHappened(Repeated.Exactly.Once);
         }
 
         [Test]
@@ -79,7 +78,6 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.RecordProcessor
 
             A.CallTo(() => _dnsRecordDao.GetRecordsForUpdate()).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _dnsRecordUpdater.UpdateRecord(A<Dictionary<DomainEntity, List<RecordEntity>>>._)).MustNotHaveHappened();
-            A.CallTo(() => _dnsRecordDao.InsertOrUpdateRecords(A<List<RecordEntity>>._)).MustNotHaveHappened();
         }
 
         [Test]
@@ -104,7 +102,6 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.RecordProcessor
 
             A.CallTo(() => _dnsRecordDao.GetRecordsForUpdate()).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _dnsRecordUpdater.UpdateRecord(A<Dictionary<DomainEntity, List<RecordEntity>>>._)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => _dnsRecordDao.InsertOrUpdateRecords(A<List<RecordEntity>>._)).MustHaveHappened(Repeated.Exactly.Once);
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Dmarc.DnsRecord.Importer.Lambda.Dao.Entities;
 using Dmarc.DnsRecord.Importer.Lambda.Dns;
 using Dmarc.DnsRecord.Importer.Lambda.Dns.Client.RecordInfos;
-using Dmarc.DnsRecord.Importer.Lambda.Publisher;
 using Dmarc.DnsRecord.Importer.Lambda.RecordProcessor;
 using FakeItEasy;
 using Heijden.DNS;
@@ -11,40 +10,6 @@ using NUnit.Framework;
 
 namespace Dmarc.DnsRecord.Importer.Lambda.Test.RecordProcessor
 {
-    [TestFixture]
-    public class PublishingDnsRecordUpdaterTests
-    {
-        private IDnsRecordClient _dnsRecordClient;
-        private IRecordEntityPublisher _recordEntityPublisher;
-        private DnsRecordUpdater _dnsRecordsUpdater;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _dnsRecordClient = A.Fake<IDnsRecordClient>();
-            _recordEntityPublisher = A.Fake<IRecordEntityPublisher>();
-            _dnsRecordsUpdater = new PublishingDnsRecordUpdater(_dnsRecordClient, _recordEntityPublisher);
-        }
-
-        [Test]
-        public async Task ItShouldPublishTheRecords()
-        {
-            string domain = "a.b.com";
-            DomainEntity domainEntity = new DomainEntity(1, domain);
-            DmarcRecordInfo existingRecord = new DmarcRecordInfo("existing record");
-            Dictionary<DomainEntity, List<RecordEntity>> records = new Dictionary<DomainEntity, List<RecordEntity>>
-            {
-                { domainEntity, new List<RecordEntity>{new RecordEntity(1, domainEntity, existingRecord, RCode.NoError, 0)}}
-            };
-
-            A.CallTo(() => _dnsRecordClient.GetRecord(domain)).Returns(Task.FromResult(new DnsResponse(new List<RecordInfo> { DmarcRecordInfo.EmptyRecordInfo }, RCode.NoError)));
-
-            List<RecordEntity> updatedRecords = await _dnsRecordsUpdater.UpdateRecord(records);
-
-            A.CallTo(() => _recordEntityPublisher.Publish(updatedRecords)).MustHaveHappened(Repeated.Exactly.Once);
-        }
-    }
-
     [TestFixture]
     public class DnsRecordUpdaterTests
     {

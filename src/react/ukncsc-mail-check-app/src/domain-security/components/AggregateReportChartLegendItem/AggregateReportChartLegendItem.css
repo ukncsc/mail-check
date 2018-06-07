@@ -1,0 +1,12 @@
+.ChartLegendHeader{
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.ChartLegendMarker{
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+  border: 2px solid;
+  margin: 0px 5px 0px 5px;
+}

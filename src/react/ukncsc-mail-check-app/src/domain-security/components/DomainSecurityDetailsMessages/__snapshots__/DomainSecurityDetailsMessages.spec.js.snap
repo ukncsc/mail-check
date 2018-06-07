@@ -1,0 +1,232 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainSecurityDetailsMessages when provided with failures it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui red large circular label"
+  >
+    <span
+      class="DomainSecurityPill"
+    >
+      1
+      Urgent
+    </span>
+  </div>
+  <p
+    class="DomainSecurityDetails--description__error"
+  >
+    Your 
+    DMARC
+    has 
+    1 element
+    that
+    require
+    urgent attention.
+  </p>
+  <div
+    class="ui large error message DomainSecurityMessage--container"
+  >
+    <div>
+      <p>
+        oh noes
+      </p>
+    </div>
+  </div>
+  <div
+    class="ui hidden divider"
+  />
+</div>
+`;
+
+exports[`DomainSecurityDetailsMessages when provided with failures, warnings and inconclusives it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui red large circular label"
+  >
+    <span
+      class="DomainSecurityPill"
+    >
+      1
+      Urgent
+    </span>
+  </div>
+  <p
+    class="DomainSecurityDetails--description__error"
+  >
+    Your 
+    DMARC
+    has 
+    1 element
+    that
+    require
+    urgent attention.
+  </p>
+  <div
+    class="ui large error message DomainSecurityMessage--container"
+  >
+    <div>
+      <p>
+        oh noes
+      </p>
+    </div>
+  </div>
+  <div
+    class="ui hidden divider"
+  />
+  <div
+    class="ui yellow large circular label"
+  >
+    <span
+      class="DomainSecurityPill"
+    >
+      1
+      Advisory
+    </span>
+  </div>
+  <p
+    class="DomainSecurityDetails--description__warning"
+  >
+    Your 
+    DMARC
+    has 
+    1 element
+    that can be improved.
+  </p>
+  <div
+    class="ui large warning message DomainSecurityMessage--container"
+  >
+    <div>
+      <p>
+        oh woes
+      </p>
+    </div>
+  </div>
+  <div
+    class="ui hidden divider"
+  />
+  <div
+    class="ui grey large circular label"
+  >
+    <span
+      class="DomainSecurityPill"
+    >
+      1
+      Inconclusive
+    </span>
+  </div>
+  <p
+    class="DomainSecurityDetails--description__information"
+  >
+    Your 
+    DMARC
+    has 
+    1
+    inconclusive
+    element
+    .
+  </p>
+  <div
+    class="ui large message DomainSecurityMessage--container"
+  >
+    <div>
+      <p>
+        who knows
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DomainSecurityDetailsMessages when provided with inconclusives it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui grey large circular label"
+  >
+    <span
+      class="DomainSecurityPill"
+    >
+      1
+      Inconclusive
+    </span>
+  </div>
+  <p
+    class="DomainSecurityDetails--description__information"
+  >
+    Your 
+    DMARC
+    has 
+    1
+    inconclusive
+    element
+    .
+  </p>
+  <div
+    class="ui large message DomainSecurityMessage--container"
+  >
+    <div>
+      <p>
+        who knows
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DomainSecurityDetailsMessages when provided with no failures, warnings or inconclusives it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui green large circular label"
+  >
+    <span
+      class="DomainSecurityPill"
+    >
+      1 Positive
+    </span>
+  </div>
+  <div
+    class="ui hidden divider"
+  />
+  <div
+    class="ui large success message DomainSecurityMessage--container"
+  >
+    DMARC
+    is well configured.
+  </div>
+</div>
+`;
+
+exports[`DomainSecurityDetailsMessages when provided with warnings it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui yellow large circular label"
+  >
+    <span
+      class="DomainSecurityPill"
+    >
+      1
+      Advisory
+    </span>
+  </div>
+  <p
+    class="DomainSecurityDetails--description__warning"
+  >
+    Your 
+    DMARC
+    has 
+    1 element
+    that can be improved.
+  </p>
+  <div
+    class="ui large warning message DomainSecurityMessage--container"
+  >
+    <div>
+      <p>
+        oh woes
+      </p>
+    </div>
+  </div>
+  <div
+    class="ui hidden divider"
+  />
+</div>
+`;

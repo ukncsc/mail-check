@@ -79,6 +79,32 @@ resource "aws_iam_role_policy_attachment" "attach-sqs-policy" {
   policy_arn = "${aws_iam_policy.sqs-queue-policy.arn}"
 }
 
+# Define the policy to access IAM public keys for SSH
+data "aws_iam_policy_document" "ssh-pubkey-policy" {
+  statement {
+    actions = ["iam:ListUsers",
+      "iam:GetGroup",
+      "iam:GetSSHPublicKey",
+      "iam:ListSSHPublicKeys",
+    ]
+
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "ssh-pubkey-policy" {
+  name        = "TF-${var.env-name}-${var.cluster-name}-ssh-pubkey"
+  path        = "/"
+  description = "Instance to IAM SSH Public Keys"
+  policy      = "${data.aws_iam_policy_document.ssh-pubkey-policy.json}"
+}
+
+# attach ssh policy to iam role
+resource "aws_iam_role_policy_attachment" "attach-ssh-pubkey-policy" {
+  role       = "${aws_iam_role.ecs-instance-role.name}"
+  policy_arn = "${aws_iam_policy.ssh-pubkey-policy.arn}"
+}
+
 # Define the policy to allocate and associate EIPs
 data "aws_iam_policy_document" "eip-allocation-policy" {
   statement {

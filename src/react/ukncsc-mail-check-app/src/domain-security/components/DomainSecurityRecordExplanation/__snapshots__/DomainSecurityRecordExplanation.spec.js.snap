@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainSecurityRecordExplanation it should match the snapshot 1`] = `
+<div>
+  <h3>
+    Test
+  </h3>
+  <table
+    class="ui table DomainSecurityRecordExplanation--table"
+  >
+    <thead
+      class=""
+    >
+      <tr
+        class=""
+      >
+        <th
+          class="three wide"
+        >
+          Element
+        </th>
+        <th
+          class="ten wide"
+        >
+          Explanation
+        </th>
+      </tr>
+    </thead>
+    <tbody
+      class=""
+    >
+      <tr
+        class=""
+      >
+        <td
+          class=""
+        >
+          foo
+        </td>
+        <td
+          class=""
+        >
+          bar
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;

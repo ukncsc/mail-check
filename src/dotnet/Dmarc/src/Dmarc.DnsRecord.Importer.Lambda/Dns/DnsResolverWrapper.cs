@@ -1,4 +1,4 @@
-using System.Linq;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Heijden.Dns.Portable;
@@ -15,9 +15,9 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Dns
     {
         private readonly Resolver _resolver;
 
-        public DnsResolverWrapper(IDnsNameServerProvider dnsNameServerProvider)
+        public DnsResolverWrapper(List<IPEndPoint> ipEndPoints)
         {
-            _resolver = new Resolver(dnsNameServerProvider.GetNameServers().Select(_ => new IPEndPoint(_, 53)).ToArray());
+            _resolver = new Resolver(ipEndPoints.ToArray());
             _resolver.TransportType = TransportType.Tcp;
         }
 

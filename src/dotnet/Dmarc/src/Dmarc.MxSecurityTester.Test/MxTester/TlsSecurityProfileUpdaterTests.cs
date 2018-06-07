@@ -89,14 +89,13 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
             Assert.That(securityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test10Result, Is.EqualTo(mxRecordTlsSecurityProfile2.TlsSecurityProfile.Results.Test10Result));
             Assert.That(securityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test11Result, Is.EqualTo(mxRecordTlsSecurityProfile2.TlsSecurityProfile.Results.Test11Result));
             Assert.That(securityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test12Result, Is.EqualTo(mxRecordTlsSecurityProfile2.TlsSecurityProfile.Results.Test12Result));
-            Assert.That(securityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test13Result, Is.EqualTo(mxRecordTlsSecurityProfile2.TlsSecurityProfile.Results.Test13Result));
         }
 
         private MxRecordTlsSecurityProfile CreateTlsSecurityProfile(ulong? id = 1, CipherSuite cipherSuite = CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA)
         {
             TlsTestResult tlsTestResult = new TlsTestResult(TlsVersion.TlsV12, cipherSuite, CurveGroup.Ffdhe2048, SignatureHashAlgorithm.SHA1_DSA, null);
 
-            var tlsSecurityProfile = new TlsSecurityProfile(id, null, new TlsTestResults(0, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult,
+            var tlsSecurityProfile = new TlsSecurityProfile(id, null, new TlsTestResults(0, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult,
                 tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, new List<Certificate>
                 {
                     new Certificate("thumb", "issuer", "subject", DateTime.Now, DateTime.Now, 1, "alg", "serial", 1, true)

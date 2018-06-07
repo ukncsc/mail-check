@@ -28,6 +28,14 @@ resource "aws_route" "private-peering" {
   depends_on                = ["aws_route_table.private"]
 }
 
+resource "aws_route" "frontend-peering" {
+  count                     = "${var.build-vpc == "" ? 0 :var.zone-count}"
+  route_table_id            = "${element(aws_route_table.frontend.*.id,count.index)}"
+  destination_cidr_block    = "${data.aws_vpc.build-vpc.cidr_block}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.build-peering.id}"
+  depends_on                = ["aws_route_table.frontend"]
+}
+
 # Add return route to build VPC routing table
 resource "aws_route" "build-route" {
   count                     = "${var.build-vpc == "" ? 0 :1}"

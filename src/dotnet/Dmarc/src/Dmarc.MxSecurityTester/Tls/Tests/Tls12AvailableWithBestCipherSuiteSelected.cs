@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityTester.Util;
 
 namespace Dmarc.MxSecurityTester.Tls.Tests
 {
     public class Tls12AvailableWithBestCipherSuiteSelected : ITlsTest
     {
-        public virtual int Id => 1;
+        public virtual int Id => (int)TlsTestType.Tls12AvailableWithBestCipherSuiteSelected;
 
         public virtual string Name => nameof(Tls12AvailableWithBestCipherSuiteSelected);
 

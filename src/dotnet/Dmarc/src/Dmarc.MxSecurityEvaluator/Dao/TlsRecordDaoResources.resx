@@ -129,6 +129,7 @@ AND drmtp.end_date IS NULL;</value>
   <data name="InsertTlsEvaluatorResults" xml:space="preserve">
     <value>INSERT INTO dns_record_mx_tls_evaluator_results 
 SET mx_record_id = @mx_record_id,
+last_checked = @last_checked,
 test1_result = @test1_result,
 test1_description = @test1_description,
 test2_result = @test2_result,
@@ -152,10 +153,9 @@ test10_description = @test10_description,
 test11_result = @test11_result,
 test11_description = @test11_description,
 test12_result = @test12_result,
-test12_description = @test12_description,
-test13_result = @test13_result,
-test13_description = @test13_description
+test12_description = @test12_description
 ON DUPLICATE KEY UPDATE
+last_checked = @last_checked,
 test1_result = @test1_result,
 test1_description = @test1_description,
 test2_result = @test2_result,
@@ -179,8 +179,6 @@ test10_description = @test10_description,
 test11_result = @test11_result,
 test11_description = @test11_description,
 test12_result = @test12_result,
-test12_description = @test12_description,
-test13_result = @test13_result,
-test13_description = @test13_description;</value>
+test12_description = @test12_description;</value>
   </data>
 </root>

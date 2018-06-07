@@ -28,7 +28,7 @@ namespace Dmarc.DnsRecord.Evaluator.Spf.Parsers
                 .Select(_ => _spfRecordParser.Parse(_, spfDomainConfig.Domain.Name))
                 .Where(_ => _ != null).ToList();
 
-            SpfConfig spfConfig = new SpfConfig(records);
+            SpfConfig spfConfig = new SpfConfig(records, spfDomainConfig.LastChecked);
 
             List<Error> errors = _spfConfigRulesEvaluator.Evaluate(spfConfig);
             spfConfig.AddErrors(errors);

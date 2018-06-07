@@ -1,0 +1,20 @@
+.dash-item{
+    margin-top: 20px;
+}
+
+.card{
+  border: 1px solid #D7DBE5;
+}
+
+.card-header{
+  color: #464A4C;
+  font-weight: bold;
+  background: #D7DBE5;
+  border-radius: 0;
+  border: 0;
+}
+
+.alert{
+  border-radius: 0;
+  border: 0;
+}

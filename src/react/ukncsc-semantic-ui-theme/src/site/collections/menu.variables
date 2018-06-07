@@ -1,0 +1,12 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+
+@background: @primaryColor;
+@activeHoverItemBackground: #ffffff;
+@activeItemBackground: #ffffff;
+@itemTextColor: #ffffff;
+@activeItemTextColor: #031f48;
+@border: 0px;
+@tabularBorderWidth: 0px;
+@attachedBorder: 0px;

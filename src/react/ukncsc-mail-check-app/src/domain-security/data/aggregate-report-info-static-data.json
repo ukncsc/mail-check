@@ -1,0 +1,22 @@
+{ "items" : {
+  "fullyTrusted" : {
+    "title" : "Fully trusted",
+    "description" : "Emails delivered with both successful SPF and DKIM."
+  },
+  "partiallyTrusted" : {
+    "title" : "Partially trusted",
+    "description" : "Emails delivered with either successful SPF or DKIM."
+  },
+  "untrusted" : {
+    "title" : "Untrusted",
+    "description" : "Emails delivered where SPF and DKIM both failed."
+  },
+  "quarantined" : {
+    "title" : "Quarantined",
+    "description" : "Emails sent to spam folder because both SPF and DKIM failed."
+  },
+  "rejected" : {
+    "title" : "Rejected",
+    "description" : "Emails not delivered to the user because both SPF and DKIM failed."
+  }
+}}

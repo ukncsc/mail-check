@@ -1,0 +1,52 @@
+{
+  "project": {
+    "name": "dmarc-service",
+    "ejected": true
+  },
+  "apps": [
+    {
+      "root": "src",
+      "outDir": "dist",
+      "assets": ["assets", "app/img", "favicon.png"],
+      "index": "index.html",
+      "main": "main.ts",
+      "test": "test.ts",
+      "tsconfig": "tsconfig.json",
+      "testTsconfig": "tsconfig.json",
+      "prefix": "app",
+      "styles": [
+        "../node_modules/bootstrap/dist/css/bootstrap.css",
+        "../node_modules/semantic-ui-css/semantic.css",
+        "../node_modules/font-awesome/css/font-awesome.css",
+        "styles.css"
+      ],
+      "scripts": ["../node_modules/chart.js/dist/Chart.bundle.min.js"],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    }
+  ],
+  "e2e": {
+    "protractor": {
+      "config": "./protractor.conf.js"
+    }
+  },
+  "test": {
+    "karma": {
+      "config": "./karma.conf.js"
+    }
+  },
+  "defaults": {
+    "styleExt": "css",
+    "class": {
+      "spec": false
+    },
+    "component": {
+      "spec": true,
+      "inlineStyle": false,
+      "inlineTemplate": false
+    }
+  }
+}

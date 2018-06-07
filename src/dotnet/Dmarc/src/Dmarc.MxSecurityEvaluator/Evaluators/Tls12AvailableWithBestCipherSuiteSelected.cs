@@ -1,15 +1,19 @@
-﻿using Dmarc.Common.Interface.Tls.Domain;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Domain;
+using Dmarc.MxSecurityEvaluator.Util;
 
 namespace Dmarc.MxSecurityEvaluator.Evaluators
 {
-    public interface ITls12AvailableWithBestCipherSuiteSelected : ITlsEvaluator { }
-
-    public class Tls12AvailableWithBestCipherSuiteSelected : ITls12AvailableWithBestCipherSuiteSelected
+    public class Tls12AvailableWithBestCipherSuiteSelected : ITlsEvaluator
     {
         private readonly string intro = "When testing TLS 1.2 with a range of cipher suites";
 
-        public TlsEvaluatorResult Test(TlsConnectionResult tlsConnectionResult)
+        public TlsEvaluatorResult Test(ConnectionResults tlsConnectionResults)
         {
+            TlsConnectionResult tlsConnectionResult = tlsConnectionResults.Tls12AvailableWithBestCipherSuiteSelected;
+
             switch (tlsConnectionResult.Error)
             {
                 case Error.TCP_CONNECTION_FAILED:
@@ -83,5 +87,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 
             return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} there was a problem and we are unable to provide additional information.");
         }
+
+        public TlsTestType Type => TlsTestType.Tls12AvailableWithBestCipherSuiteSelected;
     }
 }

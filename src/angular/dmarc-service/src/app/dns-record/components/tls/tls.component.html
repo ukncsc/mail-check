@@ -1,0 +1,248 @@
+<div class="row">
+
+  <div *ngIf="!errored" class="col-md-1">
+    <button type="button" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
+      <div *ngIf="isCollapsed">
+        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+      </div>
+      <div *ngIf="!isCollapsed">
+        <i class="fa fa-chevron-up" aria-hidden="true"></i>
+      </div>
+    </button>
+  </div>
+
+  <div class="col-md-3">
+    <h2>TLS</h2>
+  </div>
+</div>
+
+<div *ngIf="!loading">
+
+  <div *ngIf="errored">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="alert alert-danger">
+          <h5>Error:</h5>
+          <p>{{error}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!errored">
+    <div id="collapseExample" [ngbCollapse]="isCollapsed">
+      <div class="row record">
+        <div class="col-md-10 offset-md-1">
+          <h3>(Inbound only)</h3>
+
+
+          <div *ngIf="receivingEncrypted?.mxRecords.length > 0">
+            <ng-container *ngFor="let mxRecord of receivingEncrypted?.mxRecords">
+              <h5>Mail Server: {{mxRecord.hostname}}</h5>
+              <p>Preference: {{mxRecord.preference}}</p>
+              <p>Mx Record Last Checked: {{mxRecord.mxLastChecked}}</p>
+
+              <ng-container *ngIf="mxRecord.tlsLastChecked === null">
+                Tls Last Checked: -
+              </ng-container>
+
+              <ng-container *ngIf="mxRecord.tlsLastChecked !== null">
+                <p>Tls Last Checked: {{mxRecord.tlsLastChecked}}</p>
+
+                <span *ngIf="mxRecord.certificate !== null">
+                  Certificate: {{mxRecord.certificate?.name}}
+                  <i class="fa fa-info-circle" aria-hidden="true" [ngbPopover]="popContent" popoverTitle="Certificate" triggers="mouseenter:mouseleave"></i>
+                  <i *ngIf="mxRecord.certificate.valid" class="fa fa-check"></i>
+                  <i *ngIf="!mxRecord.certificate.valid" class="fa fa-times"></i>
+                </span>
+
+                <span *ngIf="mxRecord.certificate === null">
+                  Certificate: -
+                  <i class="fa fa-times"></i>
+                </span>
+
+                <ng-template #popContent>
+                  <div class="row popover-row">
+                    <div class="col-sm-3 bold">
+                      Subject
+                    </div>
+                    <div class="col-sm-9">
+                      {{mxRecord.certificate.subject}}
+                    </div>
+                  </div>
+                  <div class="row popover-row">
+                    <div class="col-sm-3 bold">
+                      End Date
+                    </div>
+                    <div class="col-sm-9">
+                      {{mxRecord.certificate.endDate}}
+                    </div>
+                  </div>
+                  <div class="row popover-row">
+                    <div class="col-sm-3 bold">
+                      Start Date
+                    </div>
+                    <div class="col-sm-9">
+                      {{mxRecord.certificate.startDate}}
+                    </div>
+                  </div>
+                  <div class="row popover-row">
+                    <div class="col-sm-3 bold">
+                      Issuer
+                    </div>
+                    <div class="col-sm-9">
+                      {{mxRecord.certificate.issuer}}
+                    </div>
+                  </div>
+                  <div class="row popover-row">
+                    <div class="col-sm-3 bold">
+                      Algorithm
+                    </div>
+                    <div class="col-sm-9">
+                      {{mxRecord.certificate.algorithm}}
+                    </div>
+                  </div>
+                  <div class="row popover-row">
+                    <div class="col-sm-3 bold">
+                      Serial Number
+                    </div>
+                     <div class="col-sm-9">
+                      {{mxRecord.certificate.serialNumber}}
+                    </div>
+                  </div>
+                  <div class="row popover-row">
+                    <div class="col-sm-3 bold">
+                      Version
+                    </div>
+                    <div class="col-sm-9">
+                      {{mxRecord.certificate.version}}
+                    </div>
+                  </div>
+                  <div class="row popover-row">
+                    <div class="col-sm-3 bold">
+                      Thumb Print
+                    </div>
+                    <div class="col-sm-9">
+                      {{mxRecord.certificate.thumbPrint}}
+                    </div>
+                  </div>
+                  <div class="row popover-row">
+                    <div class="col-sm-3 bold">
+                      Valid
+                    </div>
+                    <div class="col-sm-9">
+                      {{mxRecord.certificate.valid}}
+                    </div>
+                  </div>
+                </ng-template>
+
+                <table class="table">
+                  <thead>
+                    <tr class="row m-0">
+                      <th class="d-inline-block col-2">Name</th>
+                      <th class="d-inline-block col-8">Value</th>
+                      <th class="d-inline-block col-2">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <tr class="row m-0">
+                      <td class="col-2">
+                        SSL 3
+                      </td>
+                      <td class="col-8">
+                        <p>{{mxRecord.sslv3.cipherSuite}}</p>
+                      </td>
+                      <td class="col-2">
+                        <div *ngIf="mxRecord.sslv3.supported">
+                          <h3><i class="fa fa-check"></i></h3>
+                        </div>
+
+                        <div *ngIf="!mxRecord.sslv3.supported">
+                          <h3><i class="fa fa-times"></i></h3>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr class="row m-0">
+                      <td class="col-2">
+                        TLS 1.0
+                      </td>
+                      <td class="col-8">
+                        <p>{{mxRecord.tlsv1.cipherSuite}}</p>
+                      </td>
+                      <td class="col-2">
+                        <div *ngIf="mxRecord.tlsv1.supported">
+                          <h3><i class="fa fa-check"></i></h3>
+                        </div>
+
+                        <div *ngIf="!mxRecord.tlsv1.supported">
+                          <h3><i class="fa fa-times"></i></h3>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr class="row m-0">
+                      <td class="col-2">
+                        TLS 1.1
+                      </td>
+                      <td class="col-8">
+                        <p>{{mxRecord.tlsv11.cipherSuite}}</p>
+                      </td>
+                      <td class="col-2">
+                        <div *ngIf="mxRecord.tlsv11.supported">
+                          <h3><i class="fa fa-check"></i></h3>
+                        </div>
+
+                        <div *ngIf="!mxRecord.tlsv11.supported">
+                          <h3><i class="fa fa-times"></i></h3>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr class="row m-0">
+                      <td class="col-2">
+                        TLS 1.2
+                      </td>
+                      <td class="col-8">
+                        <p>{{mxRecord.tlsv12.cipherSuite}}</p>
+                      </td>
+                      <td class="col-2">
+                        <div *ngIf="mxRecord.tlsv12.supported">
+                          <h3><i class="fa fa-check"></i></h3>
+                        </div>
+
+                        <div *ngIf="!mxRecord.tlsv12.supported">
+                          <h3><i class="fa fa-times"></i></h3>
+                        </div>
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </ng-container>
+            </ng-container>
+          </div>
+          <div *ngIf="receivingEncrypted?.mxRecords.length === 0">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="alert alert-warning">
+                  <h5 class="mx-auto">This domain has no MX records.</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading">
+  <div class="d-flex justify-content-center bd-highlight mb-3">
+    <div class="p-2 bd-highlight">
+      <mat-spinner color="accent" [diameter]=40 [strokeWidth]=3></mat-spinner>
+    </div>
+  </div>
+</div>

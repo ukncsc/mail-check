@@ -107,7 +107,6 @@ namespace Dmarc.MxSecurityTester.Dao
                 CreateTlsTestResult(reader, 10),
                 CreateTlsTestResult(reader, 11),
                 CreateTlsTestResult(reader, 12),
-                CreateTlsTestResult(reader, 13),
                 null));
         }
 
@@ -288,12 +287,6 @@ namespace Dmarc.MxSecurityTester.Dao
                     command.Parameters.AddWithValue($"bj{i}", (int?)profile.TlsSecurityProfile.Results.Test12Result.CurveGroup);
                     command.Parameters.AddWithValue($"bk{i}", (int?)profile.TlsSecurityProfile.Results.Test12Result.SignatureHashAlgorithm);
                     command.Parameters.AddWithValue($"bl{i}", (int?)profile.TlsSecurityProfile.Results.Test12Result.Error);
-                                                      
-                    command.Parameters.AddWithValue($"bm{i}", (int?)profile.TlsSecurityProfile.Results.Test13Result.Version);
-                    command.Parameters.AddWithValue($"bn{i}", (int?)profile.TlsSecurityProfile.Results.Test13Result.CipherSuite);
-                    command.Parameters.AddWithValue($"bo{i}", (int?)profile.TlsSecurityProfile.Results.Test13Result.CurveGroup);
-                    command.Parameters.AddWithValue($"bp{i}", (int?)profile.TlsSecurityProfile.Results.Test13Result.SignatureHashAlgorithm);
-                    command.Parameters.AddWithValue($"bq{i}", (int?)profile.TlsSecurityProfile.Results.Test13Result.Error);
                 }
 
                 stringBuilder.Append(TlsSecurityProfileDaoResources.InsertRecordOnDuplicateKey);

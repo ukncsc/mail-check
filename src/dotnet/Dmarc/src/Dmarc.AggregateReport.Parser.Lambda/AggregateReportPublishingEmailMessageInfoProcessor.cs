@@ -19,7 +19,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda
     public class AggregateReportPublishingEmailMessageInfoProcessor<TDomain> : IPublishingEmailMessageInfoProcessor<TDomain>
         where TDomain : AggregateReportInfo
     {
-        private const int IpBatchSize = 1000;
+        private const int IpBatchSize = 40;
 
         private readonly IEmailMessageInfoProcessor<TDomain> _processor;
         private readonly IPublisher _publisher;

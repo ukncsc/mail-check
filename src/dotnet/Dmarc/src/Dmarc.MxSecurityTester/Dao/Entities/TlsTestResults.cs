@@ -19,7 +19,6 @@ namespace Dmarc.MxSecurityTester.Dao.Entities
             TlsTestResult test10Result,
             TlsTestResult test11Result,
             TlsTestResult test12Result,
-            TlsTestResult test13Result,
             List<Certificate> certificates)
         {
             FailureCount = failureCount;
@@ -35,7 +34,6 @@ namespace Dmarc.MxSecurityTester.Dao.Entities
             Test10Result = test10Result;
             Test11Result = test11Result;
             Test12Result = test12Result;
-            Test13Result = test13Result;
             Certificates = certificates ?? new List<Certificate>();
         }
 
@@ -52,7 +50,6 @@ namespace Dmarc.MxSecurityTester.Dao.Entities
         public TlsTestResult Test10Result { get; }
         public TlsTestResult Test11Result { get; }
         public TlsTestResult Test12Result { get; }
-        public TlsTestResult Test13Result { get; }
         public List<Certificate> Certificates { get; }
 
         //ignore failure count
@@ -69,8 +66,7 @@ namespace Dmarc.MxSecurityTester.Dao.Entities
                    Equals(Test9Result, other.Test9Result) && 
                    Equals(Test10Result, other.Test10Result) && 
                    Equals(Test11Result, other.Test11Result) && 
-                   Equals(Test12Result, other.Test12Result) && 
-                   Equals(Test13Result, other.Test13Result) &&
+                   Equals(Test12Result, other.Test12Result) &&
                    Certificates.SequenceEqual(other.Certificates);
         }
 
@@ -98,7 +94,6 @@ namespace Dmarc.MxSecurityTester.Dao.Entities
                 hashCode = (hashCode * 397) ^ (Test10Result?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (Test11Result?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (Test12Result?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (Test13Result?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (Certificates?.GetHashCode() ?? 0);
                 return hashCode;
             }

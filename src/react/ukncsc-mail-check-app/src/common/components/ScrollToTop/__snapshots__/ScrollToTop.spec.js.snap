@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ScrollToTop it should match the snapshot 1`] = `
+<div>
+  <p>
+    some content
+  </p>
+</div>
+`;

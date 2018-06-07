@@ -1,4 +1,3 @@
-
 resource "aws_db_subnet_group" "db-subnets" {
   name        = "${var.env-name}-subnets"
   description = "${var.env-name} subnets"
@@ -55,22 +54,25 @@ resource "aws_rds_cluster_parameter_group" "dmarc-rdscluster-pg" {
 }
 
 resource "aws_rds_cluster" "rds-cluster" {
-  cluster_identifier        = "${var.env-name}-cluster"
-  #availability_zones        = ["${values(var.zone-names)}"] removing due to bug #3754
-  database_name             = "${var.db-name}"
-  skip_final_snapshot       = false
-  final_snapshot_identifier = "${var.env-name}-db-final"
-  snapshot_identifier       = "${var.db-snapshot-to-restore}"
-  backup_retention_period   = "7"
-  storage_encrypted         = true
-  master_username           = "${var.db-username}"
-  master_password           = "${var.db-password}"
-  iam_roles                 = [ "${aws_iam_role.rds-s3-export.arn}" ]
-  db_cluster_parameter_group_name = "${aws_rds_cluster_parameter_group.dmarc-rdscluster-pg.name}"
-  vpc_security_group_ids    = ["${aws_security_group.rds.id}"]
+  cluster_identifier = "${var.env-name}-cluster"
 
-  db_subnet_group_name      = "${aws_db_subnet_group.db-subnets.name}"
-    lifecycle {
+  #availability_zones        = ["${values(var.zone-names)}"] removing due to bug #3754
+  database_name                   = "${var.db-name}"
+  skip_final_snapshot             = false
+  final_snapshot_identifier       = "${var.env-name}-db-final"
+  snapshot_identifier             = "${var.db-snapshot-to-restore}"
+  backup_retention_period         = "7"
+  storage_encrypted               = true
+  kms_key_id                      = "${var.db-kms-key-id}"
+  master_username                 = "${var.db-username}"
+  master_password                 = "${var.db-password}"
+  iam_roles                       = ["${aws_iam_role.rds-s3-export.arn}"]
+  db_cluster_parameter_group_name = "${aws_rds_cluster_parameter_group.dmarc-rdscluster-pg.name}"
+  vpc_security_group_ids          = ["${aws_security_group.rds.id}"]
+
+  db_subnet_group_name = "${aws_db_subnet_group.db-subnets.name}"
+
+  lifecycle {
     prevent_destroy = true
   }
 }

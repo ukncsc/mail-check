@@ -3,51 +3,52 @@ node {
     stage('Checkout') {
 
 //---------------- Variables/Definitions
-    env.WORKSPACE = pwd()
-	env.DOTNETPATH = "/mnt/jenkins-home/dotnet"
+  env.WORKSPACE = pwd()
+	env.DOTNETPATH = "/mnt/jenkins-home/dotnet-${BRANCH_NAME}"
 	env.DOTNET = "${env.DOTNETPATH}/dotnet"
 	env.DOTNETVERSION = "1.0.5"
 	env.TERRAFORMPATH = "/mnt/jenkins-home/terraform-${BRANCH_NAME}"
 	env.TERRAFORM ="${env.TERRAFORMPATH}/terraform"
-	env.TERRAFORMVERSION = "0.10.8"
+	env.TERRAFORMVERSION = "0.11.7"
 	env.TERRAFORMURL = "https://releases.hashicorp.com/terraform/${env.TERRAFORMVERSION}/terraform_${env.TERRAFORMVERSION}_linux_amd64.zip"
 	env.YARNPATH = "/mnt/jenkins-home/yarn-${BRANCH_NAME}"
-	env.YARN ="${env.YARNPATH}/yarn-v1.3.2/bin/yarn"
-	env.YARNVERSION = "1.3.2"
+	env.YARN ="${env.YARNPATH}/yarn-v1.6.0/bin/yarn"
+	env.YARNVERSION = "1.6.0"
 	env.YARNURL = "https://yarnpkg.com/latest.tar.gz"
 	env.NODEPATH ="/mnt/jenkins-home/node-${BRANCH_NAME}"
 	env.TF_PLAN_FILE = "TF-${BRANCH_NAME}-plan.out"
 	env.TF_COMMON_PLAN_FILE = "TF-common-plan.out"
-	env.NODEVERSION = "v6.10.2"
-    env.NODE = "${env.NODEPATH}/node-${env.NODEVERSION}-linux-x64/bin/node"
+	env.NODEVERSION = "v8.11.2"
+  env.NODE = "${env.NODEPATH}/node-${env.NODEVERSION}-linux-x64/bin/node"
 	env.NPM  = "${env.NODEPATH}/node-${env.NODEVERSION}-linux-x64/bin/npm"
-    env.NGPATH = "/mnt/jenkins-home/ng-${BRANCH_NAME}"
+  env.NGPATH = "/mnt/jenkins-home/ng-${BRANCH_NAME}"
 	env.NG = "${env.NGPATH}/lib/node_modules/@angular/cli/bin/ng"
 	env.NGVERSION = "@angular/cli: 1.0.0"
 	env.AWSPATH = "/mnt/jenkins-home/aws-${BRANCH_NAME}"
 	env.AWS = "${env.AWSPATH}/bin/aws"
-    env.AWSACCOUNT = readFile("/mnt/jenkins-home/aws-account-number").trim()
+  env.AWSACCOUNT = readFile("/mnt/jenkins-home/aws-account-number").trim()
 	env.AWSREGION = "eu-west-2"
-	env.AWSVERSION = "aws-cli/1.12.2"
+	env.AWSVERSION = "11529"
+	env.AWSURL = "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip"
 	env.MySQLPATH = "/mnt/jenkins-home/mysql-${BRANCH_NAME}"
 	env.MySQL = "${env.MySQLPATH}/mysql"
 	env.MySQLVERSION = "5.6.35"
 	env.PATH = "${env.NODEPATH}/node-${env.NODEVERSION}-linux-x64/bin/:${env.DOTNETPATH}:${env.PATH}" 
 	env.FRONTENDHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-frontend-hash"
 	env.DOTNETHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-code-hash"
-    env.DOTNET_CONTAINER_GITHASH_FILE = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-container-githash"
+  env.DOTNET_CONTAINER_GITHASH_FILE = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-container-githash"
 	env.FRONTEND_CONTAINER_GITHASH_FILE = "/mnt/jenkins-home/${BRANCH_NAME}-frontend-container-githash"
-    env.DOTNETBINARYSTASH = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-binary-stash/"
-    env.DOTNETPUBLISHSTASH = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-publish-stash/"
+  env.DOTNETBINARYSTASH = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-binary-stash/"
+  env.DOTNETPUBLISHSTASH = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-publish-stash/"
 	env.ANGULARAPPSTASH = "/mnt/jenkins-home/${BRANCH_NAME}-angular-app-stash/"
-    env.ANGULARAPPHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-angular-app-code-hash"
+  env.ANGULARAPPHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-angular-app-code-hash"
 	env.ANGULARPUBLICHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-angular-public-code-hash"
 	env.REACTAPPSTASH = "/mnt/jenkins-home/${BRANCH_NAME}-react-app-stash/"
-    env.REACTAPPHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-react-app-code-hash"
+  env.REACTAPPHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-react-app-code-hash"
 	env.REACTPUBLICHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-react-public-code-hash"
-    env.PUBLIC_SSH_DEPLOY_KEY_ID = readFile('/mnt/jenkins-home/public-repo-ssh-deploy-key-id').trim()
+  env.PUBLIC_SSH_DEPLOY_KEY_ID = readFile('/mnt/jenkins-home/public-repo-ssh-deploy-key-id').trim()
 	env.PRIVATE_SSH_DEPLOY_KEY_ID = readFile('/mnt/jenkins-home/private-repo-ssh-deploy-key-id').trim()
-    env.STATE_S3_BUCKET_FILE = "/mnt/jenkins-home/state-s3-bucket"
+  env.STATE_S3_BUCKET_FILE = "/mnt/jenkins-home/state-s3-bucket"
 	env.STATE_S3_BUCKET = readFile(env.STATE_S3_BUCKET_FILE).trim()
 
 
@@ -323,7 +324,7 @@ node {
         }
 	}
 
-    stage('Docker Build Record Evaluator') {
+    stage('Docker Build Admin API') {
         if (env.DOTNETCOMPILE == "true") {
 		    sh "cp src/docker/microservice/Dockerfile ${env.DOTNETPUBLISHSTASH}DmarcAdminApi/Dockerfile"
 		    sh "cd ${env.DOTNETPUBLISHSTASH}DmarcAdminApi;ls"
@@ -367,7 +368,7 @@ node {
 
     stage('Angular App Build') {
 	    if (env.ANGULARAPPCOMPILE == "true") {
-			sh "cd src/angular/dmarc-service; ${env.YARN};${env.YARN} build"
+			sh "cd src/angular/dmarc-service;export YARN_CACHE_FOLDER=/mnt/jenkins-home/yarn/${BRANCH_NAME}; ${env.YARN};${env.YARN} build"
 //            sh "cd src/angular/dmarc-service; ${env.NPM} install"
 //		    sh "${env.NPM} --version"
 //		    sh "cd src/angular/dmarc-service; ${env.NPM} run build"
@@ -398,14 +399,30 @@ node {
 	    } else {
 		    env.REACTAPPCOMPILE = "true"
 			echo "Previous React app code hash ${env.REACTAPPHASH} does not match ${env.PREVREACTAPPHASH}. Recompiling....."
+			
+			env.NODE_PATH= "src/"
+			sh "cd src/react/ukncsc-mail-check-app; echo NODE_PATH=${env.NODE_PATH} > .env;echo REACT_APP_URL_ROUTE=/app >> .env;echo PUBLIC_URL=/app >> .env"
         }
 	}
+    stage('React App Test') {
+		if (env.REACTAPPCOMPILE == "true") {
+
+			env.NODE_PATH= "src/"
+		    sh "cd src/react/ukncsc-mail-check-app;export CI=true;${env.YARN};${env.YARN} test"
+		}
+	}
+
 
     stage('React App Build') {
 	    if (env.REACTAPPCOMPILE == "true") {
-            sh "cd src/react/ukncsc-semantic-ui-theme; ${env.YARN};${env.YARN} build"
+			if ("${BRANCH_NAME}" != "master") {   
+				env.NODE_ENV="development"
+			}
+			sh "cd src/react/ukncsc-semantic-ui-theme;${env.YARN} unlink || exit 0"
+			sh "cd src/react/ukncsc-semantic-ui-theme;${env.YARN};${env.YARN} build;${env.YARN} link" 
 			env.NODE_PATH= "src/"
-		    sh "cd src/react/ukncsc-mail-check-app; echo NODE_PATH=${env.NODE_PATH} > .env;echo REACT_APP_URL_ROUTE=/app >> .env;echo PUBLIC_URL=/app >> .env;${env.YARN};${env.YARN} build"
+			sh "cd src/react/ukncsc-mail-check-app;${env.YARN} unlink \"ukncsc-semantic-ui-theme\" || exit 0"
+		    sh "cd src/react/ukncsc-mail-check-app;${env.YARN} link \"ukncsc-semantic-ui-theme\";${env.YARN};${env.YARN} build"
 			if (fileExists("${env.REACTAPPSTASH}")) {
 				sh "rm -r ${env.REACTAPPSTASH};"
 			}
@@ -424,7 +441,7 @@ node {
 		 sh "mkdir -p frontend/public_html/app;cp -r ${env.REACTAPPSTASH}* frontend/public_html/app/"
 
  if (fileExists("${env.FRONTENDHASHFILE}") && fileExists("${env.FRONTEND_CONTAINER_GITHASH_FILE}")) { 
-		    env.PREVFRONTENDHASH =  readFile("${env.FRONTENDHASHFILE}").trim()
+	 		    env.PREVFRONTENDHASH =  readFile("${env.FRONTENDHASHFILE}").trim()
 		}
 	    sh "find frontend -type f -print0 | sort -z | xargs -0 sha1sum | sha1sum |  cut -d \" \" -f1 | tee frontendhash"
 	    env.FRONTENDHASH = readFile("frontendhash").trim()
@@ -662,33 +679,32 @@ void install_aws() {
 	
    //-----------------Check AWS version and install
    if (fileExists("${env.AWS}")) {
-	    sh "${env.AWS} --version  2>&1 > /dev/null | sed 's/ .*//' | tee version"
+	    sh "${env.AWS} --version  2>&1 > /dev/null | sed \'s/ .*//\' | tr -d \'/.A-Za-z\\-\' | tee version"
 	    env.AWSCURRENTVERSION = readFile('version').trim()
 		} else {
         env.AWSCURRENTVERSION = "not installed"
 		}
-	if ("${env.AWSCURRENTVERSION}" != "${env.AWSVERSION}") {
+	if ("${env.AWSCURRENTVERSION}" < "${env.AWSVERSION}") {
         echo "Installing AWS CLI..."
 		sh "rm -rf ${env.AWSPATH}; mkdir -p ${env.AWSPATH}"
-		sh "wget -O awscli-bundle.zip https://s3.amazonaws.com/aws-cli/awscli-bundle.zip"
+		sh "wget -O awscli-bundle.zip ${env.AWSURL}"
         sh "unzip awscli-bundle.zip"
         sh "./awscli-bundle/install -i ${env.AWSPATH}"
 		}
 	if (fileExists("${env.AWS}")) {
-	    sh "${env.AWS} --version  2>&1 > /dev/null | sed 's/ .*//' | tee version"
+	    sh "${env.AWS} --version  2>&1 > /dev/null | sed \'s/ .*//\' | tr -d \'/.A-Za-z\\-\' | tee version"
 	    env.AWSCURRENTVERSION = readFile('version').trim()
 		echo "AWS CLI version: ${env.AWSCURRENTVERSION}"
 		} else {
         currentBuild.result = 'FAILURE'
 		echo "AWS CLI installation has failed!"
 		}
-	if ("${env.AWSCURRENTVERSION}" != "${env.AWSVERSION}") {
+	if ("${env.AWSCURRENTVERSION}" < "${env.AWSVERSION}") {
 	    currentBuild.result = 'FAILURE'
 	    error "AWS CLI installation version ${env.AWSCURRENTVERSION} does not match required version of ${env.AWSVERSION}!"
 	    
 	}
 }
-
 void install_mysql() {
 	//-----------------Check MySQL version and install
 
@@ -731,7 +747,7 @@ void install_node() {
 	if ("${env.NODECURRENTVERSION}" != "${env.NODEVERSION}") {
         echo "Installing Node and NPM..."
         sh "rm -rf ${env.NODEPATH}; mkdir -p ${env.NODEPATH}"
-	    sh "wget -O node.tar.xz https://nodejs.org/dist/v6.10.2/node-v6.10.2-linux-x64.tar.xz"
+	    sh "wget -O node.tar.xz https://nodejs.org/dist/v8.11.2/node-v8.11.2-linux-x64.tar.xz"
 	    sh "tar -xvf node.tar.xz -C ${env.NODEPATH}"
         }
 	if (fileExists("${env.NODE}")) {

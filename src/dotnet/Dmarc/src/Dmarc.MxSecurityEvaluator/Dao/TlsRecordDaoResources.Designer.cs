@@ -77,6 +77,7 @@ namespace Dmarc.MxSecurityEvaluator.Dao {
         /// <summary>
         ///    Looks up a localized string similar to  INSERT INTO dns_record_mx_tls_evaluator_results 
         ///SET mx_record_id = @mx_record_id,
+        ///last_checked = @last_checked,
         ///test1_result = @test1_result,
         ///test1_description = @test1_description,
         ///test2_result = @test2_result,
@@ -88,7 +89,7 @@ namespace Dmarc.MxSecurityEvaluator.Dao {
         ///test5_result = @test5_result,
         ///test5_description = @test5_description,
         ///test6_result = @test6_result,
-        ///test6_description = @test6_descripti [rest of string was truncated]&quot;;.
+        ///test6 [rest of string was truncated]&quot;;.
         /// </summary>
         public static string InsertTlsEvaluatorResults {
             get {

@@ -1,0 +1,61 @@
+<h1>Anti-Spoofing</h1>
+
+<div class="row">
+  <h4 class="col-md-6">Check anti-spoofing protection configured for government domains.</h4>  
+</div>
+
+<div class="row">
+  <dns-record-search class="col-md-12" [search]="search" (searchChange)="searchService.search.next($event)"></dns-record-search>
+</div>
+
+<div *ngIf="!loading">
+  <div *ngIf="errored">
+     <div class="row">
+        <div class="col-md-6">
+          <div class="alert alert-danger">
+            <h5>Error:</h5>
+            <p>{{error}}</p>
+          </div>
+        </div>
+     </div>
+  </div>  
+  <div *ngIf="!errored">
+    <div *ngIf="domainsSecurityInfo?.domainCount > 0">
+      <div>
+        <div class="row">
+          <div class="col-md-3">
+            <pagination-display [collectionSize]="domainsSecurityInfo?.domainCount" [page]="page" [pageSize]="pageSize"></pagination-display>
+          </div>
+          <div *ngIf="!loading" class="col-md-9">
+            <dns-record-table [domainsSecurityInfo]="domainsSecurityInfo"></dns-record-table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6"></div>
+          <div class="col-6">
+            <span class="float-right">
+              <ngb-pagination [collectionSize]="domainsSecurityInfo?.domainCount" [(page)]="page" [(pageSize)]="pageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="pageService.page.next($event)"></ngb-pagination>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="domainsSecurityInfo?.domainCount === 0">
+    <div class="row">
+        <div class="col-md-6">
+          <div class="alert alert-warning">
+            <h5 class="mx-auto">The search returned no results.</h5>
+          </div>
+        </div>
+     </div>
+  </div>
+</div>
+
+<div *ngIf="loading">
+  <div class="d-flex justify-content-center bd-highlight mb-3">
+    <div class="p-2 bd-highlight">
+      <mat-spinner color="accent"></mat-spinner>
+    </div>
+  </div>
+</div>

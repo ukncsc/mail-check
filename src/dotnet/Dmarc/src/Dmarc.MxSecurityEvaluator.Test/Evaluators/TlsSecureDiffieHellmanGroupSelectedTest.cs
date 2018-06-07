@@ -1,5 +1,7 @@
 ﻿using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Evaluators;
+using Dmarc.MxSecurityEvaluator.Util;
 using NUnit.Framework;
 
 namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
@@ -7,12 +9,18 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
     [TestFixture]
     public class TlsSecureDiffieHellmanGroupSelectedTest
     {
-        private ITlsSecureDiffieHellmanGroupSelected sut;
+        private TlsSecureDiffieHellmanGroupSelected _sut;
 
         [SetUp]
         public void SetUp()
         {
-            sut = new TlsSecureDiffieHellmanGroupSelected();
+            _sut = new TlsSecureDiffieHellmanGroupSelected();
+        }
+
+        [Test]
+        public void CorrectTestType()
+        {
+            Assert.AreEqual(_sut.Type, TlsTestType.TlsSecureDiffieHellmanGroupSelected);
         }
 
         [Test]
@@ -20,9 +28,11 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(Error.SESSION_INITIALIZATION_FAILED)]
         public void TcpErrorsShouldResultInInconclusive(Error error)
         {
-            var tlsConnectionResult = new TlsConnectionResult(error);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error);
+           ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.INCONCLUSIVE);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
         }
 
         [Test]
@@ -31,17 +41,21 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(Error.INSUFFICIENT_SECURITY)]
         public void ConnectionRefusedErrorsShouldResultInPass(Error error)
         {
-            var tlsConnectionResult = new TlsConnectionResult(error);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error);
+           ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.PASS);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.PASS);
         }
 
         [Test]
         public void OtherErrorsShouldResultInInconclusive()
         {
-            var tlsConnectionResult = new TlsConnectionResult(Error.INTERNAL_ERROR);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(Error.INTERNAL_ERROR);
+           ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.INCONCLUSIVE);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
         }
 
         [Test]
@@ -57,17 +71,21 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CurveGroup.UnknownGroup8192)]
         public void GoodCurveGroupsShouldResultInAPass(CurveGroup curveGroup)
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null);
+            ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.PASS);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.PASS);
         }
 
         [Test]
         public void Unknown1024GroupShouldResultInAWarn()
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, null, CurveGroup.UnknownGroup1024, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, CurveGroup.UnknownGroup1024, null, null, null);
+            ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.WARNING);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.WARNING);
         }
 
         [Test]
@@ -77,17 +95,21 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CurveGroup.Unknown)]
         public void Known1024GroupShouldResultInAFail(CurveGroup curveGroup)
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null);
+            ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.FAIL);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.FAIL);
         }
 
         [Test]
         public void NoCurveGroupShouldResultInInconslusive()
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, null, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, null, null, null, null);
+            ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.INCONCLUSIVE);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
         }
     }
 }

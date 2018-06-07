@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainSecurityMessage when provided with no props it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui large message DomainSecurityMessage--container"
+  >
+    <p>
+      security rulez
+    </p>
+  </div>
+</div>
+`;
+
+exports[`DomainSecurityMessage when provided with the markdown flag and a link it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui large message DomainSecurityMessage--container"
+  >
+    <div>
+      <p>
+        <a
+          href="https://ncsc.gov.uk"
+        >
+          https://ncsc.gov.uk
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DomainSecurityMessage when provided with the markdown flag and a mailto address it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui large message DomainSecurityMessage--container"
+  >
+    <div>
+      <p>
+        mailto:me@ncsc.gov.uk
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DomainSecurityMessage when provided with the markdown flag it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui large message DomainSecurityMessage--container"
+  >
+    <div>
+      <ul>
+        <li>
+          list item
+        </li>
+        <li>
+          another list item
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+`;

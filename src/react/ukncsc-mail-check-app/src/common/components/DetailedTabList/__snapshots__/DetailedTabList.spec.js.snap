@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DetailedTabList it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui stackable top attached tabular one item DetailedTabList menu"
+  >
+    <a
+      class="active item DetailedTab"
+    >
+      <div
+        class="DetailedTab--content"
+      >
+        <p>
+          testy
+        </p>
+        <h1>
+          mc
+        </h1>
+        <h5>
+          testface
+        </h5>
+      </div>
+    </a>
+  </div>
+  <div
+    class="ui bottom attached segment"
+  />
+</div>
+`;

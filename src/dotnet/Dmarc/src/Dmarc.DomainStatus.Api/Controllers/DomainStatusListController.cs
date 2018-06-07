@@ -87,10 +87,12 @@ namespace Dmarc.DomainStatus.Api.Controllers
             Func<DomainsRequest, Task<T>> getDomainSecurityInfoResponse,
             Func<T, List<DomainSecurityInfo>, T> updateResponseFactory) where T : DomainsSecurityResponse
         {
-            Tuple<bool, string> validationResult = await Validate(request);
-            if (!validationResult.Item1)
+            ValidationResult validationResult = await _domainsRequestValidator.ValidateAsync(request);
+            if (!validationResult.IsValid)
             {
-                return BadRequest(validationResult);
+                string errorString = validationResult.GetErrorString();
+                _log.LogWarning($"Bad request: {errorString}");
+                return BadRequest(new ValidationError(errorString));
             }
 
             T domainsSecurityResponse = 
@@ -121,18 +123,6 @@ namespace Dmarc.DomainStatus.Api.Controllers
                 nonOrgDomainsWithoutDmarcRecordForOrgDomains);
 
             return new ObjectResult(updateResponseFactory(domainsSecurityResponse, updatedDomainSecurityInfos)); 
-        }
-
-        private async Task<Tuple<bool, string>> Validate(DomainsRequest request)
-        {
-            ValidationResult validationResult = await _domainsRequestValidator.ValidateAsync(request);
-            if (validationResult.IsValid)
-            {
-                return Tuple.Create(true, (string)null);
-            }
-
-            _log.LogWarning($"Bad request: {validationResult.GetErrorString()}");
-            return Tuple.Create(false, validationResult.GetErrorString());
         }
 
         private async Task<Dictionary<string, string>> GetOrganisationalDomains(
@@ -173,6 +163,16 @@ namespace Dmarc.DomainStatus.Api.Controllers
                 domainSecurityInfo.TlsStatus,
                 orgDomainSecurityInfo.DmarcStatus,
                 domainSecurityInfo.SpfStatus);
+        }
+
+        private class ValidationError
+        {
+            public ValidationError(string message)
+            {
+                Message = message;
+            }
+
+            public string Message { get; }
         }
     }
 }

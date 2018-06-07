@@ -1,0 +1,47 @@
+{
+  "name": "ukncsc-mail-check-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "format": "prettier --single-quote --trailing-comma es5 --write \"{src,__{tests,mocks}__}/**/*.{js,jsx}\"",
+    "lint": "eslint src/",
+    "lint:fix": "eslint --fix src/",
+    "test": "react-scripts test --env=jsdom"
+  },
+  "dependencies": {
+    "core-js": "^2.5.4",
+    "downloadjs": "^1.4.7",
+    "lodash": "^4.17.4",
+    "moment": "^2.20.1",
+    "numeral": "^2.0.6",
+    "pluralize": "^7.0.0",
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0",
+    "react-dates": "^16.0.1",
+    "react-dom": "^16.2.0",
+    "react-markdown": "^3.3.0",
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "^1.1.4",
+    "redux": "^4.0.0",
+    "redux-actions": "^2.2.1",
+    "redux-thunk": "^2.2.0",
+    "semantic-ui-react": "^0.81.1",
+    "url-join": "^4.0.0",
+    "victory": "^0.27.0"
+  },
+  "devDependencies": {
+    "dom-testing-library": "^2.3.2",
+    "eslint": "^4.16.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jest": "^21.7.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1",
+    "prettier": "^1.8.2",
+    "react-testing-library": "^3.1.3"
+  }
+}

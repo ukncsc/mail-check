@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AggregateReportChartLegend when getting a chart legend it should match the snapshot 1`] = `
+<div>
+  <ul
+    class="ChartLegend"
+  >
+    <li>
+      <h2
+        class="ui header ChartLegendHeader"
+      >
+        -
+      </h2>
+      <div
+        class="ChartLegendMarker"
+        style="background: rgb(255, 240, 0); stroke: #ffffff;"
+      />
+      item 1
+    </li>
+    <li>
+      <h2
+        class="ui header ChartLegendHeader"
+      >
+        -
+      </h2>
+      <div
+        class="ChartLegendMarker"
+        style="background: rgb(255, 255, 0); stroke: #fffff0;"
+      />
+      item 2
+    </li>
+  </ul>
+</div>
+`;

@@ -4,6 +4,6 @@ namespace Dmarc.DnsRecord.Importer.Lambda
 {
     public class SpfRecordImporter : DnsRecordImporter
     {
-        public SpfRecordImporter() : base("Spf", DnsRecordProcessorFactory.CreateSpfProcessor){ }
+        public SpfRecordImporter() : base("Spf", SpfRecordProcessorFactory.Create){ }
     }
 }

@@ -73,7 +73,6 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
                 tlsTestResult,
                 tlsTestResult,
                 tlsTestResult,
-                tlsTestResult,
                 new List<Certificate>()
             ));
 

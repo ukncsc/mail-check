@@ -226,12 +226,7 @@ VALUES</value>
 `test12_cipher_suite`,
 `test12_curve_group`,
 `test12_signature_hash_alg`,
-`test12_error`,
-`test13_tls_version`,
-`test13_cipher_suite`,
-`test13_curve_group`,
-`test13_signature_hash_alg`,
-`test13_error`)
+`test12_error`)
 VALUES</value>
   </data>
   <data name="InsertRecordOnDuplicateKey" xml:space="preserve">
@@ -304,12 +299,7 @@ SELECT LAST_INSERT_ID();</value>
 @bi{0},
 @bj{0},
 @bk{0},
-@bl{0},
-@bm{0},
-@bn{0},
-@bo{0},
-@bp{0},
-@bq{0})</value>
+@bl{0})</value>
   </data>
   <data name="SelectSecurityProfilesToUpdate" xml:space="preserve">
     <value>SELECT 
@@ -379,11 +369,6 @@ SELECT LAST_INSERT_ID();</value>
 	tls.test12_curve_group as 'test12_curve_group',
 	tls.test12_signature_hash_alg as 'test12_signature_hash_alg',
 	tls.test12_error as 'test12_error',
-	tls.test13_tls_version as 'test13_tls_version',
-	tls.test13_cipher_suite as 'test13_cipher_suite',
-	tls.test13_curve_group as 'test13_curve_group',
-	tls.test13_signature_hash_alg as 'test13_signature_hash_alg',
-	tls.test13_error as 'test13_error',
     temp.lst_checked AS 'last_checked',
     c.thumb_print AS 'certificate_thumb_print',
     c.issuer AS 'certificate_issuer',

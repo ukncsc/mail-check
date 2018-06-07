@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainSecurityRecordSummary when no records are provided it should match the snapshot 1`] = `
+<div>
+  <p>
+    bleh
+  </p>
+  <div
+    class="ui info message"
+  >
+    We don't have any information about the SPF record of this domain yet. Please check back later or get in touch if you think there's a problem.
+  </div>
+</div>
+`;

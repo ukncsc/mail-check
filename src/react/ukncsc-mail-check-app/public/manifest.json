@@ -1,0 +1,15 @@
+{
+  "short_name": "Mail Check",
+  "name": "UKNCSC Mail Check",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "60x60",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

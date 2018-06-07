@@ -1,9 +1,13 @@
-﻿using Dmarc.Common.Interface.Tls.Domain;
+﻿using System.Collections.Generic;
+using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Domain;
+using Dmarc.MxSecurityEvaluator.Util;
 
 namespace Dmarc.MxSecurityEvaluator.Evaluators
 {
     public interface ITlsEvaluator
     {
-        TlsEvaluatorResult Test(TlsConnectionResult tlsConnectionResult);
+        TlsEvaluatorResult Test(ConnectionResults tlsConnectionResult);
+        TlsTestType Type { get; }
     }
 }

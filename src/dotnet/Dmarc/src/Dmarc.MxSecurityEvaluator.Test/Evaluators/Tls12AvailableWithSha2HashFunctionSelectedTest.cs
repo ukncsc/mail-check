@@ -1,5 +1,8 @@
-﻿using Dmarc.Common.Interface.Tls.Domain;
+﻿using System.Collections.Generic;
+using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Evaluators;
+using Dmarc.MxSecurityEvaluator.Util;
 using NUnit.Framework;
 
 namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
@@ -7,12 +10,18 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
     [TestFixture]
     public class Tls12AvailableWithSha2HashFunctionSelectedTest
     {
-        private Tls12AvailableWithSha2HashFunctionSelected sut;
+        private Tls12AvailableWithSha2HashFunctionSelected _sut;
 
         [SetUp]
         public void SetUp()
         {
-            sut = new Tls12AvailableWithSha2HashFunctionSelected();
+            _sut = new Tls12AvailableWithSha2HashFunctionSelected();
+        }
+
+        [Test]
+        public void CorrectTestType()
+        {
+            Assert.AreEqual(_sut.Type, TlsTestType.Tls12AvailableWithSha2HashFunctionSelected);
         }
 
         [Test]
@@ -20,25 +29,31 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(Error.SESSION_INITIALIZATION_FAILED)]
         public void TcpErrorsShouldResultInInconclusive(Error error)
         {
-            var tlsConnectionResult = new TlsConnectionResult(error);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
+                tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.INCONCLUSIVE);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
         }
 
         [Test]
         public void AnErrorShouldResultInAFail()
         {
-            var tlsConnectionResult = new TlsConnectionResult(Error.INSUFFICIENT_SECURITY);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(Error.INSUFFICIENT_SECURITY);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
+                tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.FAIL);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.FAIL);
         }
 
         [Test]
         public void UnaccountedForCipherSuiteResponseShouldResultInInconclusive()
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA, null, null, null, null);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
+                tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.INCONCLUSIVE);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
         }
 
         [Test]
@@ -48,9 +63,11 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256)]
         public void GoodCiphersShouldResultInAPass(CipherSuite cipherSuite)
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
+                tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.PASS);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.PASS);
         }
 
         [Test]
@@ -58,9 +75,11 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA)]
         public void CipherSuitesThatUseSha1ShouldResultInAWarning(CipherSuite cipherSuite)
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
+                tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.WARNING);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.WARNING);
         }
 
         [Test]
@@ -68,28 +87,34 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA)]
         public void CipherSuitesThatUseSha1AndHaveNoPfsShouldResultInAWarning(CipherSuite cipherSuite)
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
+                tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.WARNING);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.WARNING);
         }
 
         [Test]
         [TestCase(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA)]
         [TestCase(CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA)]
-        public void CipherSuitesThatUse3desShouldResultInAWarning(CipherSuite cipherSuite)
+        public void CipherSuitesThatUse3DesShouldResultInAWarning(CipherSuite cipherSuite)
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
+                tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.WARNING);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.WARNING);
         }
 
         [Test]
         [TestCase(CipherSuite.TLS_RSA_WITH_RC4_128_SHA)]
         public void CipherSuitesThatUseRc4ShouldResultInAWarning(CipherSuite cipherSuite)
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
+                tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.WARNING);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.WARNING);
         }
 
         [Test]
@@ -111,9 +136,11 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_DHE_RSA_WITH_DES_CBC_SHA)]
         public void InsecureCipherSuitesShouldResultInAFail(CipherSuite cipherSuite)
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
+                tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.FAIL);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.FAIL);
         }
     }
 }

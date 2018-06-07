@@ -1,0 +1,12 @@
+.ChartLegend{
+  list-style-type: none;
+  padding: 0px 0px 50px 0px;
+}
+
+@media only screen and (max-width: 767px) {
+  .ChartLegend{
+    list-style-type: none;
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
+  }
+}

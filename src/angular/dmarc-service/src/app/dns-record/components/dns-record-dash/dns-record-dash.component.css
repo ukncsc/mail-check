@@ -1,0 +1,21 @@
+h1{
+    margin-bottom: 30px;
+}
+
+h4{
+    margin-bottom: 30px;
+}
+
+dns-record-search{
+    margin-bottom: 30px;
+}
+
+.alert-warning{
+    background-color: #D7DBE5;
+    border-width: 0;
+    border-radius: 0;
+}
+
+.alert-warning h5{
+    color: #292b2c;
+}

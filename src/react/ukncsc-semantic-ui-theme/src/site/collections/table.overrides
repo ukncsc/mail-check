@@ -1,0 +1,11 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+.ui.table {
+  border: none;
+}
+
+.ui.table thead th {
+  background: white;
+}

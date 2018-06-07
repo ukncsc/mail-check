@@ -1,5 +1,8 @@
-﻿using Dmarc.Common.Interface.Tls.Domain;
+﻿using System.Collections.Generic;
+using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Evaluators;
+using Dmarc.MxSecurityEvaluator.Util;
 using NUnit.Framework;
 
 namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
@@ -7,12 +10,18 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
     [TestFixture]
     public class Ssl3FailsWithBadCipherSuiteTest
     {
-        private Ssl3FailsWithBadCipherSuite sut;
+        private Ssl3FailsWithBadCipherSuite _sut;
 
         [SetUp]
         public void SetUp()
         {
-            sut = new Ssl3FailsWithBadCipherSuite();
+            _sut = new Ssl3FailsWithBadCipherSuite();
+        }
+
+        [Test]
+        public void CorrectTestType()
+        {
+            Assert.AreEqual(_sut.Type, TlsTestType.Ssl3FailsWithBadCipherSuite);
         }
 
         [Test]
@@ -20,9 +29,10 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(Error.SESSION_INITIALIZATION_FAILED)]
         public void TcpErrorsShouldResultInInconclusive(Error error)
         {
-            var tlsConnectionResult = new TlsConnectionResult(error);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.INCONCLUSIVE);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
         }
 
         [Test]
@@ -31,25 +41,28 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(Error.INSUFFICIENT_SECURITY)]
         public void ConnectionRefusedErrorsShouldResultInPass(Error error)
         {
-            var tlsConnectionResult = new TlsConnectionResult(error);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.PASS);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.PASS);
         }
 
         [Test]
         public void OtherErrorsShouldResultInInconclusive()
         {
-            var tlsConnectionResult = new TlsConnectionResult(Error.INTERNAL_ERROR);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(Error.INTERNAL_ERROR);
+            ConnectionResults connectionResults =TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.INCONCLUSIVE);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
         }
 
         [Test]
         public void UnaccountedForCipherSuiteResponseShouldResultInInconclusive()
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA, null, null, null, null);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.INCONCLUSIVE);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
         }
 
         [Test]
@@ -58,9 +71,10 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA)]
         public void NoPfsCipherSuiteShouldResultInWarning(CipherSuite cipherSuite)
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.WARNING);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.WARNING);
         }
 
         [Test]
@@ -81,9 +95,10 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA)]
         public void InsecureCipherSuitesShouldResultInFail(CipherSuite cipherSuite)
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.FAIL);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.FAIL);
         }
     }
 }

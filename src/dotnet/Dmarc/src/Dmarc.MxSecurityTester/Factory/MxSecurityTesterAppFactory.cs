@@ -25,7 +25,6 @@ namespace Dmarc.MxSecurityTester.Factory
                 .AddTransient<ITlsTest, Tls12AvailableWithBestCipherSuiteSelectedFromReversedList>()
                 .AddTransient<ITlsTest, Tls12AvailableWithSha2HashFunctionSelected>()
                 .AddTransient<ITlsTest, Tls12AvailableWithWeakCipherSuiteNotSelected>()
-                .AddTransient<ITlsTest, Tls11AvailableWithFallbackScsvSupport>()
                 .AddTransient<ITlsTest, Tls11AvailableWithBestCipherSuiteSelected>()
                 .AddTransient<ITlsTest, Tls11AvailableWithWeakCipherSuiteNotSelected>()
                 .AddTransient<ITlsTest, Tls10AvailableWithBestCipherSuiteSelected>()

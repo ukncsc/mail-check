@@ -1,0 +1,32 @@
+.filter-form{
+    
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background: #D7DBE5;
+}
+
+.form-control{
+    border-left: 1px solid #818FA9;
+    border-right: 0;
+    border-top: 1px solid #818FA9;
+    border-bottom: 1px solid #818FA9;
+    border-radius: 0;
+    background: white;
+    
+}
+
+.input-group{
+    padding-left: 14px;
+    padding-right: 14px;
+}
+
+.input-group-addon{
+    color: white;
+    background: #051D49;
+    border-radius: 0;
+    border: 0;
+}
+
+label{
+    font-weight: 600;
+}

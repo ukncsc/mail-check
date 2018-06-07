@@ -1,0 +1,37 @@
+<div *ngIf="!isAuthorised && isAuthorisedLoaded">
+    <div class="alert alert-warning">
+        <h5 class="mx-auto">You are not authorised to view any aggregate report information. Please contact mailcheck@digital.ncsc.gov.uk to gain access.
+        </h5>
+    </div>
+</div>
+
+<div *ngIf="isAuthorised">
+    <headline [dataSource]="config.Headline.dataSource()" [filterValues]="filterValues"></headline>
+    <filter (filterValues)="filterValuesObs.next($event)"></filter>
+
+    <div class="row">
+        <ng-container *ngFor="let item of config.Config">
+            <div class="col-md-{{item.width}} dash-item">
+                <div class="card text-center">
+                    <div class="card-header">
+                        {{item.title}}
+                    </div>
+                    <div class="card-block chart" style="min-height:400px">
+
+                        <stacked-bar-chart *ngIf="item.chartType === 'bar'" [dataSource]="item.dataSource" [seriesColours]="item.seriesColours" [filterValues]="filterValues">
+                        </stacked-bar-chart>
+
+                        <horizontal-stacked-bar-chart *ngIf="item.chartType === 'horizontalBar'" [dataSource]="item.dataSource" [seriesColours]="item.seriesColours"
+                            [filterValues]="filterValues">
+                        </horizontal-stacked-bar-chart>
+
+                        <doughnut-chart *ngIf="item.chartType === 'doughnut'" [dataSource]="item.dataSource" [seriesColours]="item.seriesColours"
+                            [filterValues]="filterValues">
+                        </doughnut-chart>
+
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>

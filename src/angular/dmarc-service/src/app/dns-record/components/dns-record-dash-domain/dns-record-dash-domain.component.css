@@ -1,0 +1,16 @@
+.breadcrumb{
+  background: white;
+  padding-left: 0px;
+}
+
+.dmarc{
+  margin-bottom: 25px;
+}
+
+.spf{
+  margin-bottom: 25px;
+}
+
+.tls{
+  margin-bottom: 25px;
+}

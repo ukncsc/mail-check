@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dmarc.DnsRecord.Evaluator.Dmarc.Domain;
 using DmarcConfig = Dmarc.DnsRecord.Evaluator.Dmarc.ReadModel.DmarcConfig;
@@ -28,7 +29,7 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Mapping
                 ? errors.Min(_ => _.ErrorType)
                 : (ErrorType?)null;
 
-            return new DmarcConfig(dmarcRecords, errors, domainDmarcConfig.AllErrorCount, maxErrorSeverity);
+            return new DmarcConfig(dmarcRecords, errors, domainDmarcConfig.AllErrorCount, maxErrorSeverity, domainDmarcConfig.LastChecked);
         }
 
         public static DmarcRecord ToDmarcRecord(this DomainDmarcRecord domainDmarcRecord, int index)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dmarc.DnsRecord.Evaluator.Dmarc.Domain;
 using Dmarc.DnsRecord.Evaluator.Dmarc.Rules;
@@ -23,7 +24,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Config
         public void WhenThereIsOnlyOneDmarcRecordNoErrorMessage()
         {
             DmarcConfig dmarcConfig =
-                new DmarcConfig(new List<DmarcRecord> { new DmarcRecord("", new List<Tag>(), string.Empty) }, string.Empty);
+                new DmarcConfig(new List<DmarcRecord> { new DmarcRecord("", new List<Tag>(), string.Empty) }, string.Empty, DateTime.UtcNow);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcConfig, out error);
@@ -36,7 +37,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Config
         public void WhenThereIsMoreThanOneDmarcRecordAErrorMessageIsReturned()
         {
             List<DmarcRecord> dmarcRecords = Enumerable.Range(0, 3).Select(_ => new DmarcRecord("", new List<Tag>(), string.Empty)).ToList();
-            DmarcConfig dmarcConfig = new DmarcConfig(dmarcRecords, string.Empty);
+            DmarcConfig dmarcConfig = new DmarcConfig(dmarcRecords, string.Empty, DateTime.UtcNow);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcConfig, out error);
@@ -49,7 +50,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Config
         public void WhenThereIsNoDmarcRecordAHelpfulMessageShouldBeReturned()
         {
             var domain = "abc.gov.uk";
-            DmarcConfig dmarcConfig = new DmarcConfig(new List<DmarcRecord>(), domain);
+            DmarcConfig dmarcConfig = new DmarcConfig(new List<DmarcRecord>(), domain, DateTime.UtcNow);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcConfig, out error);

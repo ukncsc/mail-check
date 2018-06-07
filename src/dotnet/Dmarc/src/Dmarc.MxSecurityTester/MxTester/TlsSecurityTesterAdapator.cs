@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Dmarc.Common.Interface.Tls.Domain;
 using Dmarc.MxSecurityTester.Dao.Entities;
 using Dmarc.MxSecurityTester.Mappers;
+using Dmarc.MxSecurityTester.Util;
 using Certificate = Dmarc.MxSecurityTester.Dao.Entities.Certificate;
 using TlsTestResult = Dmarc.MxSecurityTester.Dao.Entities.TlsTestResult;
 
@@ -40,19 +41,18 @@ namespace Dmarc.MxSecurityTester.MxTester
                             IsErrored(results)
                             ? mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.FailureCount + 1
                             : 0,
-                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == 1)),
-                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == 2)),
-                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == 3)),
-                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == 4)),
-                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == 5)),
-                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == 6)),
-                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == 7)),
-                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == 8)),
-                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == 9)),
-                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == 10)),
-                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == 11)),
-                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == 12)),
-                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == 13)),
+                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == (int)TlsTestType.Tls12AvailableWithBestCipherSuiteSelected)),
+                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == (int)TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList)),
+                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == (int)TlsTestType.Tls12AvailableWithSha2HashFunctionSelected)),
+                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == (int)TlsTestType.Tls12AvailableWithWeakCipherSuiteNotSelected)),
+                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == (int)TlsTestType.Tls11AvailableWithBestCipherSuiteSelected)),
+                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == (int)TlsTestType.Tls11AvailableWithWeakCipherSuiteNotSelected)),
+                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == (int)TlsTestType.Tls10AvailableWithBestCipherSuiteSelected)),
+                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == (int)TlsTestType.Tls10AvailableWithWeakCipherSuiteNotSelected)),
+                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == (int)TlsTestType.Ssl3FailsWithBadCipherSuite)),
+                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == (int)TlsTestType.TlsSecureEllipticCurveSelected)),
+                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == (int)TlsTestType.TlsSecureDiffieHellmanGroupSelected)),
+                        ToTestResult(results.FirstOrDefault(_ => _.Test.Id == (int)TlsTestType.TlsWeakCipherSuitesRejected)),
                         certificates)));
         }
 

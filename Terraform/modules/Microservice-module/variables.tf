@@ -200,6 +200,12 @@ variable "input-queue-subscription-count" {
   default     = "0"
 }
 
+variable "raw-queue-subscription" {
+  type        = "string"
+  description = "If true, won't add to the original SNS message"
+  default     = "false"
+}
+
 variable "cluster-id" {
   type        = "string"
   description = "The cluster id of the ECS cluster on which to run this microservice task"

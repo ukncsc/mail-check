@@ -1,0 +1,46 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th class="d-inline-block col-6">Domain</th>
+      <th class="d-inline-block col-2 text-md-center">MX</th>
+      <th class="d-inline-block col-2 text-md-center">DMARC</th>
+      <th class="d-inline-block col-2 text-md-center">SPF</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let domainSecurityInfo of domainsSecurityInfo?.domainSecurityInfos">
+      <td class="d-inline-block col-6">
+        <h4 class="force-text-wrap">{{domainSecurityInfo.domain.name}}</h4>
+        <a [routerLink]="['/anti-spoofing/domain', domainSecurityInfo.domain.id]">
+          View information
+        </a>
+      </td>
+
+      <td class="d-inline-block col-2 text-md-center">
+        <h4><span class="badge badge-pill badge-default">{{domainSecurityInfo.mxRecordCount}}</span></h4>
+      </td>
+
+      <td class="d-inline-block col-2 text-md-center">
+        <ng-container [ngSwitch]="domainSecurityInfo.dmarcStatus">
+          <h4 *ngSwitchCase="'Error'"><span class="badge badge-pill badge-danger">{{domainSecurityInfo.dmarcErrorCount}}</span></h4>
+          <h4 *ngSwitchCase="'Warning'"><span class="badge badge-pill badge-warning">{{domainSecurityInfo.dmarcErrorCount}}</span></h4>
+          <h4 *ngSwitchCase="'Info'"><span class="badge badge-pill badge-info">{{domainSecurityInfo.dmarcErrorCount}}</span></h4>
+          <h3 *ngSwitchCase="'Success'"><i class="fa fa-shield" aria-hidden="true"></i></h3>
+          <h3 *ngSwitchCase="'Pending'"><i class="fa fa-hourglass-end" aria-hidden="true"></i></h3>
+          <h3 *ngSwitchCase="'None'"><i class="fa fa-minus" aria-hidden="true"></i></h3>
+        </ng-container>
+      </td>
+
+      <td class="d-inline-block col-2 text-md-center">
+        <ng-container [ngSwitch]="domainSecurityInfo.spfStatus">
+          <h4 *ngSwitchCase="'Error'"><span class="badge badge-pill badge-danger">{{domainSecurityInfo.spfErrorCount}}</span></h4>
+          <h4 *ngSwitchCase="'Warning'"><span class="badge badge-pill badge-warning">{{domainSecurityInfo.spfErrorCount}}</span></h4>
+          <h4 *ngSwitchCase="'Info'"><span class="badge badge-pill badge-info">{{domainSecurityInfo.spfErrorCount}}</span></h4>
+          <h3 *ngSwitchCase="'Success'"><i class="fa fa-shield" aria-hidden="true"></i></h3>
+          <h3 *ngSwitchCase="'Pending'"><i class="fa fa-hourglass-end" aria-hidden="true"></i></h3>
+          <h3 *ngSwitchCase="'None'"><i class="fa fa-minus" aria-hidden="true"></i></h3>
+        </ng-container>
+      </td>
+    </tr>
+  </tbody>
+</table>

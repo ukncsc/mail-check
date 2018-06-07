@@ -85,6 +85,11 @@ variable "db-snapshot-to-restore" {
   default = ""
 }
 
+variable "db-kms-key-id" {
+  type    = "string"
+  default = ""
+}
+
 variable "db-username" {
   type = "string"
 }
@@ -201,6 +206,11 @@ variable "frontend-container-githash" {
 }
 
 variable "backup-account" {
+  type    = "string"
+  default = ""
+}
+
+variable "KmsKeySource" {
   type    = "string"
   default = ""
 }

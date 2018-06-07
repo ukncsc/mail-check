@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dmarc.Common.Interface.Mapping;
 using Dmarc.DnsRecord.Contract.Domain;
@@ -29,7 +30,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Mapping
                 .Where(_ => _ != null)
                 .ToList();
 
-            return new DmarcConfig(domain, records);
+            return new DmarcConfig(domain, records, DateTime.UtcNow);
         }
     }
 }

@@ -4,6 +4,6 @@ namespace Dmarc.DnsRecord.Importer.Lambda
 {
     public class DmarcRecordImporter : DnsRecordImporter
     {
-        public DmarcRecordImporter() : base("Dmarc", DnsRecordProcessorFactory.CreateDmarcProcessor){}
+        public DmarcRecordImporter() : base("Dmarc", DmarcRecordProcessorFactory.Create){}
     }
 }

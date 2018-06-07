@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainSecuritySummaryMessages when failures or warnings are present should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui large error message DomainSecurityMessage--container"
+  >
+    DMARC
+    configuration has 
+    1
+    urgent issue
+  </div>
+  <div
+    class="ui large warning message DomainSecurityMessage--container"
+  >
+    DMARC
+    configuration has 
+    2
+    advisory issue
+    s
+  </div>
+</div>
+`;

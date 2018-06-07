@@ -1,0 +1,67 @@
+[
+  {
+    "width": 3,
+    "header": "Quick Links",
+    "items": [
+      {
+        "name": "Contact us",
+        "href": "https://www.ncsc.gov.uk/contact"
+      },
+      {
+        "name": "About us",
+        "href": "https://www.ncsc.gov.uk/information/about-ncsc"
+      },
+      {
+        "name": "Careers",
+        "href":
+          "https://www.ncsc.gov.uk/articles/careers-national-cyber-security-centre"
+      },
+      {
+        "name": "News archive",
+        "href": "https://www.ncsc.gov.uk/index/news"
+      },
+      {
+        "name": "Published guidance",
+        "href": "https://www.ncsc.gov.uk/index/guidance"
+      }
+    ]
+  },
+  {
+    "width": 3,
+    "header": "External Links",
+    "items": [
+      {
+        "name": "GCHQ",
+        "href": "https://www.gchq.gov.uk/"
+      },
+      {
+        "name": "Action Fraud",
+        "href": "https://www.actionfraud.police.uk/"
+      },
+      {
+        "name": "CPNI",
+        "href": "https://www.cpni.gov.uk/"
+      },
+      {
+        "name": "GOV.UK",
+        "href": "https://www.gov.uk/"
+      }
+    ]
+  },
+  {
+    "width": 3,
+    "header": "Social",
+    "items": [
+      {
+        "name": "Twitter",
+        "href": "https://twitter.com/ncsc",
+        "icon": "twitter"
+      },
+      {
+        "name": "GitHub",
+        "href": "https://github.com/ukncsc/",
+        "icon": "github"
+      }
+    ]
+  }
+]

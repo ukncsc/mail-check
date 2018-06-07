@@ -1,0 +1,684 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AggregateReportChart when getting an aggregate report chart it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui stackable grid"
+  >
+    <div
+      class="two column row"
+    >
+      <div
+        style="padding: 0px;"
+        class="thirteen wide column"
+      >
+        <div>
+          <div
+            style="position: relative; height: 0px; width: 100%; padding: 0px 0px 57.14285714285714% 0px;"
+          >
+            <div
+              style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px; pointer-events: none;"
+              class="VictoryContainer"
+            >
+              <svg
+                width="700"
+                height="400"
+                role="img"
+                aria-labelledby="victory-container-1-title victory-container-1-desc"
+                viewBox="0 0 700 400"
+                style="pointer-events: all; width: 100%; height: 100%;"
+              >
+                <g
+                  role="presentation"
+                >
+                  <line
+                    x1="50"
+                    x2="50"
+                    y1="50"
+                    y2="350"
+                    style="stroke: #252525; stroke-width: 0; fill: transparent; stroke-linecap: round; stroke-linejoin: round;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <g
+                    role="presentation"
+                  >
+                    <line
+                      x1="50"
+                      x2="650"
+                      y1="303.84615384615387"
+                      y2="303.84615384615387"
+                      style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <line
+                      x1="50"
+                      x2="49"
+                      y1="303.84615384615387"
+                      y2="303.84615384615387"
+                      style="stroke: transparent; fill: transparent; size: 1px;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <text
+                      x="39"
+                      dx="0"
+                      y="303.84615384615387"
+                      dy="4.26"
+                    >
+                      <tspan
+                        x="39"
+                        dx="0"
+                        text-anchor="end"
+                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                      >
+                        10.0
+                      </tspan>
+                    </text>
+                  </g>
+                  <g
+                    role="presentation"
+                  >
+                    <line
+                      x1="50"
+                      x2="650"
+                      y1="257.6923076923077"
+                      y2="257.6923076923077"
+                      style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <line
+                      x1="50"
+                      x2="49"
+                      y1="257.6923076923077"
+                      y2="257.6923076923077"
+                      style="stroke: transparent; fill: transparent; size: 1px;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <text
+                      x="39"
+                      dx="0"
+                      y="257.6923076923077"
+                      dy="4.26"
+                    >
+                      <tspan
+                        x="39"
+                        dx="0"
+                        text-anchor="end"
+                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                      >
+                        20.0
+                      </tspan>
+                    </text>
+                  </g>
+                  <g
+                    role="presentation"
+                  >
+                    <line
+                      x1="50"
+                      x2="650"
+                      y1="211.53846153846152"
+                      y2="211.53846153846152"
+                      style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <line
+                      x1="50"
+                      x2="49"
+                      y1="211.53846153846152"
+                      y2="211.53846153846152"
+                      style="stroke: transparent; fill: transparent; size: 1px;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <text
+                      x="39"
+                      dx="0"
+                      y="211.53846153846152"
+                      dy="4.26"
+                    >
+                      <tspan
+                        x="39"
+                        dx="0"
+                        text-anchor="end"
+                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                      >
+                        30.0
+                      </tspan>
+                    </text>
+                  </g>
+                  <g
+                    role="presentation"
+                  >
+                    <line
+                      x1="50"
+                      x2="650"
+                      y1="165.3846153846154"
+                      y2="165.3846153846154"
+                      style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <line
+                      x1="50"
+                      x2="49"
+                      y1="165.3846153846154"
+                      y2="165.3846153846154"
+                      style="stroke: transparent; fill: transparent; size: 1px;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <text
+                      x="39"
+                      dx="0"
+                      y="165.3846153846154"
+                      dy="4.26"
+                    >
+                      <tspan
+                        x="39"
+                        dx="0"
+                        text-anchor="end"
+                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                      >
+                        40.0
+                      </tspan>
+                    </text>
+                  </g>
+                  <g
+                    role="presentation"
+                  >
+                    <line
+                      x1="50"
+                      x2="650"
+                      y1="119.23076923076923"
+                      y2="119.23076923076923"
+                      style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <line
+                      x1="50"
+                      x2="49"
+                      y1="119.23076923076923"
+                      y2="119.23076923076923"
+                      style="stroke: transparent; fill: transparent; size: 1px;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <text
+                      x="39"
+                      dx="0"
+                      y="119.23076923076923"
+                      dy="4.26"
+                    >
+                      <tspan
+                        x="39"
+                        dx="0"
+                        text-anchor="end"
+                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                      >
+                        50.0
+                      </tspan>
+                    </text>
+                  </g>
+                  <g
+                    role="presentation"
+                  >
+                    <line
+                      x1="50"
+                      x2="650"
+                      y1="73.07692307692304"
+                      y2="73.07692307692304"
+                      style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <line
+                      x1="50"
+                      x2="49"
+                      y1="73.07692307692304"
+                      y2="73.07692307692304"
+                      style="stroke: transparent; fill: transparent; size: 1px;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <text
+                      x="39"
+                      dx="0"
+                      y="73.07692307692304"
+                      dy="4.26"
+                    >
+                      <tspan
+                        x="39"
+                        dx="0"
+                        text-anchor="end"
+                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                      >
+                        60.0
+                      </tspan>
+                    </text>
+                  </g>
+                </g>
+                <g
+                  role="presentation"
+                >
+                  <line
+                    x1="50"
+                    x2="650"
+                    y1="350"
+                    y2="350"
+                    style="stroke: #c1c2c4; fill: transparent; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <g
+                    role="presentation"
+                  >
+                    <line
+                      x1="50"
+                      x2="50"
+                      y1="350"
+                      y2="50"
+                      style="stroke: none; stroke-width: 0; fill: none; pointer-events: painted;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <line
+                      x1="50"
+                      x2="50"
+                      y1="350"
+                      y2="351"
+                      style="stroke: transparent; fill: transparent; size: 1px;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <text
+                      x="50"
+                      dx="0"
+                      y="361"
+                      dy="10.26"
+                    >
+                      <tspan
+                        x="50"
+                        dx="0"
+                        text-anchor="middle"
+                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                      >
+                        10th Dec 17
+                      </tspan>
+                    </text>
+                  </g>
+                  <g
+                    role="presentation"
+                  >
+                    <line
+                      x1="350"
+                      x2="350"
+                      y1="350"
+                      y2="50"
+                      style="stroke: none; stroke-width: 0; fill: none; pointer-events: painted;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <line
+                      x1="350"
+                      x2="350"
+                      y1="350"
+                      y2="351"
+                      style="stroke: transparent; fill: transparent; size: 1px;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <text
+                      x="350"
+                      dx="0"
+                      y="361"
+                      dy="10.26"
+                    >
+                      <tspan
+                        x="350"
+                        dx="0"
+                        text-anchor="middle"
+                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                      >
+                        11th Dec 17
+                      </tspan>
+                    </text>
+                  </g>
+                  <g
+                    role="presentation"
+                  >
+                    <line
+                      x1="650"
+                      x2="650"
+                      y1="350"
+                      y2="50"
+                      style="stroke: none; stroke-width: 0; fill: none; pointer-events: painted;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <line
+                      x1="650"
+                      x2="650"
+                      y1="350"
+                      y2="351"
+                      style="stroke: transparent; fill: transparent; size: 1px;"
+                      role="presentation"
+                      shape-rendering="auto"
+                      vector-effect="non-scaling-stroke"
+                    />
+                    <text
+                      x="650"
+                      dx="0"
+                      y="361"
+                      dy="10.26"
+                    >
+                      <tspan
+                        x="650"
+                        dx="0"
+                        text-anchor="middle"
+                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                      >
+                        12th Dec 17
+                      </tspan>
+                    </text>
+                  </g>
+                </g>
+                <g>
+                  <g
+                    style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
+                  >
+                    <defs>
+                      <clippath
+                        id="victory-clip-2"
+                      >
+                        <rect
+                          x="50"
+                          y="50"
+                          width="600"
+                          height="300"
+                          role="presentation"
+                          shape-rendering="auto"
+                          vector-effect="non-scaling-stroke"
+                        />
+                      </clippath>
+                    </defs>
+                    <g
+                      clip-path="url(#victory-clip-2)"
+                    >
+                      <g>
+                        <path
+                          d="M50,326.9230769230769L350,303.84615384615387L650,280.7692307692308L650,350L350,350L50,350Z"
+                          style="fill: #53ccc2; stroke: none; stroke-width: 2;"
+                          role="presentation"
+                          shape-rendering="auto"
+                        />
+                        <path
+                          d="M50,326.9230769230769L350,303.84615384615387L650,280.7692307692308"
+                          style="fill: none; stroke: #002421; stroke-width: 2;"
+                          role="presentation"
+                          shape-rendering="auto"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <g
+                    style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
+                  >
+                    <defs>
+                      <clippath
+                        id="victory-clip-3"
+                      >
+                        <rect
+                          x="50"
+                          y="50"
+                          width="600"
+                          height="300"
+                          role="presentation"
+                          shape-rendering="auto"
+                          vector-effect="non-scaling-stroke"
+                        />
+                      </clippath>
+                    </defs>
+                    <g
+                      clip-path="url(#victory-clip-3)"
+                    >
+                      <g>
+                        <path
+                          d="M50,308.46153846153845L350,262.3076923076923L650,216.15384615384616L650,280.7692307692308L350,303.84615384615387L50,326.9230769230769Z"
+                          style="fill: #ff9bf6; stroke: none; stroke-width: 2;"
+                          role="presentation"
+                          shape-rendering="auto"
+                        />
+                        <path
+                          d="M50,308.46153846153845L350,262.3076923076923L650,216.15384615384616"
+                          style="fill: none; stroke: #400038; stroke-width: 2;"
+                          role="presentation"
+                          shape-rendering="auto"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <g
+                    style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
+                  >
+                    <defs>
+                      <clippath
+                        id="victory-clip-4"
+                      >
+                        <rect
+                          x="50"
+                          y="50"
+                          width="600"
+                          height="300"
+                          role="presentation"
+                          shape-rendering="auto"
+                          vector-effect="non-scaling-stroke"
+                        />
+                      </clippath>
+                    </defs>
+                    <g
+                      clip-path="url(#victory-clip-4)"
+                    >
+                      <g>
+                        <path
+                          d="M50,294.61538461538464L350,225.38461538461536L650,156.15384615384613L650,216.15384615384616L350,262.3076923076923L50,308.46153846153845Z"
+                          style="fill: #ffbf47; stroke: none; stroke-width: 2;"
+                          role="presentation"
+                          shape-rendering="auto"
+                        />
+                        <path
+                          d="M50,294.61538461538464L350,225.38461538461536L650,156.15384615384613"
+                          style="fill: none; stroke: #241800; stroke-width: 2;"
+                          role="presentation"
+                          shape-rendering="auto"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <g
+                    style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
+                  >
+                    <defs>
+                      <clippath
+                        id="victory-clip-5"
+                      >
+                        <rect
+                          x="50"
+                          y="50"
+                          width="600"
+                          height="300"
+                          role="presentation"
+                          shape-rendering="auto"
+                          vector-effect="non-scaling-stroke"
+                        />
+                      </clippath>
+                    </defs>
+                    <g
+                      clip-path="url(#victory-clip-5)"
+                    >
+                      <g>
+                        <path
+                          d="M50,285.38461538461536L350,193.07692307692307L650,100.76923076923075L650,156.15384615384613L350,225.38461538461536L50,294.61538461538464Z"
+                          style="fill: #93d1ff; stroke: none; stroke-width: 2;"
+                          role="presentation"
+                          shape-rendering="auto"
+                        />
+                        <path
+                          d="M50,285.38461538461536L350,193.07692307692307L650,100.76923076923075"
+                          style="fill: none; stroke: #001f3f; stroke-width: 2;"
+                          role="presentation"
+                          shape-rendering="auto"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                  <g
+                    style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
+                  >
+                    <defs>
+                      <clippath
+                        id="victory-clip-6"
+                      >
+                        <rect
+                          x="50"
+                          y="50"
+                          width="600"
+                          height="300"
+                          role="presentation"
+                          shape-rendering="auto"
+                          vector-effect="non-scaling-stroke"
+                        />
+                      </clippath>
+                    </defs>
+                    <g
+                      clip-path="url(#victory-clip-6)"
+                    >
+                      <g>
+                        <path
+                          d="M50,280.7692307692308L350,165.3846153846154L650,50L650,100.76923076923075L350,193.07692307692307L50,285.38461538461536Z"
+                          style="fill: #c4cf81; stroke: none; stroke-width: 2;"
+                          role="presentation"
+                          shape-rendering="auto"
+                        />
+                        <path
+                          d="M50,280.7692307692308L350,165.3846153846154L650,50"
+                          style="fill: none; stroke: #191e00; stroke-width: 2;"
+                          role="presentation"
+                          shape-rendering="auto"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+              <div
+                style="z-index: 99; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;"
+              >
+                <svg
+                  width="700"
+                  height="400"
+                  viewBox="0 0 700 400"
+                  style="overflow: visible; width: 100%; height: 100%;"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        style="padding: 0px;"
+        class="bottom aligned three wide column"
+      >
+        <ul
+          class="ChartLegend"
+        >
+          <li>
+            <h2
+              class="ui header ChartLegendHeader"
+            >
+              -
+            </h2>
+            <div
+              class="ChartLegendMarker"
+              style="background: rgb(196, 207, 129); stroke: #c4cf81;"
+            />
+            Fully trusted
+          </li>
+          <li>
+            <h2
+              class="ui header ChartLegendHeader"
+            >
+              -
+            </h2>
+            <div
+              class="ChartLegendMarker"
+              style="background: rgb(147, 209, 255); stroke: #93d1ff;"
+            />
+            Partially trusted
+          </li>
+          <li>
+            <h2
+              class="ui header ChartLegendHeader"
+            >
+              -
+            </h2>
+            <div
+              class="ChartLegendMarker"
+              style="background: rgb(255, 191, 71); stroke: #ffbf47;"
+            />
+            Untrusted
+          </li>
+          <li>
+            <h2
+              class="ui header ChartLegendHeader"
+            >
+              -
+            </h2>
+            <div
+              class="ChartLegendMarker"
+              style="background: rgb(255, 155, 246); stroke: #ff9bf6;"
+            />
+            Quarantined
+          </li>
+          <li>
+            <h2
+              class="ui header ChartLegendHeader"
+            >
+              -
+            </h2>
+            <div
+              class="ChartLegendMarker"
+              style="background: rgb(83, 204, 194); stroke: #53ccc2;"
+            />
+            Rejected
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+`;

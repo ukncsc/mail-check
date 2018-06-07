@@ -1,0 +1,27 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+
+/*-------------------
+         View
+--------------------*/
+
+@textAlign: left;
+
+/*-------------------
+       Content
+--------------------*/
+
+/* Value */
+@valueTextTransform: none;
+
+/* Label */
+@labelSize: 16px;
+@labelTextTransform: none;
+
+/*-------------------
+      Variations
+--------------------*/
+
+/* Size */
+@valueSize: 80px;

@@ -1,0 +1,95 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainSecurityTitle when failures are present it should match the snapshot 1`] = `
+<div>
+  <h1
+    class="ui header"
+  >
+    <i
+      aria-hidden="true"
+      class="red exclamation circle icon"
+    />
+    <div
+      class="content DomainSecurityTitle--header"
+    >
+      a
+    </div>
+  </h1>
+</div>
+`;
+
+exports[`DomainSecurityTitle when inconclusives are present it should match the snapshot 1`] = `
+<div>
+  <h1
+    class="ui header"
+  >
+    <i
+      aria-hidden="true"
+      class="grey question circle icon"
+    />
+    <div
+      class="content DomainSecurityTitle--header"
+    >
+      a
+    </div>
+  </h1>
+</div>
+`;
+
+exports[`DomainSecurityTitle when last checked is present it should match the snapshot 1`] = `
+<div>
+  <h1
+    class="ui header"
+  >
+    <i
+      aria-hidden="true"
+      class="green check circle icon"
+    />
+    <div
+      class="content DomainSecurityTitle--header"
+    >
+      a
+    </div>
+  </h1>
+  <p>
+    Last checked 
+    one day ago
+  </p>
+</div>
+`;
+
+exports[`DomainSecurityTitle when no warnings, failures or inconclusives are present it should match the snapshot 1`] = `
+<div>
+  <h1
+    class="ui header"
+  >
+    <i
+      aria-hidden="true"
+      class="green check circle icon"
+    />
+    <div
+      class="content DomainSecurityTitle--header"
+    >
+      a
+    </div>
+  </h1>
+</div>
+`;
+
+exports[`DomainSecurityTitle when warnings are present without failures it should match the snapshot 1`] = `
+<div>
+  <h1
+    class="ui header"
+  >
+    <i
+      aria-hidden="true"
+      class="yellow exclamation triangle icon"
+    />
+    <div
+      class="content DomainSecurityTitle--header"
+    >
+      a
+    </div>
+  </h1>
+</div>
+`;

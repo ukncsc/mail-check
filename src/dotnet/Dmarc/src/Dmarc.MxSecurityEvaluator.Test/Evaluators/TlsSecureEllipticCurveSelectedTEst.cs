@@ -1,5 +1,8 @@
-﻿using Dmarc.Common.Interface.Tls.Domain;
+﻿using System.Collections.Generic;
+using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Evaluators;
+using Dmarc.MxSecurityEvaluator.Util;
 using NUnit.Framework;
 
 namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
@@ -7,12 +10,18 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
     [TestFixture]
     public class TlsSecureEllipticCurveSelectedTest
     {
-        private TlsSecureEllipticCurveSelected sut;
+        private TlsSecureEllipticCurveSelected _sut;
 
         [SetUp]
         public void SetUp()
         {
-            sut = new TlsSecureEllipticCurveSelected();
+            _sut = new TlsSecureEllipticCurveSelected();
+        }
+
+        [Test]
+        public void CorrectTestType()
+        {
+            Assert.AreEqual(_sut.Type, TlsTestType.TlsSecureEllipticCurveSelected);
         }
 
         [Test]
@@ -20,23 +29,30 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(Error.SESSION_INITIALIZATION_FAILED)]
         public void TcpErrorsShouldResultInInconclusive(Error error)
         {
-            var tlsConnectionResult = new TlsConnectionResult(error);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error);
+           ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureEllipticCurveSelected, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.INCONCLUSIVE);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
         }
 
         [Test]
         public void AnErrorShouldResultInInconslusive()
         {
-            Assert.AreEqual(sut.Test(new TlsConnectionResult(Error.CERTIFICATE_UNOBTAINABLE)).Result, EvaluatorResult.INCONCLUSIVE);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureEllipticCurveSelected,
+                new TlsConnectionResult(Error.CERTIFICATE_UNOBTAINABLE));
+
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
         }
 
         [Test]
         public void UnaccountedForCurveShouldResultInInconclusive()
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, null, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, null, null, null, null);
+           ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureEllipticCurveSelected, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.INCONCLUSIVE);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
         }
 
         [Test]
@@ -56,11 +72,13 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CurveGroup.Sect233k1)]
         [TestCase(CurveGroup.Sect233r1)]
         [TestCase(CurveGroup.Sect239k1)]
-        public void CurvesWithCurveNumberLessThan256ShouldResultInAFail(CurveGroup CurveGroup)
+        public void CurvesWithCurveNumberLessThan256ShouldResultInAFail(CurveGroup curveGroup)
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, null, CurveGroup, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null);
+           ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureEllipticCurveSelected, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.FAIL);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.FAIL);
         }
 
         [Test]
@@ -74,11 +92,13 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CurveGroup.Sect409r1)]
         [TestCase(CurveGroup.Sect571k1)]
         [TestCase(CurveGroup.Sect571r1)]
-        public void CurvesWithCurveNumberGreaterThan256ShouldResultInAPass(CurveGroup CurveGroup)
+        public void CurvesWithCurveNumberGreaterThan256ShouldResultInAPass(CurveGroup curveGroup)
         {
-            var tlsConnectionResult = new TlsConnectionResult(null, null, CurveGroup, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null);
+           ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureEllipticCurveSelected, tlsConnectionResult);
 
-            Assert.AreEqual(sut.Test(tlsConnectionResult).Result, EvaluatorResult.PASS);
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.PASS);
         }
     }
 }

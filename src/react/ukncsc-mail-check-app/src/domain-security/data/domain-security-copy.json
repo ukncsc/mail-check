@@ -1,0 +1,8 @@
+{
+  "dmarcDescription":
+    "Domain-based Message Authentication, Reporting & Conformance (DMARC) is an email authentication, policy, and reporting protocol that ensures that legitimate email is properly authenticating against established DKIM and SPF standards.",
+  "spfDescription":
+    "Sender Policy Framework (SPF) is an email-validation system designed to detect email spoofing by providing a mechanism to allow receiving mail exchangers to check that incoming mail from a domain comes from a host authorised by that domain's administrators.",
+  "tlsDescription":
+    "Transport Layer Security (TLS) is an encryption protocol that provides communication security between client/server applications that communicate with each other over the internet."
+}

@@ -1,15 +1,18 @@
-﻿using Dmarc.Common.Interface.Tls.Domain;
+﻿using System.Collections.Generic;
+using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Domain;
+using Dmarc.MxSecurityEvaluator.Util;
 
 namespace Dmarc.MxSecurityEvaluator.Evaluators
 {
-    public interface ITls12AvailableWithWeakCipherSuiteNotSelected : ITlsEvaluator { }
-
-    public class Tls12AvailableWithWeakCipherSuiteNotSelected : ITls12AvailableWithWeakCipherSuiteNotSelected
+    public class Tls12AvailableWithWeakCipherSuiteNotSelected : ITlsEvaluator
     {
         private readonly string intro = "When testing TLS 1.2 with a range of weak cipher suites";
 
-        public TlsEvaluatorResult Test(TlsConnectionResult tlsConnectionResult)
+        public TlsEvaluatorResult Test(ConnectionResults tlsConnectionResults)
         {
+            TlsConnectionResult tlsConnectionResult = tlsConnectionResults.Tls12AvailableWithWeakCipherSuiteNotSelected;
+
             switch (tlsConnectionResult.Error)
             {
                 case Error.HANDSHAKE_FAILURE:
@@ -58,5 +61,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 
             return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} there was a problem and we are unable to provide additional information.");
         }
+
+        public TlsTestType Type => TlsTestType.Tls12AvailableWithWeakCipherSuiteNotSelected;
     }
 }

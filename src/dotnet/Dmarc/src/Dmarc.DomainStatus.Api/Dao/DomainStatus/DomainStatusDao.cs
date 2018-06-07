@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Threading.Tasks;
-using Dmarc.Common.Data;
+﻿using Dmarc.Common.Data;
 using Dmarc.Common.Interface.Tls.Domain;
 using Dmarc.DomainStatus.Api.Domain;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Dmarc.DomainStatus.Api.Dao.DomainStatus
 {
@@ -130,7 +130,7 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus
         {
             if (!reader.HasRows)
             {
-                return new DomainTlsEvaluatorResults(id , pending: true);
+                return new DomainTlsEvaluatorResults(id, pending: true);
             }
 
             List<MxTlsEvaluatorResults> mxTlsEvaluatorResults = new List<MxTlsEvaluatorResults>();
@@ -148,6 +148,7 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus
                     new MxTlsEvaluatorResults(
                         reader.GetInt32("mx_record_id"),
                         reader.GetString("hostname"),
+                        reader.GetDateTime("last_checked"),
                         results.Where(_ => _.Result == EvaluatorResult.WARNING).Select(_ => _.Description).ToList(),
                         results.Where(_ => _.Result == EvaluatorResult.FAIL).Select(_ => _.Description).ToList(),
                         results.Where(_ => _.Result == EvaluatorResult.INCONCLUSIVE).Select(_ => _.Description).ToList()
@@ -162,7 +163,7 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus
         {
             var results = new List<TlsEvaluatorResult>();
 
-            for (int i = 1; i <= 13; i++)
+            for (int i = 1; i <= 12; i++)
             {
                 results.Add(new TlsEvaluatorResult((EvaluatorResult?)reader.GetUInt16Nullable($"test{i}_result"), reader.GetString($"test{i}_description")));
             }

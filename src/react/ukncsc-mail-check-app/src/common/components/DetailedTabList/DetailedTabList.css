@@ -1,0 +1,3 @@
+.DetailedTabList > :not(.active) {
+  border-bottom: 1px solid #bfc1c3 !important;
+}

@@ -1,0 +1,12 @@
+/*******************************
+     User Global Variables
+*******************************/
+
+@primaryColor: #031f48;
+@pageBackground: #d7dbe4;
+@defaultBorderRadius: 0px;
+
+@green: #4a9893;
+@red: #af0039;
+@yellow: #be8724; 
+@blue: #3772b7;

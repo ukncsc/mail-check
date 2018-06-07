@@ -1,16 +1,19 @@
-﻿using Dmarc.Common.Interface.Tls.Domain;
+﻿using System.Collections.Generic;
+using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Domain;
+using Dmarc.MxSecurityEvaluator.Util;
 
 namespace Dmarc.MxSecurityEvaluator.Evaluators
 {
-    public interface ITls12AvailableWithSha2HashFunctionSelected : ITlsEvaluator { }
-
-    public class Tls12AvailableWithSha2HashFunctionSelected : ITls12AvailableWithSha2HashFunctionSelected
+    public class Tls12AvailableWithSha2HashFunctionSelected : ITlsEvaluator
     {
         private readonly string advice = "Cipher suites with SHA-2 should be selected when presented by the client.";
         private readonly string intro = "When testing TLS 1.2 to ensure the most secure SHA hash function is selected";
 
-        public TlsEvaluatorResult Test(TlsConnectionResult tlsConnectionResult)
+        public TlsEvaluatorResult Test(ConnectionResults tlsConnectionResults)
         {
+            TlsConnectionResult tlsConnectionResult = tlsConnectionResults.Tls12AvailableWithSha2HashFunctionSelected;
+
             switch (tlsConnectionResult.Error)
             {
                 case Error.TCP_CONNECTION_FAILED:
@@ -66,5 +69,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 
             return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} there was a problem and we are unable to provide additional information.");
         }
+
+        public TlsTestType Type => TlsTestType.Tls12AvailableWithSha2HashFunctionSelected;
     }
 }

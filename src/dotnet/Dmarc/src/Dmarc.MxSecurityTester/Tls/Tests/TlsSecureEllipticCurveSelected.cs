@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityTester.Util;
 
 namespace Dmarc.MxSecurityTester.Tls.Tests
 {
     public class TlsSecureEllipticCurveSelected : ITlsTest
     {
-        public int Id => 11;
+        public int Id => (int)TlsTestType.TlsSecureEllipticCurveSelected;
 
         public string Name => nameof(TlsSecureEllipticCurveSelected);
 

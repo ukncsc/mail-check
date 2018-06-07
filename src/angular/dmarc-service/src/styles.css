@@ -1,0 +1,168 @@
+@import '~@angular/material/prebuilt-themes/pink-bluegrey.css';
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  background: #d7dbe5;
+  margin-bottom: 200px;
+}
+
+.card {
+  border-radius: 0;
+}
+
+.badge {
+  border-radius: 0;
+}
+
+.badge-danger {
+  background: #b51b36;
+}
+
+.alert-danger h5 {
+  color: white;
+}
+
+.alert-danger p {
+  color: white;
+}
+
+.alert-danger {
+  background: #b51b36;
+  border-radius: 0;
+  border: 0;
+}
+
+.input-group-addon {
+  color: white;
+  background: #051d49;
+  border-radius: 0;
+  border: 0;
+}
+
+.form-control {
+  border-right: 1px solid #818fa9;
+  border-left: 0;
+  border-top: 1px solid #818fa9;
+  border-bottom: 1px solid #818fa9;
+  border-radius: 0;
+  background: #ebeef6;
+}
+
+.page-item:first-child .page-link {
+  border-radius: 0;
+}
+
+.page-item:last-child .page-link {
+  border-radius: 0;
+}
+
+.page-item.active .page-link {
+  background: #051d49;
+  border: 1px solid #051d49;
+}
+
+.page-item .page-link {
+  color: #051d49;
+}
+
+.current-metric-card {
+  min-height: 100px;
+  margin: 2px;
+}
+
+.current-metric-headline {
+  line-height: 90px;
+  font-size: 35px;
+  width: auto;
+  text-align: center;
+  color: white;
+}
+
+.current-metric-heading {
+  font-size: 18px;
+  padding-top: 10px;
+  margin-bottom: 2px;
+}
+
+.current-metric-description {
+  font-size: 13px;
+  margin-bottom: 0px;
+}
+
+/*HEADER*/
+.header{
+  padding-bottom: 32px;
+  padding-top: 32px;
+}
+
+.row-align-bottom
+{
+    position: absolute;
+    bottom: 0;
+    right : 15px;
+}
+
+.inline{
+  display: inline;
+}
+
+.fa-user-circle{
+  padding-right: 15px;
+}
+
+/*ADMIN*/
+.form-control-lg, .input-group-lg > .form-control{
+  border-radius: 0;
+}
+
+.input-group-addon.form-control-lg, .input-group-lg > .input-group-addon{
+  border-radius: 0;
+}
+
+.filter-form{  
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: #D7DBE5;
+}
+
+.form-control{
+  border-left: 1px solid #818FA9;
+  border-right: 0;
+  border-top: 1px solid #818FA9;
+  border-bottom: 1px solid #818FA9;
+  border-radius: 0;
+  background: white; 
+}
+
+.input-group{
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.input-group-addon{
+  color: white;
+  background: #051D49;
+  border-radius: 0;
+  border: 0;
+}
+
+.col-form-label{
+  font-weight: 600;
+}
+
+.table thead th {
+  border-width: 0px;
+}
+
+.btn{
+  border-radius: 0;
+}
+
+.btn-primary{
+  background: #051d49;
+  border: 1px solid #051d49;
+}

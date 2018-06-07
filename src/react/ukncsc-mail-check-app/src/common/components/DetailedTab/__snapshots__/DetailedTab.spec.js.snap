@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DetailedTab when the tab is the first one it should match the snapshot 1`] = `
+<div>
+  <a
+    class="active item DetailedTab"
+  >
+    <div
+      class="DetailedTab--content"
+    >
+      <p>
+        My first tab
+      </p>
+      <h1>
+        101
+      </h1>
+      <h5>
+        cool
+      </h5>
+    </div>
+  </a>
+</div>
+`;

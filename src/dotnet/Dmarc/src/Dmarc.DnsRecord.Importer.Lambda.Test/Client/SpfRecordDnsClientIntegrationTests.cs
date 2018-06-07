@@ -2,7 +2,6 @@
 using System.Net;
 using System.Threading.Tasks;
 using Dmarc.Common.Interface.Logging;
-using Dmarc.Common.Logging;
 using Dmarc.DnsRecord.Importer.Lambda.Dns;
 using Dmarc.DnsRecord.Importer.Lambda.Dns.Client;
 using FakeItEasy;
@@ -15,19 +14,13 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.Client
     public class SpfRecordDnsClientIntegrationTests
     {
         private const string Domain = "<domain_to_test_here>";
-        private IDnsNameServerProvider _dnsNameServerProvider;
         private DnsResolverWrapper _dnsResolver;
         private SpfRecordDnsClient _client;
 
         [SetUp]
         public void SetUp()
         {
-            _dnsNameServerProvider = A.Fake<IDnsNameServerProvider>();
-            A.CallTo(() => _dnsNameServerProvider.GetNameServers()).Returns(new List<IPAddress>
-            {
-                IPAddress.Parse("8.8.8.8")
-            });
-            _dnsResolver = new DnsResolverWrapper(_dnsNameServerProvider);
+            _dnsResolver = new DnsResolverWrapper(new List<IPEndPoint> {new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53)});
             _client  = new SpfRecordDnsClient(_dnsResolver, A.Fake<ILogger>());
         }
 

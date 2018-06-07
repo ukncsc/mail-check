@@ -1,0 +1,15 @@
+.NavBar {
+  padding-top: 10px;
+}
+
+.NavBar--item {
+  color: white !important;
+  border-radius: 0px !important;
+  padding-bottom: 15px !important;
+}
+
+.NavBar--item.active {
+  color: #031f48 !important;
+  background: white !important;
+  font-weight: bold !important;
+}

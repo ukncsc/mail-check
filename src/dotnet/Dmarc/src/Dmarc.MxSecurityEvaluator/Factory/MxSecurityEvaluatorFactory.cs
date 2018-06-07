@@ -53,23 +53,18 @@ namespace Dmarc.MxSecurityEvaluator.Factory
                 .AddTransient<IParameterStoreRequest, ParameterStoreRequest>()
                 .AddTransient<IAmazonSimpleSystemsManagement, AmazonSimpleSystemsManagementClient>()
                 .AddTransient<ITlsRecordDao, TlsRecordDao>()
-                .AddTransient<ISsl3FailsWithBadCipherSuite, Ssl3FailsWithBadCipherSuite>()
-                .AddTransient<ITls10AvailableWithBestCipherSuiteSelected, Tls10AvailableWithBestCipherSuiteSelected>()
-                .AddTransient<ITls10AvailableWithWeakCipherSuiteNotSelected,
-                    Tls10AvailableWithWeakCipherSuiteNotSelected>()
-                .AddTransient<ITls11AvailableWithBestCipherSuiteSelected, Tls11AvailableWithBestCipherSuiteSelected>()
-                .AddTransient<ITls11AvailableWithWeakCipherSuiteNotSelected,
-                    Tls11AvailableWithWeakCipherSuiteNotSelected>()
-                .AddTransient<ITls12AvailableWithBestCipherSuiteSelected, Tls12AvailableWithBestCipherSuiteSelected>()
-                .AddTransient<ITls12AvailableWithBestCipherSuiteSelectedFromReverseList,
-                    Tls12AvailableWithBestCipherSuiteSelectedFromReverseList>()
-                .AddTransient<ITls11AvailableWithFallbackScsvSupport, Tls11AvailableWithFallbackScsvSupport>()
-                .AddTransient<ITls12AvailableWithSha2HashFunctionSelected, Tls12AvailableWithSha2HashFunctionSelected>()
-                .AddTransient<ITls12AvailableWithWeakCipherSuiteNotSelected,
-                    Tls12AvailableWithWeakCipherSuiteNotSelected>()
-                .AddTransient<ITlsSecureDiffieHellmanGroupSelected, TlsSecureDiffieHellmanGroupSelected>()
-                .AddTransient<ITlsSecureEllipticCurveSelected, TlsSecureEllipticCurveSelected>()
-                .AddTransient<ITlsWeakCipherSuitesRejected, TlsWeakCipherSuitesRejected>()
+                .AddTransient<ITlsEvaluator, Ssl3FailsWithBadCipherSuite>()
+                .AddTransient<ITlsEvaluator, Tls10AvailableWithBestCipherSuiteSelected>()
+                .AddTransient<ITlsEvaluator, Tls10AvailableWithWeakCipherSuiteNotSelected>()
+                .AddTransient<ITlsEvaluator, Tls11AvailableWithBestCipherSuiteSelected>()
+                .AddTransient<ITlsEvaluator, Tls11AvailableWithWeakCipherSuiteNotSelected>()
+                .AddTransient<ITlsEvaluator, Tls12AvailableWithBestCipherSuiteSelected>()
+                .AddTransient<ITlsEvaluator, Tls12AvailableWithBestCipherSuiteSelectedFromReverseList>()
+                .AddTransient<ITlsEvaluator, Tls12AvailableWithSha2HashFunctionSelected>()
+                .AddTransient<ITlsEvaluator, Tls12AvailableWithWeakCipherSuiteNotSelected>()
+                .AddTransient<ITlsEvaluator, TlsSecureDiffieHellmanGroupSelected>()
+                .AddTransient<ITlsEvaluator, TlsSecureEllipticCurveSelected>()
+                .AddTransient<ITlsEvaluator, TlsWeakCipherSuitesRejected>()
                 .AddTransient<IMxSecurityEvaluator, MxSecurityEvaluator>();
         }
     }

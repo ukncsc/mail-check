@@ -1,0 +1,35 @@
+<form [formGroup]="filterForm" class="filter-form row">
+  <div class="form-group col-md-4">
+    <label class="col-form-label">From:</label>
+    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+      <div class="input-group-addon" (click)="beginDatePicker.toggle()" >
+        <i class="fa fa-calendar" aria-hidden="true"></i>
+      </div>
+      <input class="form-control" placeholder="yyyy-mm-dd" name="beingDatePicker" formControlName="from" ngbDatepicker #beginDatePicker="ngbDatepicker">
+    </div>
+  </div>
+  
+  <div class="form-group col-md-4">
+    <label class="col-form-label">To:</label>
+    <div class="input-group">
+      <div class="input-group-addon" (click)="endDatePicker.toggle()" >
+        <i class="fa fa-calendar" aria-hidden="true"></i>
+      </div>
+      <input class="form-control" placeholder="yyyy-mm-dd" name="endDatePicker" formControlName="to" ngbDatepicker #endDatePicker="ngbDatepicker">
+    </div>
+  </div>
+
+  <ng-template #rt let-r="result" let-t="term">
+    {{ r.name}}
+  </ng-template>
+
+  <div class="form-group col-md-4">
+    <label  class="col-form-label">Domain:</label>
+    <div class="input-group">
+      <div class="input-group-addon">
+        <i class="fa fa-search" aria-hidden="true"></i>
+      </div>
+      <input type="text" class="form-control" placeholder="Search domain" name="domainSearch" [ngbTypeahead]="search" (selectItem)="selectedItemObs.next($event)" [resultTemplate]="rt" [inputFormatter]="formatter" formControlName="domain">
+    </div>
+  </div>
+</form>

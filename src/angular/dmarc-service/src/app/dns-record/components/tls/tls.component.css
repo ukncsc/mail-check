@@ -1,0 +1,47 @@
+button {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+}
+
+.fa-times{
+  color: #b51b36;
+}
+
+.fa-check{
+  color: #3f9693;
+}
+
+.table thead th {
+  border-width: 0px;
+}
+
+:host /deep/ .popover {
+    min-width: 450px;
+    max-width: 700px;
+}
+
+.alert-warning{
+    background-color: #D7DBE5;
+    border-width: 0;
+    border-radius: 0;
+}
+
+.alert-warning h5{
+    color: #292b2c;
+}
+
+p{
+  margin-bottom: 8px;
+}
+
+.popover-row{
+    margin-bottom: 10px;
+}
+
+.bold{
+  font-weight: bold;
+}

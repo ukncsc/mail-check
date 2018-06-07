@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dmarc.Common.Interface.Mapping;
@@ -29,7 +30,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Mapping
                 .Where(_ => _ != null)
                 .ToList();
 
-            return new SpfConfig(domain, records);
+            return new SpfConfig(domain, records, DateTime.UtcNow);
         }
     }
 }

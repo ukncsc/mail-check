@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityTester.Util;
 
 namespace Dmarc.MxSecurityTester.Tls.Tests
 {
     public class Tls12AvailableWithWeakCipherSuiteNotSelected : ITlsTest
     {
-        public int Id => 4;
+        public int Id => (int)TlsTestType.Tls12AvailableWithWeakCipherSuiteNotSelected;
 
         public string Name => nameof(Tls12AvailableWithWeakCipherSuiteNotSelected);
 

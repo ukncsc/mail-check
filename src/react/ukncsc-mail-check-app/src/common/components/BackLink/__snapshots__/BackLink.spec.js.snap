@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BackLink when rendered with a link it should match the snapshot 1`] = `
+<div>
+  <p>
+    <a
+      href="/bleh"
+    >
+      <i
+        aria-hidden="true"
+        class="caret left icon"
+      />
+      Back
+    </a>
+  </p>
+</div>
+`;
+
+exports[`BackLink when rendered without a link it should match the snapshot 1`] = `
+<div>
+  <p>
+    <span
+      class="BackLink"
+    >
+      <i
+        aria-hidden="true"
+        class="caret left icon"
+      />
+      Back
+    </span>
+  </p>
+</div>
+`;

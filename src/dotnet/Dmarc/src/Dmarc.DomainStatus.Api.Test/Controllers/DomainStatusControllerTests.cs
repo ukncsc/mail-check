@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using Dmarc.DomainStatus.Api.Services;
 
 namespace Dmarc.DomainStatus.Api.Test.Controllers
 {
@@ -32,6 +33,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
         private IValidator<DomainsRequest> _domainsRequestValidator;
         private IValidator<DateRangeDomainRequest> _dateRangeDomainRequestValidator;
         private IOrganisationalDomainProvider _organisationalDomainProvider;
+        private IReverseDnsApi _reverseDnsApi;
 
         [SetUp]
         public void SetUp()
@@ -42,8 +44,9 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             _domainsRequestValidator = A.Fake<IValidator<DomainsRequest>>();
             _dateRangeDomainRequestValidator = A.Fake<IValidator<DateRangeDomainRequest>>();
             _organisationalDomainProvider = A.Fake<IOrganisationalDomainProvider>();
+            _reverseDnsApi = A.Fake<IReverseDnsApi>();
             _domainStatusController = new DomainStatusController(_domainStatusDao, _permissionDao,
-                _organisationalDomainProvider, _domainRequestValidator, _domainsRequestValidator, 
+                _organisationalDomainProvider, _reverseDnsApi, _domainRequestValidator, _domainsRequestValidator,
                 _dateRangeDomainRequestValidator, A.Fake<ILogger<DomainStatusController>>());
 
             _domainStatusController.ControllerContext = new ControllerContext
@@ -60,7 +63,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
         {
             DateRangeDomainRequest request = new DateRangeDomainRequest();
 
-            ValidationResult validationResult = new ValidationResult(new List<ValidationFailure> {new ValidationFailure(string.Empty, string.Empty)});
+            ValidationResult validationResult = new ValidationResult(new List<ValidationFailure> { new ValidationFailure(string.Empty, string.Empty) });
             A.CallTo(() => _dateRangeDomainRequestValidator.ValidateAsync(request, CancellationToken.None)).Returns(Task.FromResult(validationResult));
 
             IActionResult result = await _domainStatusController.GetAggregateReportSummary(request);
@@ -131,7 +134,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
 
             Assert.That(result, Is.TypeOf<ObjectResult>());
 
-            ObjectResult objectResult =  result as ObjectResult;
+            ObjectResult objectResult = result as ObjectResult;
             Assert.That(objectResult.Value, Is.Null);
         }
 
@@ -142,7 +145,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             DateTime dayOne = now.AddDays(-3);
             DateTime dayFour = now;
 
-            DateRangeDomainRequest request = new DateRangeDomainRequest{Id = 1, StartDate = dayOne, EndDate = dayFour};
+            DateRangeDomainRequest request = new DateRangeDomainRequest { Id = 1, StartDate = dayOne, EndDate = dayFour };
 
             ValidationResult validationResult = new ValidationResult(new List<ValidationFailure>());
             A.CallTo(() => _dateRangeDomainRequestValidator.ValidateAsync(request, CancellationToken.None)).Returns(Task.FromResult(validationResult));
@@ -279,7 +282,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             string readmodel = "{\"readModel\": \"Test\"}";
             string domainName = "abc.xyz.com";
 
-            DomainRequest request = new DomainRequest{ Id = domainId };
+            DomainRequest request = new DomainRequest { Id = domainId };
 
             ValidationResult validationResult = new ValidationResult(new List<ValidationFailure>());
             A.CallTo(() => _domainRequestValidator.ValidateAsync(request, CancellationToken.None)).Returns(Task.FromResult(validationResult));
@@ -401,8 +404,6 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             A.CallTo(() => _organisationalDomainProvider.GetOrganisationalDomain(A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _domainStatusDao.GetDmarcReadModel(A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
         }
-
-
 
         private void SetSid(string sid, Controller controller)
         {

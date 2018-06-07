@@ -1,0 +1,27 @@
+{
+  "aggregateReportExportFields": [
+    { "title": "header_from", "description": "'From' mail header domain" },
+    {
+      "title": "source_ip",
+      "description": "IP address of the server sending the email"
+    },
+    { "title": "PTR", "description": "Reverse DNS lookup of the source_ip" },
+    { "title": "count", "description": "Number of emails" },
+    { "title": "spf", "description": "Whether SPF alignment was pass or fail" },
+    {
+      "title": "dkim",
+      "description": "Whether DKIM alignment was pass or fail"
+    },
+    {
+      "title": "disposition",
+      "description":
+        "What the receiving server did with the emails (none=delivered, quarrantine=spam folder, reject=not delivered)"
+    },
+    {
+      "title": "org_name",
+      "description":
+        "Description of the organisation which sent the report this data is from"
+    },
+    { "title": "effective_date", "description": "Date the report refers to" }
+  ]
+}

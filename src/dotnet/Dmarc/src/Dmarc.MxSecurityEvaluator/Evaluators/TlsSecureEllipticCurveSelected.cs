@@ -1,15 +1,18 @@
-﻿using Dmarc.Common.Interface.Tls.Domain;
+﻿using System.Collections.Generic;
+using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Domain;
+using Dmarc.MxSecurityEvaluator.Util;
 
 namespace Dmarc.MxSecurityEvaluator.Evaluators
 {
-    public interface ITlsSecureEllipticCurveSelected : ITlsEvaluator { }
-
-    public class TlsSecureEllipticCurveSelected : ITlsSecureEllipticCurveSelected
+    public class TlsSecureEllipticCurveSelected : ITlsEvaluator
     {
         private readonly string intro = "When testing TLS with a range of elliptic curves";
 
-        public TlsEvaluatorResult Test(TlsConnectionResult tlsConnectionResult)
+        public TlsEvaluatorResult Test(ConnectionResults tlsConnectionResults)
         {
+            TlsConnectionResult tlsConnectionResult = tlsConnectionResults.TlsSecureEllipticCurveSelected;
+
             switch (tlsConnectionResult.Error)
             {
                 case Error.HANDSHAKE_FAILURE:
@@ -63,5 +66,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 
             return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} there was a problem and we are unable to provide additional information.");
         }
+
+        public TlsTestType Type => TlsTestType.TlsSecureEllipticCurveSelected;
     }
 }

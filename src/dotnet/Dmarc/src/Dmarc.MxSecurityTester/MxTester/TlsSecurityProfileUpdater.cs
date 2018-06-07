@@ -83,7 +83,6 @@ namespace Dmarc.MxSecurityTester.MxTester
                 oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test10Result,
                 oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test11Result,
                 oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test12Result,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test13Result,
                 oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Certificates)));
         }
 
@@ -108,7 +107,6 @@ namespace Dmarc.MxSecurityTester.MxTester
                 mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test10Result,
                 mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test11Result,
                 mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test12Result,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test13Result,
                 mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Certificates)));
         }
     }

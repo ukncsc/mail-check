@@ -1,0 +1,28 @@
+.navbar{
+    background:#051D49;
+    padding-top: 2px;
+    padding-bottom: 0px;
+}
+
+.nav-link {
+    color: white;
+    border-radius: 0;
+    padding-top: 14px;
+    padding-bottom: 16px;
+}
+
+.navbar-toggleable-md .navbar-nav .nav-link {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.nav-link.active {
+    background: white;
+    font-weight: bold;
+    color: black;
+}
+
+.navbar-nav > li a span{
+    padding-right: 10px;
+    padding-left: 15px;
+ }

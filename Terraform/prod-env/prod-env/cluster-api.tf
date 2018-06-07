@@ -28,3 +28,12 @@ module "api-cluster" {
   admin-subnets             = "${var.build-vpc == "" ? "" : data.aws_vpc.build-vpc.cidr_block}"
   cloudwatch-alerts-sns-arn = "${aws_sns_topic.cloudwatch-alerts.arn}"
 }
+
+resource "aws_security_group_rule" "api-cluster-to-api-lb" {
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = "${module.api-cluster.instance-sg}"
+  security_group_id        = "${module.loadbalancer-internal.lb-sg1-id}"
+}

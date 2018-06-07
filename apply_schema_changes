@@ -89,7 +89,7 @@ for sqlfile in `cat /tmp/sqlfiles`
         then
 	  echo "Applying:  $sqlfile_ver - $sqlfile_desc"
           sqlcmd="cat $sqlfile ${sedtokencmd} \"$3\" -ss -r --user=$uname --password=$pw -h $dbhost $dbname"
-		  echo "Running command: $sqlcmd"
+#		  echo "Running command: $sqlcmd"
           if eval $sqlcmd
 		  then
 			 echo "SQL applied ok"
@@ -114,7 +114,7 @@ for sqlfile in `ls $2/grants/*.sql | sort -V`
 
     echo "Applying:  $sqlfile_ver - $sqlfile_desc"
           sqlcmd="cat $sqlfile ${sedtokencmd} \"$3\" -ss -r --user=$uname --password=$pw -h $dbhost $dbname"
-		echo "Running command: $sqlcmd"
+#		echo "Running command: $sqlcmd"
         if eval $sqlcmd
 		then
 			 echo "SQL applied ok"

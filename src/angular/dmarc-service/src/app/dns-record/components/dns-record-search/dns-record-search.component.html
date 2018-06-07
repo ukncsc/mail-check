@@ -1,0 +1,11 @@
+  <form [formGroup]="searchForm" class="filter-form">
+    <div class="form-group">
+      <label class="col-md-6 col-form-label col-form-label-lg">Search from a database of Government Departments, agencies and public bodies.</label>
+      <div class="input-group input-group-lg test">
+        <input formControlName="search" [(value)]="search" type="text" class="form-control form-control-lg" id="inlineFormInputGroup" placeholder="Search domains">
+        <div class="input-group-addon">
+          <i class="fa fa-search" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+  </form>

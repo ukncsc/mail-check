@@ -4,36 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dmarc.DnsRecord.Importer.Lambda.Dao.Entities;
 using Dmarc.DnsRecord.Importer.Lambda.Dns;
-using Dmarc.DnsRecord.Importer.Lambda.Publisher;
 using Heijden.DNS;
 
 namespace Dmarc.DnsRecord.Importer.Lambda.RecordProcessor
 {
-    public interface IDnsRecordUpdater
-    {
-        Task<List<RecordEntity>> UpdateRecord(Dictionary<DomainEntity, List<RecordEntity>> records);
-    }
-
-    public class PublishingDnsRecordUpdater : DnsRecordUpdater
-    {
-        private readonly IRecordEntityPublisher _publisher;
-
-        public PublishingDnsRecordUpdater(IDnsRecordClient dnsRecordClient,
-            IRecordEntityPublisher publisher) : base(dnsRecordClient)
-        {
-            _publisher = publisher;
-        }
-
-        public override async Task<List<RecordEntity>> UpdateRecord(Dictionary<DomainEntity, List<RecordEntity>> records)
-        {
-            List<RecordEntity> updatedRecords = await base.UpdateRecord(records);
-
-            await _publisher.Publish(updatedRecords);
-
-            return updatedRecords;
-        }
-    }
-
     public class DnsRecordUpdater : IDnsRecordUpdater
     {
         private readonly IDnsRecordClient _dnsRecordClient;

@@ -1,0 +1,154 @@
+:host /deep/ .popover {
+    min-width: 450px;
+    max-width: 700px;
+}
+
+.badge{
+  border-radius: 10rem;
+}
+
+.text-center {
+   text-align:center
+}
+
+button {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+}
+
+.fa-shield{
+  color: #3f9693;
+}
+
+.fa-times-circle{
+  color: #b51b36;
+}
+
+.fa-exclamation-triangle{
+  color: #be8724;
+}
+
+.fa-info-circle{
+  color: #3873b7;
+}
+
+.tag{
+  background-color: rgba(215,219,229, 0.5);
+  margin-top: 1px;
+  padding-left: 3px;
+  padding-right: 3px;
+  border-style: solid;
+  border-color: rgba(9,31,72, 0.5);
+  border-width: 1px;
+  border-left: none;
+  border-right: none;
+}
+
+.tag:hover{
+  color: white;
+  background-color: #051D49;
+  border-color: #051D49;
+}
+
+.tag:first-child{
+  border-style: solid;
+  border-color: rgba(9,31,72, 0.5);
+  border-width: 1px;
+  border-right: none;
+}
+
+.tag:last-child{
+  border-style: solid;
+  border-color: rgba(9,31,72, 0.5);
+  border-width: 1px;
+  border-left: none;
+}
+
+.tag-implicit{
+  color: gray;
+  background-color: white;
+  margin-top: 1px;
+  padding-left: 3px;
+  padding-right: 3px;
+  border-style: dashed;
+  border-color: rgba(9,31,72, 0.5);
+  border-width: 1px;
+  border-left: none;
+  border-right: none;
+}
+
+.tag-implicit:hover{
+  color: white;
+  background-color: #051D49;
+  border-color: #051D49;
+}
+
+.tag-implicit:first-child{
+  border-style: dashed;
+  border-color: rgba(9,31,72, 0.5);
+  border-width: 1px;
+  border-right: none;
+}
+
+.tag-implicit:last-child{
+  border-style: dashed;
+  border-color: rgba(9,31,72, 0.5);
+  border-width: 1px;
+  border-left: none;
+}
+
+.hyphenate {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+}
+
+.badge-danger{
+  background-color: #b51b36;
+}
+
+.badge-warning{
+  background-color: #be8724;
+}
+
+.badge-info{
+  color: #3873b7;
+}
+
+.record{
+  margin-bottom: 25px;
+}
+
+.alert-warning{
+    background-color: #D7DBE5;
+    border-width: 0;
+    border-radius: 0;
+}
+
+.alert-warning h5{
+    color: #292b2c;
+}
+
+.fa-minus{
+  color: #646c72;
+}
+
+.table th, .table td{
+  border: none;
+}
+
+.bold{
+  font-weight: bold;
+}
+
+.popover-row{
+    margin-bottom: 10px;
+}
+

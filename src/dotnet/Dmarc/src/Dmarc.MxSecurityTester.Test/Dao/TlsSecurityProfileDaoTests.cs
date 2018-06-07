@@ -340,7 +340,6 @@ namespace Dmarc.MxSecurityTester.Test.Dao
             Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test10Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test10Result));
             Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test11Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test11Result));
             Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test12Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test12Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test13Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test13Result));
             Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Certificates.Count, Is.EqualTo(2));
             Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Certificates[0].Thumbprint, Is.EqualTo(CertThumbPrint1));
             Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Certificates[1].Thumbprint, Is.EqualTo(CertThumbPrint2));
@@ -359,7 +358,6 @@ namespace Dmarc.MxSecurityTester.Test.Dao
             Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test10Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test10Result));
             Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test11Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test11Result));
             Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test12Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test12Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test13Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test13Result));
             Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Certificates.Count, Is.EqualTo(2));
             Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Certificates[0].Thumbprint, Is.EqualTo(CertThumbPrint1));
             Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Certificates[1].Thumbprint, Is.EqualTo(CertThumbPrint2));
@@ -429,7 +427,6 @@ namespace Dmarc.MxSecurityTester.Test.Dao
                         securityProfile1.Results.Test10Result,
                         securityProfile1.Results.Test11Result,
                         securityProfile1.Results.Test12Result,
-                        securityProfile1.Results.Test13Result,
                         new List<Certificate>()))),
 
                         new MxRecordTlsSecurityProfile(mxRecord1, new TlsSecurityProfile(securityProfile2.Id, DateTime.Now, 
@@ -446,7 +443,6 @@ namespace Dmarc.MxSecurityTester.Test.Dao
                         securityProfile2.Results.Test10Result,
                         securityProfile2.Results.Test11Result,
                         securityProfile2.Results.Test12Result,
-                        securityProfile2.Results.Test13Result,
                         new List<Certificate>())))
                     })
             };
@@ -523,10 +519,8 @@ namespace Dmarc.MxSecurityTester.Test.Dao
                          "`test9_tls_version`, `test9_cipher_suite`, `test9_curve_group`, `test9_signature_hash_alg`, `test9_error`, " +
                          "`test10_tls_version`, `test10_cipher_suite`, `test10_curve_group`, `test10_signature_hash_alg`, `test10_error`, " +
                          "`test11_tls_version`, `test11_cipher_suite`, `test11_curve_group`, `test11_signature_hash_alg`, `test11_error`, " +
-                         "`test12_tls_version`, `test12_cipher_suite`, `test12_curve_group`, `test12_signature_hash_alg`, `test12_error`, " +
-                         "`test13_tls_version`, `test13_cipher_suite`, `test13_curve_group`, `test13_signature_hash_alg`, `test13_error`) " +
+                         "`test12_tls_version`, `test12_cipher_suite`, `test12_curve_group`, `test12_signature_hash_alg`, `test12_error`)" +
                          $"VALUES ({mxRecordId}, '{startDate:yyyy-MM-dd HH:mm:ss}', {endDateString}, '{lastChecked:yyyy-MM-dd HH:mm:ss}', {failureCount}, " +
-                         $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
                          $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
                          $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
                          $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
@@ -545,7 +539,7 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             TlsTestResult tlsTestResult = new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null);
             return new TlsSecurityProfile(id, endDate, new TlsTestResults(failureCount, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult,
-                tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, new List<Certificate>()));
+                tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, new List<Certificate>()));
         }
 
         private Certificate InsertCertificate(int sequence, ulong profileId, string thumbPrint)
@@ -603,7 +597,6 @@ namespace Dmarc.MxSecurityTester.Test.Dao
                         CreateTlsTestResult(reader, 10),
                         CreateTlsTestResult(reader, 11),
                         CreateTlsTestResult(reader, 12),
-                        CreateTlsTestResult(reader, 13),
                         null,
                         reader.GetDateTime("last_checked"),
                         (ulong)reader.GetInt64("mx_record_id"));
@@ -658,7 +651,7 @@ namespace Dmarc.MxSecurityTester.Test.Dao
             TlsTestResult tlsTestResult = new TlsTestResult(TlsVersion.TlsV12, cipherSuite, CurveGroup.Ffdhe2048, SignatureHashAlgorithm.SHA1_DSA, null);
 
             return new MxRecordTlsSecurityProfile(record, new TlsSecurityProfile(id, null, new TlsTestResults(0, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult,
-                tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, certificates ?? new List<Certificate>())));
+                tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, certificates ?? new List<Certificate>())));
         }
 
         private static TlsTestResult CreateTlsTestResult(DbDataReader reader, int testId)
@@ -689,13 +682,12 @@ namespace Dmarc.MxSecurityTester.Test.Dao
                 TlsTestResult test10Result, 
                 TlsTestResult test11Result, 
                 TlsTestResult test12Result, 
-                TlsTestResult test13Result, 
                 List<Certificate> certificates, 
                 DateTime lastChecked, 
                 ulong mxRecordId) 
                 : base(id, endDate, new TlsTestResults(failureCount, test1Result, test2Result, test3Result, 
                       test4Result, test5Result, test6Result, test7Result, test8Result, 
-                      test9Result, test10Result, test11Result, test12Result, test13Result, certificates))
+                      test9Result, test10Result, test11Result, test12Result, certificates))
             {
                 LastChecked = lastChecked;
                 MxRecordId = mxRecordId;

@@ -1,0 +1,25 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+.ui[class*='top attached'].menu {
+  bottom: 0px;
+  margin-bottom: 0em;
+  top: @attachedTopOffset;
+  margin-top: 0em;
+  border-radius: @borderRadius @borderRadius 0em 0em;
+}
+
+.ui[class*='pagination'].menu {
+  background-color: transparent;
+
+  a.item{
+    color: @primaryColor;
+    background-color: white;
+  }
+
+  a[class*='active'].item {
+    color: white;
+    background-color: @primaryColor;
+  }
+}

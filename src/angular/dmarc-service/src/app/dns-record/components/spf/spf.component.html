@@ -1,0 +1,178 @@
+<div class="row">
+
+  <div *ngIf="!errored" class="col-md-1">
+    <button type="button" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
+      <div *ngIf="isCollapsed">
+        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+      </div>
+      <div *ngIf="!isCollapsed">
+        <i class="fa fa-chevron-up" aria-hidden="true"></i>
+      </div>
+    </button>
+  </div>
+
+  <div class="col-md-3">
+    <h2>SPF</h2>
+  </div>
+
+  <div *ngIf="!errored" class="col-md-1" align="center">
+    <ng-container *ngIf="spfConfig?.totalErrorCount===0">
+      <h3><i class="fa fa-shield" aria-hidden="true"></i></h3>
+    </ng-container>
+    <div *ngIf="spfConfig?.totalErrorCount!==0">
+      <ng-container [ngSwitch]="spfConfig?.maxErrorSeverity">
+        <th *ngSwitchCase="'Error'" scope="row">
+          <h4><span class="badge badge-pill badge-danger">{{spfConfig?.totalErrorCount}}</span></h4>
+        </th>
+        <th *ngSwitchCase="'Warning'" scope="row">
+          <h4><span class="badge badge-pill badge-warning">{{spfConfig?.totalErrorCount}}</span></h4>
+        </th>
+        <th *ngSwitchCase="'Info'" scope="row">
+          <h4><span class="badge badge-pill badge-info">{{spfConfig?.totalErrorCount}}</span></h4>
+        </th>
+      </ng-container>
+    </div>
+    <div *ngIf="spfConfig === null && !loading">
+      <h4><i class="fa fa-minus" aria-hidden="true"></i></h4>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!loading">
+
+  <div *ngIf="errored">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="alert alert-danger">
+          <h5>Error:</h5>
+          <p>{{error}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!errored">
+    <div id="collapseExample" [ngbCollapse]="isCollapsed">
+
+      <div class="row record">
+        <div class="col-md-10 offset-md-1">
+
+          <div *ngFor="let record of spfConfig?.records;" class="row">
+            <div class="col-md-1" align="center">
+              <h6>{{record.index}}</h6>
+            </div>
+            <div class="col-md-11">
+              <div class="d-flex flex-wrap">
+                <div class="term" [ngbPopover]="popContentVersion" popoverTitle="Details" triggers="mouseenter:mouseleave">
+                  {{record.version.value}}
+                </div>
+
+                <ng-template #popContentVersion>
+                  <div *ngIf="record.version.errors.length===0" class="row popover-row">
+                    <div class="col-md-6 bold">
+                      {{record.version.value}}
+                    </div>
+                    <div class="col-md-6">
+                      {{record.version.explanation}}
+                    </div>
+                  </div>
+                  <div *ngFor="let error of record.version.errors" class="row popover-row">
+                    <div class="col-md-6">
+                      <h5><i class="fa fa-times-circle" aria-hidden="true"></i></h5>
+                    </div>
+                    <div class="col-md-6">
+                      {{error.message}}
+                    </div>
+                  </div>
+                </ng-template>
+
+
+                <ng-container *ngFor="let term of record?.terms">
+                  <ng-container *ngFor="let fragment of term.value | longTagSplitter">
+                    <div aria-hidden="true" [ngClass]="term.isImplicit?'term-implicit':'term'" [ngbPopover]="popContentTerm" popoverTitle="Details"
+                      triggers="mouseenter:mouseleave">
+                      {{fragment}}
+                    </div>
+
+                    <ng-template #popContentTerm>
+                      <div *ngIf="term.errors.length===0" class="row popover-row">
+                        <div class="col-md-6 bold">
+                          {{term.value}}
+                        </div>
+                        <div class="col-md-6">
+                          {{term.explanation}}
+                        </div>
+                      </div>
+                      <div *ngIf="term.errors.length===0 && term.isImplicit" class="row popover-row">
+                        <div  class="col-md-6 bold">
+                          Implicit value
+                        </div>
+                        <div  class="col-md-6">
+                          This value isnt specified in your SPF record. This shows the default value that will be used.
+                        </div>
+                      </div>
+                      <div *ngFor="let error of term.errors" class="row popover-row">
+                        <div class="col-md-6">
+                          <h5><i class="fa fa-times-circle" aria-hidden="true"></i></h5>
+                        </div>
+                        <div class="col-md-6">
+                          {{error.message}}
+                        </div>
+                      </div>
+                    </ng-template>
+
+                  </ng-container>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-11 offset-md-1">
+          <ng-container *ngFor="let error of spfConfig?.errors;">
+            <div class="row">
+              <div class="col-md-1" align="center">
+                <ng-container [ngSwitch]="error.errorType">
+                  <th *ngSwitchCase="'Error'" scope="row">
+                    <h5><i class="fa fa-times-circle" aria-hidden="true"></i></h5>
+                  </th>
+                  <th *ngSwitchCase="'Warning'" scope="row">
+                    <h5><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></h5>
+                  </th>
+                  <th *ngSwitchCase="'Info'" scope="row">
+                    <h5><i class="fa fa-info-circle" aria-hidden="true"></i></h5>
+                  </th>
+                </ng-container>
+              </div>
+              <div class="col-md-2">
+                {{error.errorScope}}
+              </div>
+              <div class="col-md-8">
+                {{error.message}}
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div *ngIf="spfConfig === null" class="row">
+        <div class="col-md-5 offset-md-1">
+          <div class="alert alert-warning">
+            <h5 class="mx-auto">This domain has no SPF records.</h5>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading">
+  <div class="d-flex justify-content-center bd-highlight mb-3">
+    <div class="p-2 bd-highlight">
+      <mat-spinner color="accent" [diameter]=40 [strokeWidth]=3></mat-spinner>
+    </div>
+  </div>
+</div>

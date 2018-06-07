@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityTester.Util;
 
 namespace Dmarc.MxSecurityTester.Tls.Tests
 {
     public class TlsWeakCipherSuitesRejected : ITlsTest
     {
-        public int Id => 13;
+        public int Id => (int)TlsTestType.TlsWeakCipherSuitesRejected;
 
         public string Name => nameof(TlsWeakCipherSuitesRejected);
 

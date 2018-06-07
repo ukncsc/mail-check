@@ -1,0 +1,31 @@
+.card-block
+{
+    background: #2B70B9;
+    border-radius: 0;
+    margin: 2px;
+    padding: 5px;
+}
+
+.card-text
+{
+    color: white;
+    margin: 2px;
+}
+
+.badge
+{
+    margin-top: 40px;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.loader-overlay
+{
+    margin-top: -60px;
+}
+
+mat-spinner{
+  margin-top: 15px;
+}

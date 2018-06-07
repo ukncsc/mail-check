@@ -7,15 +7,18 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Domain
 {
     public class DmarcConfig : DmarcEntity
     {
-        public DmarcConfig(List<DmarcRecord> records, string domain)
+        public DmarcConfig(List<DmarcRecord> records, string domain, DateTime lastChecked)
         {
             Records = records;
             Domain = domain;
+            LastChecked = lastChecked;
         }
 
         public List<DmarcRecord> Records { get; }
 
         public string Domain { get; }
+
+        public DateTime LastChecked { get; }
 
         public override string ToString()
         {

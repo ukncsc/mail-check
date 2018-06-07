@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Dmarc.DnsRecord.Contract.Messages;
 using Dmarc.DnsRecord.Importer.Lambda.Dao.Entities;
 using Dmarc.DnsRecord.Importer.Lambda.Dns.Client.RecordInfos;
@@ -45,12 +46,14 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.Mapping
 
             Assert.That(configs.DmarcConfigs[0].Domain.Id, Is.EqualTo(Domain1Id));
             Assert.That(configs.DmarcConfigs[0].Domain.Name, Is.EqualTo(Domain1Name));
+            Assert.That(configs.DmarcConfigs[0].LastChecked.Date, Is.EqualTo(DateTime.UtcNow.Date));
             Assert.That(configs.DmarcConfigs[0].Records.Count, Is.EqualTo(2));
             Assert.That(configs.DmarcConfigs[0].Records[0], Is.EqualTo(Record1));
             Assert.That(configs.DmarcConfigs[0].Records[1], Is.EqualTo(Record2));
 
             Assert.That(configs.DmarcConfigs[1].Domain.Id, Is.EqualTo(Domain2Id));
             Assert.That(configs.DmarcConfigs[1].Domain.Name, Is.EqualTo(Domain2Name));
+            Assert.That(configs.DmarcConfigs[1].LastChecked.Date, Is.EqualTo(DateTime.UtcNow.Date));
             Assert.That(configs.DmarcConfigs[1].Records.Count, Is.EqualTo(1));
             Assert.That(configs.DmarcConfigs[1].Records[0], Is.EqualTo(Record3));
         }
@@ -70,6 +73,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.Mapping
             Assert.That(configs.DmarcConfigs[0].Domain.Id, Is.EqualTo(Domain1Id));
             Assert.That(configs.DmarcConfigs[0].Domain.Name, Is.EqualTo(Domain1Name));
             Assert.That(configs.DmarcConfigs[0].Records.Count, Is.EqualTo(0));
+            Assert.That(configs.DmarcConfigs[0].LastChecked.Date, Is.EqualTo(DateTime.UtcNow.Date));
         }
 
         [Test]
