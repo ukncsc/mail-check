@@ -45,13 +45,8 @@ export default class DomainSecurityAggregateExport extends Component {
     return (
       <React.Fragment>
         <BackLink />
-        <Header as="h1">
-          <Header.Content>
-            {this.props.domain.name}
-            <Header.Subheader>Aggregate Report Export</Header.Subheader>
-          </Header.Content>
-        </Header>
-        <Header as="h2">Daily CSV Report</Header>
+        <Header as="h1">Export aggregate report data</Header>
+        <Header as="h2">{this.props.domain.name}</Header>    
         <ShowMoreDropdown title="Explain report information">
           <Table>
             <Table.Body>

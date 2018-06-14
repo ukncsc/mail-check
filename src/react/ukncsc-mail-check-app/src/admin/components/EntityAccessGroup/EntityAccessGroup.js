@@ -20,7 +20,7 @@ const EntityAccessGroupList = ({ items, onRemove }) =>
 export default ({ title, results = [], isLoading, onRemove, onAdd }) => (
   <Grid stackable>
     <Grid.Row>
-      <Grid.Column width={onAdd ? 10 : 12}>
+      <Grid.Column width={onAdd ? 7 : 9}>
         <Header as="h2">{title}</Header>
       </Grid.Column>
       {onAdd && (
@@ -28,7 +28,7 @@ export default ({ title, results = [], isLoading, onRemove, onAdd }) => (
           <Button fluid primary onClick={onAdd} content="Add" />
         </Grid.Column>
       )}
-      <Grid.Column width={4} textAlign="right">
+      <Grid.Column width={2} textAlign="right">
         <Input fluid icon="filter" input={{ placeholder: 'Filter...' }} />
       </Grid.Column>
     </Grid.Row>

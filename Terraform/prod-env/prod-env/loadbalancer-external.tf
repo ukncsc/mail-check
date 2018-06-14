@@ -2,6 +2,7 @@ module "loadbalancer-external" {
   source                    = "../../modules/loadBalancer-module"
   balancer-name             = "frontend"
   balancer-fqdn             = "${var.web-url}"
+  certificate-name          = "${var.web-url}"
   vpc-id                    = "${aws_vpc.dmarc-env.id}"
   lb-subnet-ids             = "${join(",", aws_subnet.dmarc-env-public-subnet.*.id)}"
   instance-subnet-cidr      = "${join(",", values(var.frontend-zone-subnets))}"

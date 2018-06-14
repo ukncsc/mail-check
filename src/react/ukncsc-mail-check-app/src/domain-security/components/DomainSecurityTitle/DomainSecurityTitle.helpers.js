@@ -1,15 +1,10 @@
 // eslint-disable-next-line
 export const getTitleIconProps = (
-  error,
   failures,
   warnings,
   inconclusives,
   pending
 ) => {
-  if (error) {
-    return { name: 'close', color: 'red' };
-  }
-
   if (failures && !!failures.length) {
     return { name: 'exclamation circle', color: 'red' };
   }
@@ -26,5 +21,5 @@ export const getTitleIconProps = (
     return { name: 'time', color: 'blue' };
   }
 
-  return { name: 'check circle', color: 'green' };
+  return null;
 };

@@ -17,16 +17,16 @@ namespace Dmarc.MxSecurityTester.MxTester
     internal class MxSecurityTesterProcessor : IMxSecurityTesterProcessor
     {
         private readonly IDomainTlsSecurityProfileDao _domainTlsSecurityProfileDao;
-        private readonly ITlsSecurityProfileUpdater _tlsSecurityProfileUpdater;
+        private readonly IPublishingCertsSecurityProfileUpdater _securityProfileUpdater;
         private readonly ILogger _log;
 
         public MxSecurityTesterProcessor(IDomainTlsSecurityProfileDao domainTlsSecurityProfileDao,
-            IPublishingTlsSecurityProfileUpdater tlsSecurityProfileUpdater,
+            IPublishingCertsSecurityProfileUpdater securityProfileUpdater,
             ILogger log
             )
         {
             _domainTlsSecurityProfileDao = domainTlsSecurityProfileDao;
-            _tlsSecurityProfileUpdater = tlsSecurityProfileUpdater;
+            _securityProfileUpdater = securityProfileUpdater;
             _log = log;
         }
 
@@ -40,7 +40,7 @@ namespace Dmarc.MxSecurityTester.MxTester
             int itemsProcessed = 0;
             while (securityProfilesToUpdate.Any())
             {
-                await _tlsSecurityProfileUpdater.UpdateSecurityProfiles(securityProfilesToUpdate);
+                await _securityProfileUpdater.UpdateSecurityProfiles(securityProfilesToUpdate);
 
                 itemsProcessed += securityProfilesToUpdate.Count;
 

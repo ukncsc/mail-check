@@ -4,7 +4,9 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules.Record
 {
     public class RuaTagsShouldBeMailTo : TagShouldBeMailTo<ReportUriAggregate>
     {
-        public RuaTagsShouldBeMailTo() 
-            : base(DmarcRulesResource.RuaTagsShouldBeMailToErrorMessage){}
+        public RuaTagsShouldBeMailTo()
+            : base(DmarcRulesResource.RuaTagsShouldBeMailToErrorMessage)
+        {
+        }
     }
 }

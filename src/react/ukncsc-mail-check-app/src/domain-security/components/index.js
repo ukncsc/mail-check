@@ -1,3 +1,8 @@
+export { default as AggregateReportChart } from './AggregateReportChart';
+export {
+  default as AggregateReportChartLegend,
+} from './AggregateReportChartLegend';
+export { default as AggregateReportSummary } from './AggregateReportSummary';
 export {
   default as DomainSecurityDetailsMessages,
 } from './DomainSecurityDetailsMessages';
@@ -17,17 +22,3 @@ export { default as DomainSecurityTitle } from './DomainSecurityTitle';
 export {
   default as DomainSecurityTlsSummary,
 } from './DomainSecurityTlsSummary';
-export { default as AggregateReportChart } from './AggregateReportChart';
-export {
-  default as AggregateReportLegendExplanation,
-} from './AggregateReportLegendExplanation';
-export {
-  default as AggregateReportStatistic,
-} from './AggregateReportStatistic';
-export {
-  default as AggregateReporChartLegendItem,
-} from './AggregateReportChartLegendItem';
-export {
-  default as AggregateReportChartLegend,
-} from './AggregateReportChartLegend';
-export { default as AggregateReportSummary } from './AggregateReportSummary';

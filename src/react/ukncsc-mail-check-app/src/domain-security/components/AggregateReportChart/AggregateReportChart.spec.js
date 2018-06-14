@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'react-testing-library';
+import { graphDescriptions } from 'domain-security/data';
 import AggregateReportChart from './AggregateReportChart';
 
 describe('AggregateReportChart', () => {
@@ -9,6 +10,7 @@ describe('AggregateReportChart', () => {
     beforeEach(() => {
       ({ container } = render(
         <AggregateReportChart
+          descriptions={graphDescriptions}
           data={{
             '2017-12-10T00:00:00': {
               fullyTrusted: 1,

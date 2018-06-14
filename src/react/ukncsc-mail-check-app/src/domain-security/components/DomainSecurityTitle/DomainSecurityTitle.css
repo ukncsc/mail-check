@@ -1,4 +1,10 @@
 .DomainSecurityTitle--header {
   word-break: break-word;
-  word-wrap: break-word;  
+  word-wrap: break-word;
+  display: inline-block;
+}
+
+.DomainSecurityTitle--icon {
+  display: inline-block;
+  margin-left: 5px;
 }

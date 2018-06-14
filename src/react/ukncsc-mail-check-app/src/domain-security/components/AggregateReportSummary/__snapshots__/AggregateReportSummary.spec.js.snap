@@ -2,300 +2,105 @@
 
 exports[`AggregateReportSummary when successfully retrieves data it should match the snapshot 1`] = `
 <div>
-  <div
-    class="Statistic"
+  <span
+    class="AggregateReportSummary--date-range"
   >
-    <h3
-      style="margin: 0px;"
-      class="ui header StatisticTitle"
+    Last 7 days
+  </span>
+  <div>
+    <div
+      class="ui small statistic"
     >
-      Total emails
-    </h3>
-    <h1
-      style="margin: 0px;"
-      class="ui header StatisticValue"
-    >
-      178.0
-    </h1>
-    <p
-      class="StatisticPeriod"
-    >
-      last 7 days
-    </p>
+      <div
+        style="font-weight: 400;"
+        class="label"
+      >
+        Total emails:
+      </div>
+      <div
+        style="font-weight: 500;"
+        class="value"
+      >
+        178.0
+      </div>
+    </div>
   </div>
   <div
     class="ui stackable grid"
   >
     <div
-      class="two column row"
+      class="row"
     >
       <div
         style="padding: 0px;"
-        class="thirteen wide column"
+        class="ten wide column"
       >
-        <div>
+        <div
+          style="position: relative; height: 0px; width: 100%; padding: 0px 0px 57.14285714285714% 0px;"
+        >
           <div
-            style="position: relative; height: 0px; width: 100%; padding: 0px 0px 57.14285714285714% 0px;"
+            style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px; pointer-events: none;"
+            class="VictoryContainer"
           >
-            <div
-              style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px; pointer-events: none;"
-              class="VictoryContainer"
+            <svg
+              width="700"
+              height="400"
+              role="img"
+              aria-labelledby="victory-container-1-title victory-container-1-desc"
+              viewBox="0 0 700 400"
+              style="pointer-events: all; width: 100%; height: 100%;"
             >
-              <svg
-                width="700"
-                height="400"
-                role="img"
-                aria-labelledby="victory-container-1-title victory-container-1-desc"
-                viewBox="0 0 700 400"
-                style="pointer-events: all; width: 100%; height: 100%;"
+              <g
+                role="presentation"
               >
+                <line
+                  x1="50"
+                  x2="50"
+                  y1="50"
+                  y2="350"
+                  style="stroke: #252525; stroke-width: 0; fill: transparent; stroke-linecap: round; stroke-linejoin: round;"
+                  role="presentation"
+                  shape-rendering="auto"
+                  vector-effect="non-scaling-stroke"
+                />
                 <g
                   role="presentation"
                 >
                   <line
                     x1="50"
-                    x2="50"
-                    y1="50"
-                    y2="350"
-                    style="stroke: #252525; stroke-width: 0; fill: transparent; stroke-linecap: round; stroke-linejoin: round;"
+                    x2="650"
+                    y1="303.84615384615387"
+                    y2="303.84615384615387"
+                    style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
                     role="presentation"
                     shape-rendering="auto"
                     vector-effect="non-scaling-stroke"
                   />
-                  <g
+                  <line
+                    x1="50"
+                    x2="49"
+                    y1="303.84615384615387"
+                    y2="303.84615384615387"
+                    style="stroke: transparent; fill: transparent; size: 1px;"
                     role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <text
+                    x="39"
+                    dx="0"
+                    y="303.84615384615387"
+                    dy="4.26"
                   >
-                    <line
-                      x1="50"
-                      x2="650"
-                      y1="303.84615384615387"
-                      y2="303.84615384615387"
-                      style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <line
-                      x1="50"
-                      x2="49"
-                      y1="303.84615384615387"
-                      y2="303.84615384615387"
-                      style="stroke: transparent; fill: transparent; size: 1px;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <text
+                    <tspan
                       x="39"
                       dx="0"
-                      y="303.84615384615387"
-                      dy="4.26"
+                      text-anchor="end"
+                      style="font-size: 12px; font-weight: 500; font-family: Helvetica Neue; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
                     >
-                      <tspan
-                        x="39"
-                        dx="0"
-                        text-anchor="end"
-                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
-                      >
-                        2.0
-                      </tspan>
-                    </text>
-                  </g>
-                  <g
-                    role="presentation"
-                  >
-                    <line
-                      x1="50"
-                      x2="650"
-                      y1="257.6923076923077"
-                      y2="257.6923076923077"
-                      style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <line
-                      x1="50"
-                      x2="49"
-                      y1="257.6923076923077"
-                      y2="257.6923076923077"
-                      style="stroke: transparent; fill: transparent; size: 1px;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <text
-                      x="39"
-                      dx="0"
-                      y="257.6923076923077"
-                      dy="4.26"
-                    >
-                      <tspan
-                        x="39"
-                        dx="0"
-                        text-anchor="end"
-                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
-                      >
-                        4.0
-                      </tspan>
-                    </text>
-                  </g>
-                  <g
-                    role="presentation"
-                  >
-                    <line
-                      x1="50"
-                      x2="650"
-                      y1="211.53846153846152"
-                      y2="211.53846153846152"
-                      style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <line
-                      x1="50"
-                      x2="49"
-                      y1="211.53846153846152"
-                      y2="211.53846153846152"
-                      style="stroke: transparent; fill: transparent; size: 1px;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <text
-                      x="39"
-                      dx="0"
-                      y="211.53846153846152"
-                      dy="4.26"
-                    >
-                      <tspan
-                        x="39"
-                        dx="0"
-                        text-anchor="end"
-                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
-                      >
-                        6.0
-                      </tspan>
-                    </text>
-                  </g>
-                  <g
-                    role="presentation"
-                  >
-                    <line
-                      x1="50"
-                      x2="650"
-                      y1="165.3846153846154"
-                      y2="165.3846153846154"
-                      style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <line
-                      x1="50"
-                      x2="49"
-                      y1="165.3846153846154"
-                      y2="165.3846153846154"
-                      style="stroke: transparent; fill: transparent; size: 1px;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <text
-                      x="39"
-                      dx="0"
-                      y="165.3846153846154"
-                      dy="4.26"
-                    >
-                      <tspan
-                        x="39"
-                        dx="0"
-                        text-anchor="end"
-                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
-                      >
-                        8.0
-                      </tspan>
-                    </text>
-                  </g>
-                  <g
-                    role="presentation"
-                  >
-                    <line
-                      x1="50"
-                      x2="650"
-                      y1="119.23076923076923"
-                      y2="119.23076923076923"
-                      style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <line
-                      x1="50"
-                      x2="49"
-                      y1="119.23076923076923"
-                      y2="119.23076923076923"
-                      style="stroke: transparent; fill: transparent; size: 1px;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <text
-                      x="39"
-                      dx="0"
-                      y="119.23076923076923"
-                      dy="4.26"
-                    >
-                      <tspan
-                        x="39"
-                        dx="0"
-                        text-anchor="end"
-                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
-                      >
-                        10.0
-                      </tspan>
-                    </text>
-                  </g>
-                  <g
-                    role="presentation"
-                  >
-                    <line
-                      x1="50"
-                      x2="650"
-                      y1="73.07692307692304"
-                      y2="73.07692307692304"
-                      style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <line
-                      x1="50"
-                      x2="49"
-                      y1="73.07692307692304"
-                      y2="73.07692307692304"
-                      style="stroke: transparent; fill: transparent; size: 1px;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <text
-                      x="39"
-                      dx="0"
-                      y="73.07692307692304"
-                      dy="4.26"
-                    >
-                      <tspan
-                        x="39"
-                        dx="0"
-                        text-anchor="end"
-                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
-                      >
-                        12.0
-                      </tspan>
-                    </text>
-                  </g>
+                      2.0
+                    </tspan>
+                  </text>
                 </g>
                 <g
                   role="presentation"
@@ -303,336 +108,531 @@ exports[`AggregateReportSummary when successfully retrieves data it should match
                   <line
                     x1="50"
                     x2="650"
-                    y1="350"
-                    y2="350"
-                    style="stroke: #c1c2c4; fill: transparent; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;"
+                    y1="257.6923076923077"
+                    y2="257.6923076923077"
+                    style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
                     role="presentation"
                     shape-rendering="auto"
                     vector-effect="non-scaling-stroke"
                   />
-                  <g
+                  <line
+                    x1="50"
+                    x2="49"
+                    y1="257.6923076923077"
+                    y2="257.6923076923077"
+                    style="stroke: transparent; fill: transparent; size: 1px;"
                     role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <text
+                    x="39"
+                    dx="0"
+                    y="257.6923076923077"
+                    dy="4.26"
                   >
-                    <line
-                      x1="50"
-                      x2="50"
-                      y1="350"
-                      y2="50"
-                      style="stroke: none; stroke-width: 0; fill: none; pointer-events: painted;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <line
-                      x1="50"
-                      x2="50"
-                      y1="350"
-                      y2="351"
-                      style="stroke: transparent; fill: transparent; size: 1px;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <text
+                    <tspan
+                      x="39"
+                      dx="0"
+                      text-anchor="end"
+                      style="font-size: 12px; font-weight: 500; font-family: Helvetica Neue; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                    >
+                      4.0
+                    </tspan>
+                  </text>
+                </g>
+                <g
+                  role="presentation"
+                >
+                  <line
+                    x1="50"
+                    x2="650"
+                    y1="211.53846153846152"
+                    y2="211.53846153846152"
+                    style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <line
+                    x1="50"
+                    x2="49"
+                    y1="211.53846153846152"
+                    y2="211.53846153846152"
+                    style="stroke: transparent; fill: transparent; size: 1px;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <text
+                    x="39"
+                    dx="0"
+                    y="211.53846153846152"
+                    dy="4.26"
+                  >
+                    <tspan
+                      x="39"
+                      dx="0"
+                      text-anchor="end"
+                      style="font-size: 12px; font-weight: 500; font-family: Helvetica Neue; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                    >
+                      6.0
+                    </tspan>
+                  </text>
+                </g>
+                <g
+                  role="presentation"
+                >
+                  <line
+                    x1="50"
+                    x2="650"
+                    y1="165.3846153846154"
+                    y2="165.3846153846154"
+                    style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <line
+                    x1="50"
+                    x2="49"
+                    y1="165.3846153846154"
+                    y2="165.3846153846154"
+                    style="stroke: transparent; fill: transparent; size: 1px;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <text
+                    x="39"
+                    dx="0"
+                    y="165.3846153846154"
+                    dy="4.26"
+                  >
+                    <tspan
+                      x="39"
+                      dx="0"
+                      text-anchor="end"
+                      style="font-size: 12px; font-weight: 500; font-family: Helvetica Neue; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                    >
+                      8.0
+                    </tspan>
+                  </text>
+                </g>
+                <g
+                  role="presentation"
+                >
+                  <line
+                    x1="50"
+                    x2="650"
+                    y1="119.23076923076923"
+                    y2="119.23076923076923"
+                    style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <line
+                    x1="50"
+                    x2="49"
+                    y1="119.23076923076923"
+                    y2="119.23076923076923"
+                    style="stroke: transparent; fill: transparent; size: 1px;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <text
+                    x="39"
+                    dx="0"
+                    y="119.23076923076923"
+                    dy="4.26"
+                  >
+                    <tspan
+                      x="39"
+                      dx="0"
+                      text-anchor="end"
+                      style="font-size: 12px; font-weight: 500; font-family: Helvetica Neue; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                    >
+                      10.0
+                    </tspan>
+                  </text>
+                </g>
+                <g
+                  role="presentation"
+                >
+                  <line
+                    x1="50"
+                    x2="650"
+                    y1="73.07692307692304"
+                    y2="73.07692307692304"
+                    style="stroke: #c1c2c4; stroke-width: 1; fill: none; pointer-events: painted;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <line
+                    x1="50"
+                    x2="49"
+                    y1="73.07692307692304"
+                    y2="73.07692307692304"
+                    style="stroke: transparent; fill: transparent; size: 1px;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <text
+                    x="39"
+                    dx="0"
+                    y="73.07692307692304"
+                    dy="4.26"
+                  >
+                    <tspan
+                      x="39"
+                      dx="0"
+                      text-anchor="end"
+                      style="font-size: 12px; font-weight: 500; font-family: Helvetica Neue; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
+                    >
+                      12.0
+                    </tspan>
+                  </text>
+                </g>
+              </g>
+              <g
+                role="presentation"
+              >
+                <line
+                  x1="50"
+                  x2="650"
+                  y1="350"
+                  y2="350"
+                  style="stroke: #c1c2c4; fill: transparent; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;"
+                  role="presentation"
+                  shape-rendering="auto"
+                  vector-effect="non-scaling-stroke"
+                />
+                <g
+                  role="presentation"
+                >
+                  <line
+                    x1="50"
+                    x2="50"
+                    y1="350"
+                    y2="50"
+                    style="stroke: none; stroke-width: 0; fill: none; pointer-events: painted;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <line
+                    x1="50"
+                    x2="50"
+                    y1="350"
+                    y2="351"
+                    style="stroke: transparent; fill: transparent; size: 1px;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <text
+                    x="50"
+                    dx="0"
+                    y="361"
+                    dy="10.26"
+                  >
+                    <tspan
                       x="50"
                       dx="0"
-                      y="361"
-                      dy="10.26"
+                      text-anchor="middle"
+                      style="font-size: 12px; font-weight: 500; font-family: Helvetica Neue; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
                     >
-                      <tspan
-                        x="50"
-                        dx="0"
-                        text-anchor="middle"
-                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
-                      >
-                        10th Dec 17
-                      </tspan>
-                    </text>
-                  </g>
-                  <g
+                      10th Dec 17
+                    </tspan>
+                  </text>
+                </g>
+                <g
+                  role="presentation"
+                >
+                  <line
+                    x1="350"
+                    x2="350"
+                    y1="350"
+                    y2="50"
+                    style="stroke: none; stroke-width: 0; fill: none; pointer-events: painted;"
                     role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <line
+                    x1="350"
+                    x2="350"
+                    y1="350"
+                    y2="351"
+                    style="stroke: transparent; fill: transparent; size: 1px;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <text
+                    x="350"
+                    dx="0"
+                    y="361"
+                    dy="10.26"
                   >
-                    <line
-                      x1="350"
-                      x2="350"
-                      y1="350"
-                      y2="50"
-                      style="stroke: none; stroke-width: 0; fill: none; pointer-events: painted;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <line
-                      x1="350"
-                      x2="350"
-                      y1="350"
-                      y2="351"
-                      style="stroke: transparent; fill: transparent; size: 1px;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <text
+                    <tspan
                       x="350"
                       dx="0"
-                      y="361"
-                      dy="10.26"
+                      text-anchor="middle"
+                      style="font-size: 12px; font-weight: 500; font-family: Helvetica Neue; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
                     >
-                      <tspan
-                        x="350"
-                        dx="0"
-                        text-anchor="middle"
-                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
-                      >
-                        11th Dec 17
-                      </tspan>
-                    </text>
-                  </g>
-                  <g
+                      11th Dec 17
+                    </tspan>
+                  </text>
+                </g>
+                <g
+                  role="presentation"
+                >
+                  <line
+                    x1="650"
+                    x2="650"
+                    y1="350"
+                    y2="50"
+                    style="stroke: none; stroke-width: 0; fill: none; pointer-events: painted;"
                     role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <line
+                    x1="650"
+                    x2="650"
+                    y1="350"
+                    y2="351"
+                    style="stroke: transparent; fill: transparent; size: 1px;"
+                    role="presentation"
+                    shape-rendering="auto"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <text
+                    x="650"
+                    dx="0"
+                    y="361"
+                    dy="10.26"
                   >
-                    <line
-                      x1="650"
-                      x2="650"
-                      y1="350"
-                      y2="50"
-                      style="stroke: none; stroke-width: 0; fill: none; pointer-events: painted;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <line
-                      x1="650"
-                      x2="650"
-                      y1="350"
-                      y2="351"
-                      style="stroke: transparent; fill: transparent; size: 1px;"
-                      role="presentation"
-                      shape-rendering="auto"
-                      vector-effect="non-scaling-stroke"
-                    />
-                    <text
+                    <tspan
                       x="650"
                       dx="0"
-                      y="361"
-                      dy="10.26"
+                      text-anchor="middle"
+                      style="font-size: 12px; font-weight: 500; font-family: Helvetica Neue; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
                     >
-                      <tspan
-                        x="650"
-                        dx="0"
-                        text-anchor="middle"
-                        style="font-size: 12px; font-weight: 500; font-family: 'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif; letter-spacing: normal; padding: 10px; fill: #252525; stroke: transparent;"
-                      >
-                        12th Dec 17
-                      </tspan>
-                    </text>
-                  </g>
+                      12th Dec 17
+                    </tspan>
+                  </text>
                 </g>
-                <g>
-                  <g
-                    style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
-                  >
-                    <defs>
-                      <clippath
-                        id="victory-clip-2"
-                      >
-                        <rect
-                          x="50"
-                          y="50"
-                          width="600"
-                          height="300"
-                          role="presentation"
-                          shape-rendering="auto"
-                          vector-effect="non-scaling-stroke"
-                        />
-                      </clippath>
-                    </defs>
-                    <g
-                      clip-path="url(#victory-clip-2)"
+              </g>
+              <g>
+                <g
+                  style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
+                >
+                  <defs>
+                    <clippath
+                      id="victory-clip-2"
                     >
-                      <g>
-                        <path
-                          d="M50,350L350,350L650,350L650,350L350,350L50,350Z"
-                          style="fill: #53ccc2; stroke: none; stroke-width: 2;"
-                          role="presentation"
-                          shape-rendering="auto"
-                        />
-                        <path
-                          d="M50,350L350,350L650,350"
-                          style="fill: none; stroke: #002421; stroke-width: 2;"
-                          role="presentation"
-                          shape-rendering="auto"
-                        />
-                      </g>
-                    </g>
-                  </g>
+                      <rect
+                        x="50"
+                        y="50"
+                        width="600"
+                        height="300"
+                        role="presentation"
+                        shape-rendering="auto"
+                        vector-effect="non-scaling-stroke"
+                      />
+                    </clippath>
+                  </defs>
                   <g
-                    style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
+                    clip-path="url(#victory-clip-2)"
                   >
-                    <defs>
-                      <clippath
-                        id="victory-clip-3"
-                      >
-                        <rect
-                          x="50"
-                          y="50"
-                          width="600"
-                          height="300"
-                          role="presentation"
-                          shape-rendering="auto"
-                          vector-effect="non-scaling-stroke"
-                        />
-                      </clippath>
-                    </defs>
-                    <g
-                      clip-path="url(#victory-clip-3)"
-                    >
-                      <g>
-                        <path
-                          d="M50,350L350,350L650,350L650,350L350,350L50,350Z"
-                          style="fill: #ff9bf6; stroke: none; stroke-width: 2;"
-                          role="presentation"
-                          shape-rendering="auto"
-                        />
-                        <path
-                          d="M50,350L350,350L650,350"
-                          style="fill: none; stroke: #400038; stroke-width: 2;"
-                          role="presentation"
-                          shape-rendering="auto"
-                        />
-                      </g>
-                    </g>
-                  </g>
-                  <g
-                    style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
-                  >
-                    <defs>
-                      <clippath
-                        id="victory-clip-4"
-                      >
-                        <rect
-                          x="50"
-                          y="50"
-                          width="600"
-                          height="300"
-                          role="presentation"
-                          shape-rendering="auto"
-                          vector-effect="non-scaling-stroke"
-                        />
-                      </clippath>
-                    </defs>
-                    <g
-                      clip-path="url(#victory-clip-4)"
-                    >
-                      <g>
-                        <path
-                          d="M50,350L350,350L650,350L650,350L350,350L50,350Z"
-                          style="fill: #ffbf47; stroke: none; stroke-width: 2;"
-                          role="presentation"
-                          shape-rendering="auto"
-                        />
-                        <path
-                          d="M50,350L350,350L650,350"
-                          style="fill: none; stroke: #241800; stroke-width: 2;"
-                          role="presentation"
-                          shape-rendering="auto"
-                        />
-                      </g>
-                    </g>
-                  </g>
-                  <g
-                    style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
-                  >
-                    <defs>
-                      <clippath
-                        id="victory-clip-5"
-                      >
-                        <rect
-                          x="50"
-                          y="50"
-                          width="600"
-                          height="300"
-                          role="presentation"
-                          shape-rendering="auto"
-                          vector-effect="non-scaling-stroke"
-                        />
-                      </clippath>
-                    </defs>
-                    <g
-                      clip-path="url(#victory-clip-5)"
-                    >
-                      <g>
-                        <path
-                          d="M50,211.53846153846152L350,165.3846153846154L650,188.46153846153848L650,350L350,350L50,350Z"
-                          style="fill: #93d1ff; stroke: none; stroke-width: 2;"
-                          role="presentation"
-                          shape-rendering="auto"
-                        />
-                        <path
-                          d="M50,211.53846153846152L350,165.3846153846154L650,188.46153846153848"
-                          style="fill: none; stroke: #001f3f; stroke-width: 2;"
-                          role="presentation"
-                          shape-rendering="auto"
-                        />
-                      </g>
-                    </g>
-                  </g>
-                  <g
-                    style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
-                  >
-                    <defs>
-                      <clippath
-                        id="victory-clip-6"
-                      >
-                        <rect
-                          x="50"
-                          y="50"
-                          width="600"
-                          height="300"
-                          role="presentation"
-                          shape-rendering="auto"
-                          vector-effect="non-scaling-stroke"
-                        />
-                      </clippath>
-                    </defs>
-                    <g
-                      clip-path="url(#victory-clip-6)"
-                    >
-                      <g>
-                        <path
-                          d="M50,119.23076923076923L350,50L650,50L650,188.46153846153848L350,165.3846153846154L50,211.53846153846152Z"
-                          style="fill: #c4cf81; stroke: none; stroke-width: 2;"
-                          role="presentation"
-                          shape-rendering="auto"
-                        />
-                        <path
-                          d="M50,119.23076923076923L350,50L650,50"
-                          style="fill: none; stroke: #191e00; stroke-width: 2;"
-                          role="presentation"
-                          shape-rendering="auto"
-                        />
-                      </g>
+                    <g>
+                      <path
+                        d="M50,350L350,350L650,350L650,350L350,350L50,350Z"
+                        style="fill: #f0a1f1; stroke: none; stroke-width: 2;"
+                        role="presentation"
+                        shape-rendering="auto"
+                      />
+                      <path
+                        d="M50,350L350,350L650,350"
+                        style="fill: none; stroke: #3a0936; stroke-width: 2;"
+                        role="presentation"
+                        shape-rendering="auto"
+                      />
                     </g>
                   </g>
                 </g>
-              </svg>
-              <div
-                style="z-index: 99; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;"
-              >
-                <svg
-                  width="700"
-                  height="400"
-                  viewBox="0 0 700 400"
-                  style="overflow: visible; width: 100%; height: 100%;"
-                />
-              </div>
+                <g
+                  style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
+                >
+                  <defs>
+                    <clippath
+                      id="victory-clip-3"
+                    >
+                      <rect
+                        x="50"
+                        y="50"
+                        width="600"
+                        height="300"
+                        role="presentation"
+                        shape-rendering="auto"
+                        vector-effect="non-scaling-stroke"
+                      />
+                    </clippath>
+                  </defs>
+                  <g
+                    clip-path="url(#victory-clip-3)"
+                  >
+                    <g>
+                      <path
+                        d="M50,350L350,350L650,350L650,350L350,350L50,350Z"
+                        style="fill: #f5c05e; stroke: none; stroke-width: 2;"
+                        role="presentation"
+                        shape-rendering="auto"
+                      />
+                      <path
+                        d="M50,350L350,350L650,350"
+                        style="fill: none; stroke: #221803; stroke-width: 2;"
+                        role="presentation"
+                        shape-rendering="auto"
+                      />
+                    </g>
+                  </g>
+                </g>
+                <g
+                  style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
+                >
+                  <defs>
+                    <clippath
+                      id="victory-clip-4"
+                    >
+                      <rect
+                        x="50"
+                        y="50"
+                        width="600"
+                        height="300"
+                        role="presentation"
+                        shape-rendering="auto"
+                        vector-effect="non-scaling-stroke"
+                      />
+                    </clippath>
+                  </defs>
+                  <g
+                    clip-path="url(#victory-clip-4)"
+                  >
+                    <g>
+                      <path
+                        d="M50,350L350,350L650,350L650,350L350,350L50,350Z"
+                        style="fill: #9fd0fb; stroke: none; stroke-width: 2;"
+                        role="presentation"
+                        shape-rendering="auto"
+                      />
+                      <path
+                        d="M50,350L350,350L650,350"
+                        style="fill: none; stroke: #071f3d; stroke-width: 2;"
+                        role="presentation"
+                        shape-rendering="auto"
+                      />
+                    </g>
+                  </g>
+                </g>
+                <g
+                  style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
+                >
+                  <defs>
+                    <clippath
+                      id="victory-clip-5"
+                    >
+                      <rect
+                        x="50"
+                        y="50"
+                        width="600"
+                        height="300"
+                        role="presentation"
+                        shape-rendering="auto"
+                        vector-effect="non-scaling-stroke"
+                      />
+                    </clippath>
+                  </defs>
+                  <g
+                    clip-path="url(#victory-clip-5)"
+                  >
+                    <g>
+                      <path
+                        d="M50,211.53846153846152L350,165.3846153846154L650,188.46153846153848L650,350L350,350L50,350Z"
+                        style="fill: #98f0e9; stroke: none; stroke-width: 2;"
+                        role="presentation"
+                        shape-rendering="auto"
+                      />
+                      <path
+                        d="M50,211.53846153846152L350,165.3846153846154L650,188.46153846153848"
+                        style="fill: none; stroke: #0b2321; stroke-width: 2;"
+                        role="presentation"
+                        shape-rendering="auto"
+                      />
+                    </g>
+                  </g>
+                </g>
+                <g
+                  style="position: absolute; height: 100%; width: 100%; left: 0px; top: 0px;"
+                >
+                  <defs>
+                    <clippath
+                      id="victory-clip-6"
+                    >
+                      <rect
+                        x="50"
+                        y="50"
+                        width="600"
+                        height="300"
+                        role="presentation"
+                        shape-rendering="auto"
+                        vector-effect="non-scaling-stroke"
+                      />
+                    </clippath>
+                  </defs>
+                  <g
+                    clip-path="url(#victory-clip-6)"
+                  >
+                    <g>
+                      <path
+                        d="M50,119.23076923076923L350,50L650,50L650,188.46153846153848L350,165.3846153846154L50,211.53846153846152Z"
+                        style="fill: #c6cd80; stroke: none; stroke-width: 2;"
+                        role="presentation"
+                        shape-rendering="auto"
+                      />
+                      <path
+                        d="M50,119.23076923076923L350,50L650,50"
+                        style="fill: none; stroke: #1a1e04; stroke-width: 2;"
+                        role="presentation"
+                        shape-rendering="auto"
+                      />
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </svg>
+            <div
+              style="z-index: 99; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;"
+            >
+              <svg
+                width="700"
+                height="400"
+                viewBox="0 0 700 400"
+                style="overflow: visible; width: 100%; height: 100%;"
+              />
             </div>
           </div>
         </div>
       </div>
       <div
         style="padding: 0px;"
-        class="bottom aligned three wide column"
+        class="bottom aligned two wide column"
       >
         <ul
           class="ChartLegend"
@@ -645,7 +645,7 @@ exports[`AggregateReportSummary when successfully retrieves data it should match
             </h2>
             <div
               class="ChartLegendMarker"
-              style="background: rgb(196, 207, 129); stroke: #c4cf81;"
+              style="background: rgb(198, 205, 128); stroke: #1a1e04;"
             />
             Fully trusted
           </li>
@@ -657,7 +657,7 @@ exports[`AggregateReportSummary when successfully retrieves data it should match
             </h2>
             <div
               class="ChartLegendMarker"
-              style="background: rgb(147, 209, 255); stroke: #93d1ff;"
+              style="background: rgb(152, 240, 233); stroke: #0b2321;"
             />
             Partially trusted
           </li>
@@ -669,7 +669,7 @@ exports[`AggregateReportSummary when successfully retrieves data it should match
             </h2>
             <div
               class="ChartLegendMarker"
-              style="background: rgb(255, 191, 71); stroke: #ffbf47;"
+              style="background: rgb(159, 208, 251); stroke: #071f3d;"
             />
             Untrusted
           </li>
@@ -681,7 +681,7 @@ exports[`AggregateReportSummary when successfully retrieves data it should match
             </h2>
             <div
               class="ChartLegendMarker"
-              style="background: rgb(255, 155, 246); stroke: #ff9bf6;"
+              style="background: rgb(245, 192, 94); stroke: #221803;"
             />
             Quarantined
           </li>
@@ -693,28 +693,24 @@ exports[`AggregateReportSummary when successfully retrieves data it should match
             </h2>
             <div
               class="ChartLegendMarker"
-              style="background: rgb(83, 204, 194); stroke: #53ccc2;"
+              style="background: rgb(240, 161, 241); stroke: #3a0936;"
             />
             Rejected
           </li>
         </ul>
       </div>
     </div>
-  </div>
-  <div
-    class="ui stackable grid"
-  >
     <div
       class="five column row"
     >
       <div
         class="column"
       >
-        <h3
+        <h5
           class="ui header"
         >
           Fully trusted
-        </h3>
+        </h5>
         <p>
           Emails delivered with both successful SPF and DKIM.
         </p>
@@ -722,11 +718,11 @@ exports[`AggregateReportSummary when successfully retrieves data it should match
       <div
         class="column"
       >
-        <h3
+        <h5
           class="ui header"
         >
           Partially trusted
-        </h3>
+        </h5>
         <p>
           Emails delivered with either successful SPF or DKIM.
         </p>
@@ -734,11 +730,11 @@ exports[`AggregateReportSummary when successfully retrieves data it should match
       <div
         class="column"
       >
-        <h3
+        <h5
           class="ui header"
         >
           Untrusted
-        </h3>
+        </h5>
         <p>
           Emails delivered where SPF and DKIM both failed.
         </p>
@@ -746,11 +742,11 @@ exports[`AggregateReportSummary when successfully retrieves data it should match
       <div
         class="column"
       >
-        <h3
+        <h5
           class="ui header"
         >
           Quarantined
-        </h3>
+        </h5>
         <p>
           Emails sent to spam folder because both SPF and DKIM failed.
         </p>
@@ -758,16 +754,19 @@ exports[`AggregateReportSummary when successfully retrieves data it should match
       <div
         class="column"
       >
-        <h3
+        <h5
           class="ui header"
         >
           Rejected
-        </h3>
+        </h5>
         <p>
           Emails not delivered to the user because both SPF and DKIM failed.
         </p>
       </div>
     </div>
   </div>
+  <div
+    class="ui hidden divider"
+  />
 </div>
 `;

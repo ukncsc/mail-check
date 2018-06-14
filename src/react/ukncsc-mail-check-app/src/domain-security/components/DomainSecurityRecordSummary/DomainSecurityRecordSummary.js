@@ -8,89 +8,70 @@ import {
   DomainSecurityRecord,
   DomainSecuritySummaryMessages,
 } from 'domain-security/components';
+import { isPending } from 'common/helpers';
 import { DomainSecurityContext } from 'domain-security/context';
 
-const DomainSecurityRecordSummary = ({
-  type,
-  description,
-  id,
-  loading,
-  error,
-  records,
-  inheritedFrom,
-  failures,
-  warnings,
-  inconclusives,
-}) => (
+const DomainSecurityRecordSummary = ({ item, type, children }) => (
   <React.Fragment>
-    <p>{description}</p>
-    {map(records, ({ record }, i) => (
-      <DomainSecurityRecord key={i} inheritedFrom={inheritedFrom}>
+    {children}
+    {map(item.records, ({ record }, i) => (
+      <DomainSecurityRecord key={i} inheritedFrom={item.inheritedFrom}>
         {record}
       </DomainSecurityRecord>
     ))}
-    {!loading &&
-      !error &&
-      (records ? (
+    {!item.loading &&
+      !item.error &&
+      item.records && (
         <React.Fragment>
           <p>
             <DomainSecurityContext.Consumer>
               {value => (
-                <Link to={`/${value}/${id}/${toLower(type)}`}>
+                <Link to={`/${value}/${item.id}/${toLower(type)}`}>
                   View more information
                 </Link>
               )}
             </DomainSecurityContext.Consumer>
           </p>
           <DomainSecuritySummaryMessages
-            id={id}
+            id={item.id}
             type={type}
-            failures={failures.length}
-            warnings={warnings.length}
-            inconclusives={inconclusives.length}
+            failures={item.failures.length}
+            warnings={item.warnings.length}
+            inconclusives={item.inconclusives.length}
           />
         </React.Fragment>
-      ) : (
-        <Message info>
-          {`We don't have any information about the ${type} record of this domain
+      )}
+    {isPending(item) && (
+      <Message info>
+        {`We don't have any information about the ${type} record of this domain
           yet. Please check back later or get in touch if you think there's a
           problem.`}
-        </Message>
-      ))}
-    {error && (
+      </Message>
+    )}
+    {item.error && (
       <Message error>
         There was a problem retrieving the {type} summary for this domain:{' '}
-        {error.message}
+        {item.error.message}
       </Message>
     )}
   </React.Fragment>
 );
 
-DomainSecurityRecordSummary.defaultProps = {
-  id: null,
-  loading: false,
-  error: null,
-  records: null,
-  inheritedFrom: null,
-  failures: [],
-  warnings: [],
-  inconclusives: [],
-};
-
 DomainSecurityRecordSummary.propTypes = {
   type: PropTypes.oneOf(['DMARC', 'SPF', 'TLS']).isRequired,
-  description: PropTypes.string.isRequired,
-  id: PropTypes.string,
-  loading: PropTypes.bool,
-  error: PropTypes.shape({ message: PropTypes.string }),
-  records: PropTypes.arrayOf(PropTypes.shape({ record: PropTypes.string })),
-  inheritedFrom: PropTypes.shape({
-    id: PropTypes.number,
-    name: PropTypes.string,
-  }),
-  failures: PropTypes.arrayOf(PropTypes.string),
-  warnings: PropTypes.arrayOf(PropTypes.string),
-  inconclusives: PropTypes.arrayOf(PropTypes.string),
+  item: PropTypes.shape({
+    id: PropTypes.string,
+    loading: PropTypes.bool,
+    error: PropTypes.shape({ message: PropTypes.string }),
+    records: PropTypes.arrayOf(PropTypes.shape({ record: PropTypes.string })),
+    inheritedFrom: PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+    }),
+    failures: PropTypes.arrayOf(PropTypes.string),
+    warnings: PropTypes.arrayOf(PropTypes.string),
+    inconclusives: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
 };
 
 export default DomainSecurityRecordSummary;

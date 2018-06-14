@@ -19,17 +19,19 @@ const DomainSecurityDetailsTls = ({ tls = {}, match }) => {
       <DomainSecurityContext.Consumer>
         {value => <BackLink link={`/${value}/${match.params.domainId}`} />}
       </DomainSecurityContext.Consumer>
-      <DomainSecurityTitle
-        title={record && trimEnd(record.hostname, '.')}
-        loading={tls.loading}
-        error={tls.error}
-        subtitle="TLS"
-        lastChecked={record && record.lastChecked}
-        failures={record && record.failures}
-        warnings={record && record.warnings}
-        inconclusives={record && record.inconclusives}
-        pending={tls.hostname === null}
-      />
+      {record && (
+        <DomainSecurityTitle
+          loading={tls.loading}
+          subtitle={trimEnd(record.hostname, '.')}
+          failures={record.failures}
+          warnings={record.warnings}
+          inconclusives={record.inconclusives}
+          pending={tls.hostname === null}
+          lastChecked={record.lastChecked}
+        >
+          TLS
+        </DomainSecurityTitle>
+      )}
       <p>
         <Link to="/domain-security/tls-advice">View NCSC advice on TLS</Link>
       </p>

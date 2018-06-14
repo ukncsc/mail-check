@@ -7,12 +7,12 @@ namespace Dmarc.DomainStatus.Api.Domain
     {
         public ReverseDnsInfoApiRequest(List<string> ipAddresses, DateTime date)
         {
-            IpAddresses = IpAddresses;
+            IpAddresses = ipAddresses;
             Date = date;
         }
 
-        private List<string> IpAddresses { get; }
+        public List<string> IpAddresses { get; }
 
-        private DateTime Date { get; }
+        public DateTime Date { get; }
     }
 }

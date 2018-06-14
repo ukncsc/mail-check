@@ -59,7 +59,13 @@ variable "balancer-name" {
 variable "balancer-fqdn" {
   description = "FQDN of load balancer and certificate blank for internal"
   type        = "string"
-  default     = "api"
+  default     = ""
+}
+
+variable "certificate-name" {
+  description = "If defined, use this certificate which must exist in ACM, otherwise look for a wildcard cert on the internal domain"
+  type        = "string"
+  default     = ""
 }
 
 variable "admin-subnets" {

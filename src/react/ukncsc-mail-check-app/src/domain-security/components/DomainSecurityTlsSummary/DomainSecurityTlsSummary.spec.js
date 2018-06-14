@@ -11,7 +11,9 @@ describe('DomainSecurityTlsSummary', () => {
     beforeEach(() => {
       ({ container } = render(
         <BrowserRouter>
-          <DomainSecurityTlsSummary description="foo" />
+          <DomainSecurityTlsSummary records={[]}>
+            <p>foo</p>
+          </DomainSecurityTlsSummary>
         </BrowserRouter>
       ));
     });
@@ -30,7 +32,6 @@ describe('DomainSecurityTlsSummary', () => {
       ({ container } = render(
         <BrowserRouter>
           <DomainSecurityTlsSummary
-            description="bar"
             records={[
               {
                 id: '1',
@@ -40,7 +41,9 @@ describe('DomainSecurityTlsSummary', () => {
                 inconclusives: [],
               },
             ]}
-          />
+          >
+            <p>bar</p>
+          </DomainSecurityTlsSummary>
         </BrowserRouter>
       ));
     });
@@ -55,10 +58,9 @@ describe('DomainSecurityTlsSummary', () => {
     beforeEach(() => {
       ({ container } = render(
         <BrowserRouter>
-          <DomainSecurityTlsSummary
-            description="flum"
-            error={Error('oh noes!')}
-          />
+          <DomainSecurityTlsSummary error={Error('oh noes!')}>
+            <p>flum</p>
+          </DomainSecurityTlsSummary>
         </BrowserRouter>
       ));
     });

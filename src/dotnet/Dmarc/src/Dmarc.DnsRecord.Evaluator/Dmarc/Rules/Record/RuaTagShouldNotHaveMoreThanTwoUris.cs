@@ -4,9 +4,8 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules.Record
 {
     public class RuaTagShouldNotHaveMoreThanTwoUris : TagShouldNotHaveMoreThanTwoUris<ReportUriAggregate>
     {
-        public RuaTagShouldNotHaveMoreThanTwoUris() 
-            : base(DmarcRulesResource.RuaTagShouldHaveAtLeastOneUri, 
-                  DmarcRulesResource.RuaTagShouldNotHaveMoreThanTwoUrisErrorMessage)
+        public RuaTagShouldNotHaveMoreThanTwoUris()
+            : base(DmarcRulesResource.RuaTagShouldNotHaveMoreThanTwoUrisErrorMessage)
         {
         }
     }

@@ -32,6 +32,7 @@ export default ({ isLoading, error, user }) => {
         ]}
         header={
           <Dropdown.Header
+            as="h5"
             icon="user circle"
             content={`${user.firstName} ${user.lastName}`}
           />

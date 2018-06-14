@@ -1,3 +1,11 @@
 /*******************************
     User Variable Overrides
 *******************************/
+
+/*-------------------
+       Elements
+--------------------*/
+
+@messageTextOpacity: 1;
+
+@borderWidth: 0px;

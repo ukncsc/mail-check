@@ -2,12 +2,16 @@ import React from 'react';
 import debounce from 'lodash/debounce';
 
 import { connect } from 'react-redux';
-import { Grid, Input, Loader, Header, Message } from 'semantic-ui-react';
 import {
-  Pagination,
-  PaginationDisplay,
-  DomainsStatusDisplay,
-} from 'anti-spoofing/components';
+  Grid,
+  Input,
+  Loader,
+  Header,
+  Message,
+  Divider,
+  Statistic,
+} from 'semantic-ui-react';
+import { Pagination, DomainsStatusDisplay } from 'anti-spoofing/components';
 import { fetchAntiSpoofingDomains } from 'anti-spoofing/store/domains';
 
 export class AntiSpoofing extends React.Component {
@@ -45,77 +49,57 @@ export class AntiSpoofing extends React.Component {
   render() {
     const { isLoading, error, page, pageSize, results } = this.props.domain;
     return (
-      <Grid>
-        <Grid.Row>
-          <Grid.Column width={16}>
-            <Header as="h1">Domain Security</Header>
-          </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Column width={16}>
-            <Input
-              fluid
-              icon="search"
-              type="text"
-              placeholder="Search..."
-              onChange={this.handleSearchChanged}
-            />
-          </Grid.Column>
-        </Grid.Row>
-        {isLoading && (
-          <Grid.Row>
-            <Grid.Column width={16}>
-              <Loader active size="big" />
-            </Grid.Column>
-          </Grid.Row>
-        )}
+      <React.Fragment>
+        <Header as="h1">Domain Security</Header>
+        <Divider hidden />
+        <Input
+          fluid
+          icon="search"
+          type="text"
+          placeholder="Search..."
+          onChange={this.handleSearchChanged}
+        />
+        <Divider hidden />
+        {isLoading && <Loader active size="big" />}
         {!isLoading &&
           error && (
-            <Grid.Row>
-              <Grid.Column width={16}>
-                <Message negative>
-                  <Message.Header>
-                    The following error occurred with your request:
-                  </Message.Header>
-                  <p>{error}</p>
-                </Message>
-              </Grid.Column>
-            </Grid.Row>
+            <Message negative>
+              <Message.Header>
+                The following error occurred with your request:
+              </Message.Header>
+              <p>{error}</p>
+            </Message>
           )}
         {!isLoading &&
           !error &&
           results.domainCount === 0 && (
-            <Grid.Row>
-              <Grid.Column width={16}>
-                <Message>
-                  <Message.Header>No Results</Message.Header>
-                  <p>
-                    {results.search == null
-                      ? 'There are currently no domains available in Mail Check.'
-                      : 'Your search returned no results.'}
-                  </p>
-                </Message>
-              </Grid.Column>
-            </Grid.Row>
+            <Message>
+              <Message.Header>No Results</Message.Header>
+              <p>
+                {results.search == null
+                  ? 'There are currently no domains available in Mail Check.'
+                  : 'Your search returned no results.'}
+              </p>
+            </Message>
           )}
         {!isLoading &&
           !error &&
           results.domainCount > 0 && (
-            <React.Fragment>
+            <Grid stackable>
               <Grid.Row>
-                <Grid.Column width={4}>
-                  <PaginationDisplay
-                    page={page}
-                    pageSize={pageSize}
-                    collectionSize={results.domainCount}
+                <Grid.Column width={2} floated="right">
+                  <Statistic
+                    label="Domains"
+                    value={results.domainCount}
+                    size="small"
                   />
                 </Grid.Column>
-                <Grid.Column floated="right" width={12}>
+                <Grid.Column width={10}>
                   <DomainsStatusDisplay results={results} />
                 </Grid.Column>
               </Grid.Row>
               <Grid.Row>
-                <Grid.Column floated="right" width={3}>
+                <Grid.Column floated="right">
                   <Pagination
                     page={page}
                     pageSize={pageSize}
@@ -124,9 +108,9 @@ export class AntiSpoofing extends React.Component {
                   />
                 </Grid.Column>
               </Grid.Row>
-            </React.Fragment>
+            </Grid>
           )}
-      </Grid>
+      </React.Fragment>
     );
   }
 }
@@ -135,4 +119,7 @@ const mapDispatchToProps = dispatch => ({
   fetchAntiSpoofingDomains: (page, pageSize, search) =>
     dispatch(fetchAntiSpoofingDomains(page, pageSize, search)),
 });
-export default connect(mapStateToProps, mapDispatchToProps)(AntiSpoofing);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AntiSpoofing);

@@ -13,7 +13,8 @@ exports[`DomainSecurityTlsSummary when no records are provided it should match t
     </a>
   </p>
   <div
-    class="ui large success message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em;"
+    class="ui success message DomainSecurityMessage--container"
   >
     No MX records found.
   </div>

@@ -117,14 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FailureReportingOptionsShouldBeOneErrorMessage" xml:space="preserve">
-    <value>Report failure option 1 provides maximum reporting detail (SPF or DKIM checks failed). Consider changing from {0} to 1.</value>
-  </data>
   <data name="MaxLengthOf450CharactersErrorMessage" xml:space="preserve">
     <value>Record length should be less than or equal to {0} characters. This record has {1} characters.</value>
   </data>
   <data name="NoDmarcErrorMessage" xml:space="preserve">
-    <value>No DMARC record configured, to safely get started with DMARC add the following to DNS: `_dmarc.{0} TXT v=DMARC1;p=none;sp=none;fo=1;rua=dmarc-rua@dmarc.service.gov.uk;ruf=mailto:dmarc-ruf@dmarc.service.gov.uk`. For more information, see our [detailed guidance](https://www.ncsc.gov.uk/guidance/email-security-and-anti-spoofing). </value>
+    <value>No DMARC record configured, to safely get started with DMARC add the following to DNS: `_dmarc.{0} TXT v=DMARC1;p=none;sp=none;rua=mailto:dmarc-rua@dmarc.service.gov.uk;`. For more information, see our [detailed guidance](https://www.ncsc.gov.uk/guidance/email-security-and-anti-spoofing). </value>
   </data>
   <data name="OnlyOneDmarcRecordErrorMessage" xml:space="preserve">
     <value>A domain should have only 1 DMARC record.</value>
@@ -159,23 +156,14 @@
   <data name="RuaTagsShouldContainDmarcServiceMailBoxErrorMessage" xml:space="preserve">
     <value>Mail Check can only provide email reporting if the aggregate report URI tag (rua) includes the {0} mailbox. Consider adding `{1}` to the rua tag values.</value>
   </data>
-  <data name="RufMailbox" xml:space="preserve">
-    <value>mailto:dmarc-ruf@dmarc.service.gov.uk</value>
-  </data>
   <data name="RufTagShouldBeMailToErrorMessage" xml:space="preserve">
     <value>Only URIs with mailto: scheme are guaranteed to have forensic reports delivered. This record has non mailto: scheme URIs in its forensic report URI tag (ruf).</value>
   </data>
   <data name="RufTagShouldNotContainDuplicateUrisErrorMessage" xml:space="preserve">
     <value>The report forensic URIs tag (ruf) has duplicate URIs. Consider removing the duplicate entries from the ruf tag. </value>
   </data>
-  <data name="RufTagShouldNotHaveMisconfiguredMailCheckMailboxErrorMessage" xml:space="preserve">
-    <value>The forensic report URI tag (ruf) is misconfigured. Mail Check only processes forensic reports sent to {0}. Update the ruf value to `{1}`.</value>
-  </data>
   <data name="RufTagShouldNotHaveMoreThanTwoUrisErrorMessage" xml:space="preserve">
     <value>Only 2 forensic report URIs (ruf) are guaranteed to have reports delivered. This record has {0}.</value>
-  </data>
-  <data name="RufTagsShouldContainDmarcServiceMailBoxErrorMessage" xml:space="preserve">
-    <value>Mail Check can only provide detailed email reporting if the forensic report URI tag (ruf) includes the {0} mailbox. Consider adding `{1}` to the ruf tag values.</value>
   </data>
   <data name="SubdomainPolicyMustBeQuarantineOrRejectErrorMessage" xml:space="preserve">
     <value>Only a sub domain policy (sp) of Quarantine or Reject will protect recipients from spoofed email. Consider changing sub domain policy from {0} to Quarantine or Reject.</value>

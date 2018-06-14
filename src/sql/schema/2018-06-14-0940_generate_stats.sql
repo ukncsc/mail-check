@@ -12,14 +12,6 @@ CREATE TABLE IF NOT EXISTS `derived_weekly_stats` (
   `emails_blocked` INT UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-DROP TABLE IF EXISTS `derived_weekly_stats_forensic`;
-
-CREATE TABLE IF NOT EXISTS `derived_weekly_stats_forensic` (
-  `week_beginning` DATE NOT NULL,
-  `domains_reporting` INT UNSIGNED NOT NULL,
-  `forensic_report_count` INT UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 DROP PROCEDURE IF EXISTS generate_derived_stats;
 
@@ -52,13 +44,6 @@ insert into derived_weekly_stats
  sum(dad.disposition_reject_count)+sum(dad.disposition_quarantine_count) emails_blocked
  from derived_aggregate_daily dad 
  group by yearweek(dad.effective_date));
- 
-truncate table derived_weekly_stats_forensic;
-insert into derived_weekly_stats_forensic
-(select date(min(arrival_date)) week_beginning, count(distinct reported_domain_id) domains_reporting,count(*) forensic_report_count
-from forensic_report 
-where arrival_date is not null 
-group by yearweek(arrival_date));
 
 UPDATE `derived_job_semaphore` SET end_time=CURRENT_TIMESTAMP where `job_type` = 'weekly_stats' and `start_time` = @started_at;
 

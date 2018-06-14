@@ -89,7 +89,8 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Factory
             services.AddTransient<IPublishingEmailMessageInfoProcessor<AggregateReportInfo>>(_ => new AggregateReportPublishingEmailMessageInfoProcessor<AggregateReportInfo>(
                 _.GetService<IPersistentEmailMessageInfoProcessor<AggregateReportInfo>>(),
                 _.GetService<IPublisher>(),
-                _.GetService<ILogger>()));
+                _.GetService<ILogger>(),
+                _.GetRequiredService<IPublisherConfig>()));
 
             services.AddTransient<IS3EmailMessageProcessor>(_ => new S3EmailMessageProcessor<AggregateReportInfo>(
                 _.GetService<IS3EmailMessageClient>(),

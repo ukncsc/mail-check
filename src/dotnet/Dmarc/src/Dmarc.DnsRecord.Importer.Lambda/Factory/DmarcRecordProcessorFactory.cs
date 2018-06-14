@@ -71,7 +71,8 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Factory
             services.AddTransient<PublishingDnsRecordUpdater>(_ => new PublishingDnsRecordUpdater(
                 _.GetRequiredService<PersistantDnsRecordUpdater>(),
                 _.GetRequiredService<IMapper<List<RecordEntity>, DnsRecordMessage>>(),
-                _.GetRequiredService<IPublisher>()));
+                _.GetRequiredService<IPublisher>(),
+                _.GetRequiredService<IPublisherConfig>()));
 
             services.AddTransient<IDnsRecordProcessor>(_ => new DnsRecordProcessor(
                 _.GetRequiredService<IDnsRecordDao>(),

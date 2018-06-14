@@ -19,7 +19,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
             _rule = new RuaTagShouldNotHaveMoreThanTwoUris();
         }
 
-        [TestCase(0, true, TestName = "Error when 0 Uris.")]
+        [TestCase(0, false, TestName = "No error when 0 Uris.")]
         [TestCase(1, false, TestName = "No error when 1 Uri.")]
         [TestCase(2, false, TestName = "No error when 2 Uris.")]
         [TestCase(3, true, TestName = "Error when 3 Uris.")]

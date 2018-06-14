@@ -10,24 +10,25 @@ import {
 import { DomainSecurityContext } from 'domain-security/context';
 
 const DomainSecurityTlsSummary = ({
-  description,
   id,
   loading,
   error,
   records,
   pending,
+  children,
 }) => (
   <React.Fragment>
-    <p>{description}</p>
+    {children}
     <p>
       <Link to="/domain-security/tls-advice">View NCSC advice on TLS</Link>
     </p>
     {!loading &&
-      !error && (
+      !error &&
+      records && (
         <React.Fragment>
           {map(records, record => (
             <React.Fragment key={record.id}>
-              <Header as="h2">{record.hostname}</Header>
+              <Header as="h3">{record.hostname}</Header>
               <p>
                 <DomainSecurityContext.Consumer>
                   {value => (
@@ -47,6 +48,7 @@ const DomainSecurityTlsSummary = ({
             </React.Fragment>
           ))}
           {!pending &&
+            records &&
             !records.length && (
               <DomainSecurityMessage success>
                 No MX records found.
@@ -72,12 +74,11 @@ DomainSecurityTlsSummary.defaultProps = {
   id: null,
   loading: false,
   error: null,
-  records: [],
+  records: null,
   pending: false,
 };
 
 DomainSecurityTlsSummary.propTypes = {
-  description: PropTypes.string.isRequired,
   id: PropTypes.string,
   loading: PropTypes.bool,
   error: PropTypes.shape({ message: PropTypes.string }),

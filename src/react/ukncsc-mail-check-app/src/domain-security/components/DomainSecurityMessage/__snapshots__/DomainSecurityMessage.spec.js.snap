@@ -3,7 +3,8 @@
 exports[`DomainSecurityMessage when provided with no props it should match the snapshot 1`] = `
 <div>
   <div
-    class="ui large message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em;"
+    class="ui message DomainSecurityMessage--container"
   >
     <p>
       security rulez
@@ -15,7 +16,8 @@ exports[`DomainSecurityMessage when provided with no props it should match the s
 exports[`DomainSecurityMessage when provided with the markdown flag and a link it should match the snapshot 1`] = `
 <div>
   <div
-    class="ui large message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em;"
+    class="ui message DomainSecurityMessage--container"
   >
     <div>
       <p>
@@ -33,7 +35,8 @@ exports[`DomainSecurityMessage when provided with the markdown flag and a link i
 exports[`DomainSecurityMessage when provided with the markdown flag and a mailto address it should match the snapshot 1`] = `
 <div>
   <div
-    class="ui large message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em;"
+    class="ui message DomainSecurityMessage--container"
   >
     <div>
       <p>
@@ -47,7 +50,8 @@ exports[`DomainSecurityMessage when provided with the markdown flag and a mailto
 exports[`DomainSecurityMessage when provided with the markdown flag it should match the snapshot 1`] = `
 <div>
   <div
-    class="ui large message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em;"
+    class="ui message DomainSecurityMessage--container"
   >
     <div>
       <ul>

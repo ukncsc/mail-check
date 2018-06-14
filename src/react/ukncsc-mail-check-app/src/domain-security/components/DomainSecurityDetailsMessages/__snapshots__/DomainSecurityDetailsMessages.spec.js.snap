@@ -13,7 +13,7 @@ exports[`DomainSecurityDetailsMessages when provided with failures it should mat
     </span>
   </div>
   <p
-    class="DomainSecurityDetails--description__error"
+    class="DomainSecuritySummaryMessages--intro"
   >
     Your 
     DMARC
@@ -24,7 +24,8 @@ exports[`DomainSecurityDetailsMessages when provided with failures it should mat
     urgent attention.
   </p>
   <div
-    class="ui large error message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em;"
+    class="ui error message DomainSecurityMessage--container"
   >
     <div>
       <p>
@@ -51,7 +52,7 @@ exports[`DomainSecurityDetailsMessages when provided with failures, warnings and
     </span>
   </div>
   <p
-    class="DomainSecurityDetails--description__error"
+    class="DomainSecuritySummaryMessages--intro"
   >
     Your 
     DMARC
@@ -62,7 +63,8 @@ exports[`DomainSecurityDetailsMessages when provided with failures, warnings and
     urgent attention.
   </p>
   <div
-    class="ui large error message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em;"
+    class="ui error message DomainSecurityMessage--container"
   >
     <div>
       <p>
@@ -84,7 +86,7 @@ exports[`DomainSecurityDetailsMessages when provided with failures, warnings and
     </span>
   </div>
   <p
-    class="DomainSecurityDetails--description__warning"
+    class="DomainSecuritySummaryMessages--intro"
   >
     Your 
     DMARC
@@ -93,7 +95,8 @@ exports[`DomainSecurityDetailsMessages when provided with failures, warnings and
     that can be improved.
   </p>
   <div
-    class="ui large warning message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em;"
+    class="ui warning message DomainSecurityMessage--container"
   >
     <div>
       <p>
@@ -115,7 +118,7 @@ exports[`DomainSecurityDetailsMessages when provided with failures, warnings and
     </span>
   </div>
   <p
-    class="DomainSecurityDetails--description__information"
+    class="DomainSecuritySummaryMessages--intro"
   >
     Your 
     DMARC
@@ -126,7 +129,8 @@ exports[`DomainSecurityDetailsMessages when provided with failures, warnings and
     .
   </p>
   <div
-    class="ui large message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em;"
+    class="ui message DomainSecurityMessage--container"
   >
     <div>
       <p>
@@ -150,7 +154,7 @@ exports[`DomainSecurityDetailsMessages when provided with inconclusives it shoul
     </span>
   </div>
   <p
-    class="DomainSecurityDetails--description__information"
+    class="DomainSecuritySummaryMessages--intro"
   >
     Your 
     DMARC
@@ -161,7 +165,8 @@ exports[`DomainSecurityDetailsMessages when provided with inconclusives it shoul
     .
   </p>
   <div
-    class="ui large message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em;"
+    class="ui message DomainSecurityMessage--container"
   >
     <div>
       <p>
@@ -187,7 +192,8 @@ exports[`DomainSecurityDetailsMessages when provided with no failures, warnings 
     class="ui hidden divider"
   />
   <div
-    class="ui large success message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em;"
+    class="ui success message DomainSecurityMessage--container"
   >
     DMARC
     is well configured.
@@ -208,7 +214,7 @@ exports[`DomainSecurityDetailsMessages when provided with warnings it should mat
     </span>
   </div>
   <p
-    class="DomainSecurityDetails--description__warning"
+    class="DomainSecuritySummaryMessages--intro"
   >
     Your 
     DMARC
@@ -217,7 +223,8 @@ exports[`DomainSecurityDetailsMessages when provided with warnings it should mat
     that can be improved.
   </p>
   <div
-    class="ui large warning message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em;"
+    class="ui warning message DomainSecurityMessage--container"
   >
     <div>
       <p>

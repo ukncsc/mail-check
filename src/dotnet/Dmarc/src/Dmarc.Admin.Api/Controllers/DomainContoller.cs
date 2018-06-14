@@ -148,7 +148,7 @@ namespace Dmarc.Admin.Api.Controllers
             OrganisationalDomain organisationalDomain = await
                 _organisationalDomainProvider.GetOrganisationalDomain(domain.Name);
 
-            if (!organisationalDomain.IsOrgDomain)
+            if (!organisationalDomain.IsOrgDomain && !organisationalDomain.IsTld)
             {
                 _log.LogDebug($"{domain.Name} is not an organisational domain adding {organisationalDomain.OrgDomain}");
                 await _domainDao.CreateDomain(organisationalDomain.OrgDomain);

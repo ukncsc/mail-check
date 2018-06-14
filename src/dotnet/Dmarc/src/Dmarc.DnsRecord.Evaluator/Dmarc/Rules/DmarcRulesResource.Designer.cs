@@ -60,15 +60,6 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to Report failure option 1 provides maximum reporting detail (SPF or DKIM checks failed). Consider changing from {0} to 1..
-        /// </summary>
-        public static string FailureReportingOptionsShouldBeOneErrorMessage {
-            get {
-                return ResourceManager.GetString("FailureReportingOptionsShouldBeOneErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///    Looks up a localized string similar to Record length should be less than or equal to {0} characters. This record has {1} characters..
         /// </summary>
         public static string MaxLengthOf450CharactersErrorMessage {
@@ -78,7 +69,7 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to No DMARC record configured, to safely get started with DMARC add the following to DNS: `_dmarc.{0} TXT v=DMARC1;p=none;sp=none;fo=1;rua=dmarc-rua@dmarc.service.gov.uk;ruf=mailto:dmarc-ruf@dmarc.service.gov.uk`. For more information, see our [detailed guidance](https://www.ncsc.gov.uk/guidance/email-security-and-anti-spoofing). .
+        ///    Looks up a localized string similar to No DMARC record configured, to safely get started with DMARC add the following to DNS: `_dmarc.{0} TXT v=DMARC1;p=none;sp=none;rua=mailto:dmarc-rua@dmarc.service.gov.uk;`. For more information, see our [detailed guidance](https://www.ncsc.gov.uk/guidance/email-security-and-anti-spoofing). .
         /// </summary>
         public static string NoDmarcErrorMessage {
             get {
@@ -186,15 +177,6 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to mailto:dmarc-ruf@dmarc.service.gov.uk.
-        /// </summary>
-        public static string RufMailbox {
-            get {
-                return ResourceManager.GetString("RufMailbox", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///    Looks up a localized string similar to Only URIs with mailto: scheme are guaranteed to have forensic reports delivered. This record has non mailto: scheme URIs in its forensic report URI tag (ruf)..
         /// </summary>
         public static string RufTagShouldBeMailToErrorMessage {
@@ -213,29 +195,11 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to The forensic report URI tag (ruf) is misconfigured. Mail Check only processes forensic reports sent to {0}. Update the ruf value to `{1}`..
-        /// </summary>
-        public static string RufTagShouldNotHaveMisconfiguredMailCheckMailboxErrorMessage {
-            get {
-                return ResourceManager.GetString("RufTagShouldNotHaveMisconfiguredMailCheckMailboxErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///    Looks up a localized string similar to Only 2 forensic report URIs (ruf) are guaranteed to have reports delivered. This record has {0}..
         /// </summary>
         public static string RufTagShouldNotHaveMoreThanTwoUrisErrorMessage {
             get {
                 return ResourceManager.GetString("RufTagShouldNotHaveMoreThanTwoUrisErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///    Looks up a localized string similar to Mail Check can only provide detailed email reporting if the forensic report URI tag (ruf) includes the {0} mailbox. Consider adding `{1}` to the ruf tag values..
-        /// </summary>
-        public static string RufTagsShouldContainDmarcServiceMailBoxErrorMessage {
-            get {
-                return ResourceManager.GetString("RufTagsShouldContainDmarcServiceMailBoxErrorMessage", resourceCulture);
             }
         }
         

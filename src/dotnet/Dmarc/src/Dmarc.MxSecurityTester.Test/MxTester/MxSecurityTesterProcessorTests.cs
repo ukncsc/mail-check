@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Dmarc.Common.Interface.Logging;
 using Dmarc.Common.Interface.Tls.Domain;
@@ -7,7 +8,6 @@ using Dmarc.MxSecurityTester.Dao.Entities;
 using Dmarc.MxSecurityTester.MxTester;
 using FakeItEasy;
 using NUnit.Framework;
-using Certificate = Dmarc.MxSecurityTester.Dao.Entities.Certificate;
 
 namespace Dmarc.MxSecurityTester.Test.MxTester
 {
@@ -16,16 +16,16 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
     {
         private MxSecurityTesterProcessor _mxSecurityTesterProcessor;
         private IDomainTlsSecurityProfileDao _domainTlsSecurityProfileDao;
-        private IPublishingTlsSecurityProfileUpdater _tlsSecurityProfileUpdater;
+        private IPublishingCertsSecurityProfileUpdater _certsSecurityProfileUpdater;
 
         [SetUp]
         public void SetUp()
         {
             _domainTlsSecurityProfileDao = A.Fake<IDomainTlsSecurityProfileDao>();
-            _tlsSecurityProfileUpdater = A.Fake<IPublishingTlsSecurityProfileUpdater>();
+            _certsSecurityProfileUpdater = A.Fake<IPublishingCertsSecurityProfileUpdater>();
 
             _mxSecurityTesterProcessor = new MxSecurityTesterProcessor(_domainTlsSecurityProfileDao,
-                _tlsSecurityProfileUpdater, A.Fake<ILogger>());
+                _certsSecurityProfileUpdater, A.Fake<ILogger>());
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
             await _mxSecurityTesterProcessor.Process();
 
             A.CallTo(() => _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate()).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => _tlsSecurityProfileUpdater.UpdateSecurityProfiles(A<List<DomainTlsSecurityProfile>>._)).MustNotHaveHappened();
+            A.CallTo(() => _certsSecurityProfileUpdater.UpdateSecurityProfiles(A<List<DomainTlsSecurityProfile>>._)).MustNotHaveHappened();
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
             await _mxSecurityTesterProcessor.Process();
 
             A.CallTo(() => _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate()).MustHaveHappened(Repeated.Exactly.Twice);
-            A.CallTo(() => _tlsSecurityProfileUpdater.UpdateSecurityProfiles(A<List<DomainTlsSecurityProfile>>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _certsSecurityProfileUpdater.UpdateSecurityProfiles(A<List<DomainTlsSecurityProfile>>._)).MustHaveHappened(Repeated.Exactly.Once);
         }
 
         private DomainTlsSecurityProfile CreateDomainTlsSecurityProfile()
@@ -73,7 +73,7 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
                 tlsTestResult,
                 tlsTestResult,
                 tlsTestResult,
-                new List<Certificate>()
+                new List<X509Certificate2>()
             ));
 
             return new DomainTlsSecurityProfile(new Domain(1, "domain"),

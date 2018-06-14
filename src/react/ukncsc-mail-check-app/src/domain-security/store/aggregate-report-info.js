@@ -23,14 +23,14 @@ export const fetchErrorAggregateReportInfo = createAction(
 export const fetchAggregateReportInfo = id => async dispatch => {
   try {
     dispatch(fetchRequestAggregateReportInfo({ id }));
-    const response = await mailCheckApiFetch(
+    const data = await mailCheckApiFetch(
       `/domainstatus/domain/aggregate/${id}/${moment()
         .subtract(1, 'week')
         .format('YYYY-MM-DD')}/${moment()
         .subtract(1, 'day')
         .format('YYYY-MM-DD')}`
     );
-    const result = response ? { id, data: { ...response } } : { id };
+    const result = { id, data };
     dispatch(fetchSuccessAggregateReportInfo(result));
   } catch (err) {
     err.id = id;

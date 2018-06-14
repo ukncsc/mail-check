@@ -8,12 +8,16 @@ import {
   DomainSecurityTlsSummary,
 } from 'domain-security/components';
 import { BackLink } from 'common/components';
+import { isPending, shouldShowLoader } from 'common/helpers';
 import {
   dmarcDescription,
+  emailSecurityDescription,
   spfDescription,
   tlsDescription,
 } from 'domain-security/data';
 import { DomainSecurityContext } from 'domain-security/context';
+
+import './DomainSecuritySummary.css';
 
 const DomainSecuritySummary = ({
   dmarc,
@@ -26,84 +30,80 @@ const DomainSecuritySummary = ({
     <DomainSecurityContext.Consumer>
       {value => <BackLink link={`/${value}`} />}
     </DomainSecurityContext.Consumer>
-    <Header as="h1">
-      {domain.loading && <Loader active inline style={{ marginRight: 20 }} />}
-      {!domain.loading &&
-        !domain.error && (
-          <React.Fragment>
-            {domain.name}
-            <Header.Subheader>Domain Security Summary</Header.Subheader>
-          </React.Fragment>
-        )}
-    </Header>
+    {!domain.loading &&
+      !domain.error &&
+      domain.name && <Header as="h1">{domain.name}</Header>}
+    {shouldShowLoader(dmarc, domain, spf, tls, aggregateReportInfo) && (
+      <Loader active inline style={{ marginRight: 20 }} />
+    )}
     {domain.error && (
       <Message error>
         There was a problem retrieving the details of this domain:{' '}
         {domain.error.message}
       </Message>
     )}
-    <AggregateReportSummary aggregateReportInfo={aggregateReportInfo} />
-    <Divider />
+    <Header as="h2">Email security summary</Header>
+    <p style={{ maxWidth: 550 }}>{emailSecurityDescription}</p>
+    <AggregateReportSummary {...aggregateReportInfo} />
+    <Divider className="DomainSecuritySummary--divider" />
     <Grid stackable>
-      <Grid.Row columns={2}>
-        <Grid.Column>
+      <Grid.Row>
+        <Grid.Column width="4">
           <DomainSecurityTitle
-            title="DMARC"
-            loading={dmarc.loading}
-            error={dmarc.error}
+            as="h2"
             failures={dmarc.failures}
             warnings={dmarc.warnings}
             inconclusives={dmarc.inconclusives}
-            pending={!dmarc.loading && !dmarc.error && !dmarc.records}
-          />
+            pending={isPending(dmarc)}
+          >
+            DMARC
+          </DomainSecurityTitle>
         </Grid.Column>
-        <Grid.Column>
-          <DomainSecurityRecordSummary
-            {...dmarc}
-            description={dmarcDescription}
-            type="DMARC"
-          />
+        <Grid.Column width="8">
+          <DomainSecurityRecordSummary item={dmarc} type="DMARC">
+            <p>{dmarcDescription}</p>
+          </DomainSecurityRecordSummary>
         </Grid.Column>
       </Grid.Row>
-      <Divider />
-      <Grid.Row columns={2}>
-        <Grid.Column>
+      <Divider className="DomainSecuritySummary--divider" />
+      <Grid.Row>
+        <Grid.Column width="4">
           <DomainSecurityTitle
-            title="SPF"
-            loading={spf.loading}
-            error={spf.error}
+            as="h2"
             failures={spf.failures}
             warnings={spf.warnings}
             inconclusives={spf.inconclusives}
-            pending={!spf.loading && !spf.error && !spf.records}
-          />
+            pending={isPending(spf)}
+          >
+            SPF
+          </DomainSecurityTitle>
         </Grid.Column>
-        <Grid.Column>
-          <DomainSecurityRecordSummary
-            {...spf}
-            description={spfDescription}
-            type="SPF"
-          />
+        <Grid.Column width="8">
+          <DomainSecurityRecordSummary item={spf} type="SPF">
+            <p>{spfDescription}</p>
+          </DomainSecurityRecordSummary>
         </Grid.Column>
       </Grid.Row>
-      <Divider />
-      <Grid.Row columns={2}>
-        <Grid.Column>
+      <Divider className="DomainSecuritySummary--divider" />
+      <Grid.Row>
+        <Grid.Column width="4">
           <DomainSecurityTitle
-            title="TLS"
-            loading={tls.loading}
-            error={tls.error}
+            as="h2"
             failures={flatMap(tls.records, r => r.failures || [])}
             warnings={flatMap(tls.records, r => r.warnings || [])}
             inconclusives={flatMap(tls.records, r => r.inconclusives || [])}
             pending={tls && tls.pending}
-          />
+          >
+            TLS
+          </DomainSecurityTitle>
         </Grid.Column>
-        <Grid.Column>
-          <DomainSecurityTlsSummary {...tls} description={tlsDescription} />
+        <Grid.Column width="8">
+          <DomainSecurityTlsSummary {...tls}>
+            <p>{tlsDescription}</p>
+          </DomainSecurityTlsSummary>
         </Grid.Column>
       </Grid.Row>
-      <Divider hidden />
+      <Divider className="DomainSecuritySummary--divider" />
     </Grid>
   </React.Fragment>
 );

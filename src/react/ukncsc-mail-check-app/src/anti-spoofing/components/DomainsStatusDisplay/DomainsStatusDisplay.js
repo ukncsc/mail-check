@@ -8,7 +8,7 @@ export default ({ results }) => (
   <Table basic="very">
     <Table.Header>
       <Table.Row>
-        <Table.HeaderCell width={10}>
+        <Table.HeaderCell width={6}>
           <Header as="h3">Domain</Header>
         </Table.HeaderCell>
         <Table.HeaderCell width={2}>
@@ -29,20 +29,17 @@ export default ({ results }) => (
           ({ domain, tlsStatus, dmarcStatus, spfStatus }, i) => (
             <Table.Row key={i}>
               <Table.Cell>
-                <Header as="h3">{domain.name}</Header>
+                <Header as="h4">{domain.name}</Header>
                 {
                   // waiting on https://github.com/airbnb/javascript/pull/1648 to fix below
                   /* eslint-disable jsx-a11y/anchor-is-valid */
                 }
-                <Header as="h4">
-                  <DomainSecurityContext.Consumer>
-                    {value => (
-                      <Link to={`/${value}/${domain.id}`}>
-                        View Information
-                      </Link>
-                    )}
-                  </DomainSecurityContext.Consumer>
-                </Header>
+
+                <DomainSecurityContext.Consumer>
+                  {value => (
+                    <Link to={`/${value}/${domain.id}`}>View Information</Link>
+                  )}
+                </DomainSecurityContext.Consumer>
               </Table.Cell>
               <Table.Cell>
                 <RatingDisplay status={dmarcStatus} />

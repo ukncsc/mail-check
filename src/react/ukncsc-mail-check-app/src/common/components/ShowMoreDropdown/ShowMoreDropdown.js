@@ -15,9 +15,13 @@ class ShowMoreDropdown extends Component {
 
     return (
       <Accordion>
-        <Accordion.Title active={showMore} onClick={this.toggleContent}>
+        <Accordion.Title
+          active={showMore}
+          onClick={this.toggleContent}
+          className="ShowMoreDropdown--title"
+        >
           <Icon name="dropdown" className="ShowMoreDropdown--icon" />
-          <span className="ShowMoreDropdown--title">{title}</span>
+          <span className="ShowMoreDropdown--title-text">{title}</span>
         </Accordion.Title>
         <Accordion.Content active={showMore}>
           <div className="ShowMoreDropdown--content">{children}</div>

@@ -11,7 +11,7 @@ const DomainSecurityRecordExplanation = ({ title, data }) =>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell width={3}>Element</Table.HeaderCell>
-            <Table.HeaderCell width={10}>Explanation</Table.HeaderCell>
+            <Table.HeaderCell width={9}>Explanation</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>

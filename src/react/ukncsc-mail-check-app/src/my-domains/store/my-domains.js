@@ -2,7 +2,7 @@ import { createAction, handleActions } from 'redux-actions';
 import { mailCheckApiFetch } from 'common/helpers';
 
 const fetchRequestAction = 'mailCheck/myDomains/MY_DOMAINS_FETCH_REQUEST';
-const fetchSuccessAction = 'mailCheck/MyDomains/MY_DOMAINS_FETCH_SUCCESS';
+const fetchSuccessAction = 'mailCheck/myDomains/MY_DOMAINS_FETCH_SUCCESS';
 const fetchErrorAction = 'mailCheck/myDomains/MY_DOMAINS_FETCH_ERROR';
 export const fetchRequestMyDomains = createAction(fetchRequestAction);
 export const fetchSuccessMyDomains = createAction(fetchSuccessAction);

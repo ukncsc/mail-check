@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using Dmarc.MxSecurityTester.Util;
+using Newtonsoft.Json;
 
 namespace Dmarc.MxSecurityTester.Dao.Entities
 {
@@ -19,7 +22,7 @@ namespace Dmarc.MxSecurityTester.Dao.Entities
             TlsTestResult test10Result,
             TlsTestResult test11Result,
             TlsTestResult test12Result,
-            List<Certificate> certificates)
+            List<X509Certificate2> certificates)
         {
             FailureCount = failureCount;
             Test1Result = test1Result;
@@ -34,7 +37,7 @@ namespace Dmarc.MxSecurityTester.Dao.Entities
             Test10Result = test10Result;
             Test11Result = test11Result;
             Test12Result = test12Result;
-            Certificates = certificates ?? new List<Certificate>();
+            Certificates = certificates ?? new List<X509Certificate2>();
         }
 
         public int FailureCount { get; }
@@ -50,7 +53,9 @@ namespace Dmarc.MxSecurityTester.Dao.Entities
         public TlsTestResult Test10Result { get; }
         public TlsTestResult Test11Result { get; }
         public TlsTestResult Test12Result { get; }
-        public List<Certificate> Certificates { get; }
+
+        [JsonConverter(typeof(X509CertificateConverter))]
+        public List<X509Certificate2> Certificates { get; }
 
         //ignore failure count
         protected bool Equals(TlsTestResults other)

@@ -1,10 +1,20 @@
+.ShowMoreDropdown--title {
+  display: inline-block;
+  line-height: 1em;
+}
+
+.active.title.ShowMoreDropdown--title {
+  border: 3px #fdbd47 solid;
+}
+
 .ShowMoreDropdown--icon {
   color: #2b88c8;
 }
 
-.ShowMoreDropdown--title {
-  text-decoration: underline;
+.ShowMoreDropdown--title-text {
   color: #2b88c8;
+  text-decoration: underline;
+  padding-right: 3px;
 }
 
 .ShowMoreDropdown--content {

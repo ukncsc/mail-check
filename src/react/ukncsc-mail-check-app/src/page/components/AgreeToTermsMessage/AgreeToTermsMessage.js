@@ -9,7 +9,7 @@ export default ({ show, onAgree }) =>
         <Message.Header>Terms of Service</Message.Header>
         <Message.Content>
           <Grid columns={2} stackable>
-            <Grid.Column width={13} verticalAlign="middle">
+            <Grid.Column width={9} verticalAlign="middle">
               By using Mail Check you are agreeing to our use of cookies and our{' '}
               {
                 // waiting on https://github.com/airbnb/javascript/pull/1648 to fix below
@@ -18,7 +18,7 @@ export default ({ show, onAgree }) =>
               <Link to="/terms">Terms and Conditions of Service</Link>.
             </Grid.Column>
             <Grid.Column width={3} textAlign="right" verticalAlign="middle">
-              <Button onClick={onAgree} size="large" color="green" fluid>
+              <Button onClick={onAgree} color="green" fluid>
                 Agree
               </Button>
             </Grid.Column>

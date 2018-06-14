@@ -1,3 +1,20 @@
 /*******************************
          Site Overrides
 *******************************/
+
+h1.ui.header {
+  font-size: @h1;
+  font-weight: @headerFontWeight + 200;
+  word-break: break-word;
+  word-wrap: break-word;
+}
+
+h3.ui.header {
+  font-size: @h3;
+  font-weight: @headerFontWeight + 100;
+}
+
+h5.ui.header {
+  font-size: @h5;
+  font-weight: @headerFontWeight + 200;
+}

@@ -17,11 +17,9 @@ SELECT CURRENT_TIMESTAMP INTO @started_at;
 INSERT INTO `derived_job_semaphore` (job_type, start_time) VALUES ('import_domains',@started_at);
 
 INSERT INTO domain (name,monitor) 
- SELECT DISTINCT lcase(header_from) AS name ,b'0' AS monitor FROM record r LEFT JOIN domain ON domain.name = lcase(r.header_from) WHERE r.header_from_domain_id is null and domain.id IS NULL AND r.header_from IS NOT NULL
- UNION
- SELECT DISTINCT lcase(reported_domain) AS name ,b'0' AS monitor FROM forensic_report fr LEFT JOIN domain ON domain.name = lcase(fr.reported_domain) WHERE fr.reported_domain_id IS NULL AND domain.id IS NULL AND fr.reported_domain != "";
+ SELECT DISTINCT lcase(header_from) AS name ,b'0' AS monitor FROM record r LEFT JOIN domain ON domain.name = lcase(r.header_from) WHERE r.header_from_domain_id is null and domain.id IS NULL AND r.header_from IS NOT NULL;
+ 
 UPDATE record r SET header_from_domain_id = (SELECT id FROM domain WHERE name = lcase(r.header_from)) WHERE header_from_domain_id IS NULL;
-UPDATE forensic_report fr SET reported_domain_id = (SELECT id FROM domain WHERE name = lcase(fr.reported_domain)) WHERE reported_domain_id IS null;
 
 
 UPDATE `derived_job_semaphore` SET end_time=CURRENT_TIMESTAMP where `job_type` = 'import_domains' and `start_time` = @started_at;

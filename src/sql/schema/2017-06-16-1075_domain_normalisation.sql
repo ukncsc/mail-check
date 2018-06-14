@@ -35,76 +35,6 @@ CREATE TABLE IF NOT EXISTS `dmarc`.`domain` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-
-
-CREATE TABLE IF NOT EXISTS `dmarc`.`domain_permission` (
-  `domain_id` INT UNSIGNED NULL,
-  `all_domains` BIT NOT NULL DEFAULT 0,
-  `user_id` INT UNSIGNED NOT NULL,
-  `type` ENUM('grant', 'domain-ro', 'domain-rw', 'aggregate', 'forensic-ro', 'forensic-rw') NOT NULL,
-  `granted_by` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`domain_id`, `user_id`, `type`),
-  INDEX `domain_permission$user_id_idx` (`user_id` ASC),
-  INDEX `domain_permission$granted_by_idx` (`granted_by` ASC),
-  CONSTRAINT `domain_permission$domain_id`
-    FOREIGN KEY (`domain_id`)
-    REFERENCES `dmarc`.`domain` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `domain_permission$user_id`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `dmarc`.`user` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `domain_permission$granted_by`
-    FOREIGN KEY (`granted_by`)
-    REFERENCES `dmarc`.`user` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
-
-CREATE TABLE IF NOT EXISTS `dmarc`.`tag` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
-  `added_by` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC),
-  INDEX `tag_added_by_idx` (`added_by` ASC),
-  CONSTRAINT `tag$added_by`
-    FOREIGN KEY (`added_by`)
-    REFERENCES `dmarc`.`user` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
-CREATE TABLE IF NOT EXISTS `dmarc`.`tag_attach` (
-  `tag_id` INT UNSIGNED NOT NULL,
-  `domain_id` INT UNSIGNED NOT NULL,
-  `tag_attached_by` INT UNSIGNED NOT NULL,
-  INDEX `tag_attach_domain_id_idx` (`domain_id` ASC),
-  INDEX `tag_attach_tag_id_idx` (`tag_id` ASC),
-  INDEX `tag_attach_added_by_idx` (`tag_attached_by` ASC),
-  PRIMARY KEY (`domain_id`, `tag_id`),
-  CONSTRAINT `tag_attach$tag_id`
-    FOREIGN KEY (`tag_id`)
-    REFERENCES `dmarc`.`tag` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `tag_attach$domain_id`
-    FOREIGN KEY (`domain_id`)
-    REFERENCES `dmarc`.`domain` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `tag_attach$added_by`
-    FOREIGN KEY (`tag_attached_by`)
-    REFERENCES `dmarc`.`user` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
 CREATE TABLE IF NOT EXISTS `dmarc`.`dns_record_mx` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `domain_id` INT UNSIGNED NOT NULL,
@@ -196,20 +126,9 @@ ADD CONSTRAINT `aggregate_report$domain_id`
     ON DELETE NO ACTION
     ON UPDATE NO ACTION;
 
-ALTER TABLE `dmarc`.`forensic_report` 
-ADD COLUMN `reported_domain_id` INT UNSIGNED AFTER `reported_domain`;
-
-ALTER TABLE `dmarc`.`forensic_report` 
-ADD CONSTRAINT `forensic_report$reported_domain_id`
-    FOREIGN KEY (`reported_domain_id`)
-    REFERENCES `dmarc`.`domain` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION;
 
 INSERT INTO `dmarc`.`domain` (`name`)
- SELECT DISTINCT `domain` FROM `aggregate_report`
- UNION DISTINCT
- SELECT DISTINCT `reported_domain` FROM `forensic_report`;
+ SELECT DISTINCT `domain` FROM `aggregate_report`;
 
 
 

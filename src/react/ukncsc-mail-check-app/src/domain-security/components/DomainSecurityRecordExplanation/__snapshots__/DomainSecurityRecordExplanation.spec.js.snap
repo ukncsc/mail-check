@@ -20,7 +20,7 @@ exports[`DomainSecurityRecordExplanation it should match the snapshot 1`] = `
           Element
         </th>
         <th
-          class="ten wide"
+          class="nine wide"
         >
           Explanation
         </th>

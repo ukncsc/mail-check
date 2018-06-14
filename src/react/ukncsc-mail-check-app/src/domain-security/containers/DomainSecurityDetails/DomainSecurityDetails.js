@@ -13,8 +13,6 @@ import {
 import { BackLink, ShowMoreDropdown } from 'common/components';
 import { DomainSecurityContext } from 'domain-security/context';
 
-import './DomainSecurityDetails.css';
-
 const DomainSecurityDetails = ({
   match,
   domain,
@@ -31,28 +29,29 @@ const DomainSecurityDetails = ({
         {value => <BackLink link={`/${value}/${match.params.domainId}`} />}
       </DomainSecurityContext.Consumer>
       <DomainSecurityTitle
-        title={domain.name}
         loading={item.loading}
         error={item.error}
-        subtitle={type}
+        subtitle={domain.name}
         failures={item.failures}
         warnings={item.warnings}
         inconclusives={item.inconclusives}
         lastChecked={item.lastChecked}
-      />
-      <Divider hidden />
+      >
+        {type}
+      </DomainSecurityTitle>
       {canViewAggregateData && (
         <DomainSecurityContext.Consumer>
           {value => (
-            <Link
-              to={`/${value}/${match.params.domainId}/dmarc/aggregate-export`}
-            >
-              Export aggregate report data
-            </Link>
+            <p>
+              <Link
+                to={`/${value}/${match.params.domainId}/dmarc/aggregate-export`}
+              >
+                Export aggregate report data
+              </Link>
+            </p>
           )}
         </DomainSecurityContext.Consumer>
       )}
-      <Divider hidden />
       {item.error && <Message error>{item.error.message}</Message>}
       {!item.error &&
         !item.loading && (

@@ -30,11 +30,12 @@ module "securitytester" {
     "SchedulerRunIntervalSeconds=60",
     "TlsTestTimeoutSeconds=10",
     "SmtpHostName=gateway1.${substr(data.aws_route53_zone.dmarc-zone.name,0,length(data.aws_route53_zone.dmarc-zone.name)-1)}",
+    "SnsCertsTopicArn=${aws_sns_topic.securitytester-certificates.arn}",
   ]
 
-  docker-environment-count = "6"
+  docker-environment-count = "7"
 
- # Enable Redis cache
+  # Enable Redis cache
   cache-node-type = "cache.t2.micro"
 
   #Assign to an ECS Cluster
@@ -44,4 +45,8 @@ module "securitytester" {
   # Do not assign a load balancer  
 
   processor-only = "true"
+}
+
+resource "aws_sns_topic" "securitytester-certificates" {
+  name = "TF-${var.env-name}-securitytester-certificates"
 }

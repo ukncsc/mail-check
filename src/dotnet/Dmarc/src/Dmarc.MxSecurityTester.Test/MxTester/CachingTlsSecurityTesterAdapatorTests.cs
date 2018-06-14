@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Dmarc.Common.Interface.Logging;
 using Dmarc.Common.Interface.Tls.Domain;
-using Dmarc.Common.Logging;
 using Dmarc.MxSecurityTester.Caching;
 using Dmarc.MxSecurityTester.Config;
 using Dmarc.MxSecurityTester.Dao.Entities;
@@ -11,7 +11,6 @@ using Dmarc.MxSecurityTester.MxTester;
 using FakeItEasy;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using Certificate = Dmarc.MxSecurityTester.Dao.Entities.Certificate;
 
 namespace Dmarc.MxSecurityTester.Test.MxTester
 {
@@ -117,7 +116,6 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
         private MxRecordTlsSecurityProfile CreateSecurityProfile(int failureCount = 0)
         {
             MxRecord mxRecord = new MxRecord(1, "host");
-            Certificate certificate = new Certificate("thumbprint", "issuer", "subject", DateTime.UtcNow, DateTime.UtcNow, 1024, "RSA", "12312321", 1, true);
 
             TlsTestResult tlsTestResult = new TlsTestResult(TlsVersion.TlsV12, CipherSuite.TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA, CurveGroup.Ffdhe2048, SignatureHashAlgorithm.SHA1_DSA, null);
 
@@ -138,7 +136,7 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
                 tlsTestResult,
                 tlsTestResult,
                 tlsTestResult,
-                new List<Certificate> { certificate }
+                new List<X509Certificate2> { TestCertificates.Certificate1 }
             ));
 
             return new MxRecordTlsSecurityProfile(mxRecord, tlsSecurityProfile);

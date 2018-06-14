@@ -8,7 +8,9 @@ describe('DomainSecurityRecordSummary', () => {
   describe('when no records are provided', () => {
     beforeEach(() => {
       ({ container } = render(
-        <DomainSecurityRecordSummary type="SPF" description="bleh" />
+        <DomainSecurityRecordSummary type="SPF" item={{}}>
+          <p>bleh</p>
+        </DomainSecurityRecordSummary>
       ));
     });
 

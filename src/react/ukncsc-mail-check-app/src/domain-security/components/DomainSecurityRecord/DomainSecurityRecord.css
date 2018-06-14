@@ -1,7 +1,8 @@
 .DomainSecurityRecord {
-  color: #6f777b;
   word-break: break-word;
   word-wrap: break-word;
   font-family: monospace;
-  padding-left: 20px;
+  color: #34363c;
+  letter-spacing: 0;
+  line-height: 24px;
 }

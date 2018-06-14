@@ -7,6 +7,7 @@ exports[`BackLink when rendered with a link it should match the snapshot 1`] = `
       href="/bleh"
     >
       <i
+        style="text-decoration: none;"
         aria-hidden="true"
         class="caret left icon"
       />
@@ -23,6 +24,7 @@ exports[`BackLink when rendered without a link it should match the snapshot 1`] 
       class="BackLink"
     >
       <i
+        style="text-decoration: none;"
         aria-hidden="true"
         class="caret left icon"
       />

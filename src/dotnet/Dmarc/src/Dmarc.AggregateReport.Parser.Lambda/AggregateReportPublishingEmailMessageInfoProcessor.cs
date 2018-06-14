@@ -24,13 +24,15 @@ namespace Dmarc.AggregateReport.Parser.Lambda
         private readonly IEmailMessageInfoProcessor<TDomain> _processor;
         private readonly IPublisher _publisher;
         private readonly ILogger _log;
+        private readonly IPublisherConfig _config;
 
         public AggregateReportPublishingEmailMessageInfoProcessor(IEmailMessageInfoProcessor<TDomain> processor,
-            IPublisher publisher, ILogger log)
+            IPublisher publisher, ILogger log, IPublisherConfig config)
         {
             _processor = processor;
             _publisher = publisher;
             _log = log;
+            _config = config;
         }
 
         public async Task<Result<TDomain>> ProcessEmailMessage(EmailMessageInfo messageInfo)
@@ -47,7 +49,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda
                         _log.Info($"Publishing {messages.Count} aggregate report events, message Id: {messageInfo.EmailMetadata.MessageId}, request Id: {messageInfo.EmailMetadata.RequestId}");
                         foreach (AggregateReportIpAddresses message in messages)
                         {
-                            await _publisher.Publish(message);
+                            await _publisher.Publish(message, _config.PublisherConnectionString);
                         }
                         _log.Info($"Succesfully published {messages.Count} aggregate report events, message Id: {messageInfo.EmailMetadata.MessageId}, request Id: {messageInfo.EmailMetadata.RequestId}");
                     }

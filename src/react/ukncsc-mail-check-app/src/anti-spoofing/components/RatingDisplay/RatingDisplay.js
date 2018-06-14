@@ -23,7 +23,7 @@ const getIconProps = status => {
 };
 
 export default ({ status }) => (
-  <Header as="h2">
+  <Header as="h3">
     <Icon {...getIconProps(status)} />
   </Header>
 );

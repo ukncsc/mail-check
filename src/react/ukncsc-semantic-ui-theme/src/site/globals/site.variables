@@ -2,11 +2,139 @@
      User Global Variables
 *******************************/
 
-@primaryColor: #031f48;
-@pageBackground: #d7dbe4;
-@defaultBorderRadius: 0px;
+/*-------------------
+      Colours
+--------------------*/
 
-@green: #4a9893;
-@red: #af0039;
-@yellow: #be8724; 
-@blue: #3772b7;
+@primaryColor        : #051D49;
+@pageBackground      : #EBEEF6;
+@defaultBorderRadius : 0px;
+
+/*-------------------
+      Site Colors
+--------------------*/
+
+/*---  Colors  ---*/
+@red              : #B10E1E;
+@orange           : #CA4700;
+@yellow           : #FFBF47;
+@olive            : #B5CC18;
+@green            : #006435;
+@teal             : #00B5AD;
+@blue             : #2B70B9;
+@violet           : #6435C9;
+@purple           : #A333C8;
+@pink             : #E03997;
+@brown            : #A5673F;
+@grey             : #767676;
+@black            : #1B1C1D;
+
+/*---  Light Colors  ---*/
+@lightRed         : #E34050;
+@lightOrange      : #FF851B;
+@lightYellow      : #FFE21F;
+@lightOlive       : #D9E778;
+@lightGreen       : #2ECC40;
+@lightTeal        : #6DFFFF;
+@lightBlue        : #54C8FF;
+@lightViolet      : #A291FB;
+@lightPurple      : #DC73FF;
+@lightPink        : #FF8EDF;
+@lightBrown       : #D67C1C;
+@lightGrey        : #DCDDDE;
+@lightBlack       : #545454;
+
+
+/*******************************
+           Power-User
+*******************************/
+
+
+/*-------------------
+    Emotive Colors
+--------------------*/
+
+/* Positive */
+@positiveColor           : @green;
+@positiveBackgroundColor : #DDFFEF;
+@positiveBorderColor     : @green;
+@positiveHeaderColor     : @textColor;
+@positiveTextColor       : @textColor;
+
+/* Negative */
+@negativeColor           : @red;
+@negativeBackgroundColor : #FFEEEF;
+@negativeBorderColor     : @red;
+@negativeHeaderColor     : @textColor;
+@negativeTextColor       : @textColor;
+
+/* Info */
+@infoColor              : @blue;
+@infoBackgroundColor    : #EBEEF6;
+@infoBorderColor        : @blue;
+@infoHeaderColor        : @textColor;
+@infoTextColor          : @textColor;
+
+/* Warning */
+@warningColor           : @orange;
+@warningBorderColor     : @orange;
+@warningBackgroundColor : #FFF2D9;
+@warningHeaderColor     : @textColor;
+@warningTextColor       : @textColor;
+
+/*-------------------
+      Site Fonts
+--------------------*/
+
+@headerFont : 'Helvetica Neue', Helvetica, 'Open Sans';
+@pageFont : 'Helvetica Neue', Helvetica, 'Open Sans';
+@googleFontfamily : 'Open+Sans:400italic,400|Oswald:400,700';
+
+/*-------------------
+        Page
+--------------------*/
+
+@lineHeight : 1.5em;
+@textColor  : #0B0C0C;
+
+/*-------------------
+      Base Sizes
+--------------------*/
+
+/* This is the single variable that controls them all */
+@emSize : 16px;
+
+/* The size of page text  */
+@fontSize : 16px;
+
+/*-------------------
+        Sizes
+--------------------*/
+
+/*
+  Sizes are all expressed in terms of 16px/em (default em)
+  This ensures these "ratios" remain constant despite changes in EM
+*/
+
+@miniSize    : (10 / 16);
+@tinySize    : (12 / 16);
+@smallSize   : (13 / 16);
+@mediumSize  : (16 / 16);
+@largeSize   : (20 / 16);
+@bigSize     : (24 / 16);
+@hugeSize    : (36 / 16);
+@massiveSize : (48 / 16);
+
+@h1 : unit((48 / 16), rem);
+@h2 : unit((36 / 16), rem);
+@h3 : unit((24 / 16), rem);
+@h4 : unit((20 / 16), rem);
+@h5 : unit((16 / 16), rem);
+
+@headerFontWeight: 400;
+
+/*-------------------
+       Links
+--------------------*/
+
+@linkUnderline : underline;

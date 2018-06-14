@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Dmarc.Common.Data;
 using Dmarc.Common.Interface.Logging;
@@ -11,7 +12,6 @@ using Dmarc.MxSecurityTester.Dao;
 using Dmarc.MxSecurityTester.Dao.Entities;
 using FakeItEasy;
 using NUnit.Framework;
-using Certificate = Dmarc.MxSecurityTester.Dao.Entities.Certificate;
 
 namespace Dmarc.MxSecurityTester.Test.Dao
 {
@@ -23,8 +23,8 @@ namespace Dmarc.MxSecurityTester.Test.Dao
         private const string DomainName1 = "domainName1";
         private const string DomainName2 = "domainName2";
         private const string DomainName3 = "domainName3";
-        private const string CertThumbPrint1 = "ABC";
-        private const string CertThumbPrint2 = "DEF";
+        private const string CertThumbPrint1 = "0AA5B3D767EDEEDA933BD9605FC5B30D5A4384DB";
+        private const string CertThumbPrint2 = "89944F8FA8A7D7F0709EF13106411ACA9BC69118";
 
         private IConnectionInfoAsync _connectionInfo;
         private IMxSecurityTesterConfig _mxSecurityTesterConfig;
@@ -304,18 +304,22 @@ namespace Dmarc.MxSecurityTester.Test.Dao
         public async Task InsertsNewRecords()
         {
             MxRecord mxRecord1 = InsertMxRecord(1, Host1, DomainName1, DateTime.Now);
-
-            List<DomainTlsSecurityProfile> domainTlsSecurityProfiles = new List<DomainTlsSecurityProfile> {
+            
+            List<DomainTlsSecurityProfile> domainTlsSecurityProfiles = new List<DomainTlsSecurityProfile>
+            {
                 new DomainTlsSecurityProfile(new Domain(1, "domain"), new List<MxRecordTlsSecurityProfile>
                 {
-                    CreateTlsSecurityProfile(mxRecord1, null, CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA, new List<Certificate>
+                    CreateTlsSecurityProfile(mxRecord1, null, CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA,
+                        new List<X509Certificate2>
                         {
-                            new Certificate(CertThumbPrint1, "", "", DateTime.Now, DateTime.Now, 2048, "RSA", "123", 1, true),
-                            new Certificate(CertThumbPrint2, "", "", DateTime.Now, DateTime.Now, 2048, "RSA", "123", 1, true),
+                            TestCertificates.Certificate1,
+                            TestCertificates.Certificate2
                         }),
-                    CreateTlsSecurityProfile(mxRecord1, null, CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA, new List<Certificate>{
-                            new Certificate(CertThumbPrint1, "", "", DateTime.Now, DateTime.Now, 2048, "RSA", "123", 1, true),
-                            new Certificate(CertThumbPrint2, "", "", DateTime.Now, DateTime.Now, 2048, "RSA", "123", 1, true),
+                    CreateTlsSecurityProfile(mxRecord1, null, CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA,
+                        new List<X509Certificate2>
+                        {
+                            TestCertificates.Certificate1,
+                            TestCertificates.Certificate2
                         }),
                 })
             };
@@ -427,7 +431,7 @@ namespace Dmarc.MxSecurityTester.Test.Dao
                         securityProfile1.Results.Test10Result,
                         securityProfile1.Results.Test11Result,
                         securityProfile1.Results.Test12Result,
-                        new List<Certificate>()))),
+                        new List<X509Certificate2>()))),
 
                         new MxRecordTlsSecurityProfile(mxRecord1, new TlsSecurityProfile(securityProfile2.Id, DateTime.Now, 
                         new TlsTestResults(securityProfile2.Results.FailureCount,
@@ -443,7 +447,7 @@ namespace Dmarc.MxSecurityTester.Test.Dao
                         securityProfile2.Results.Test10Result,
                         securityProfile2.Results.Test11Result,
                         securityProfile2.Results.Test12Result,
-                        new List<Certificate>())))
+                        new List<X509Certificate2>())))
                     })
             };
 
@@ -539,7 +543,7 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             TlsTestResult tlsTestResult = new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null);
             return new TlsSecurityProfile(id, endDate, new TlsTestResults(failureCount, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult,
-                tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, new List<Certificate>()));
+                tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, new List<X509Certificate2>()));
         }
 
         private Certificate InsertCertificate(int sequence, ulong profileId, string thumbPrint)
@@ -613,7 +617,7 @@ namespace Dmarc.MxSecurityTester.Test.Dao
             return records;
         }
 
-        private List<Certificate> SelectCertificate(ulong profileId)
+        private List<X509Certificate2> SelectCertificate(ulong profileId)
         {
             string sql = "SELECT * " +
                          "FROM certificate_mapping cm " +
@@ -621,37 +625,26 @@ namespace Dmarc.MxSecurityTester.Test.Dao
                          $"WHERE cm.dns_record_mx_tls_profile_2_id = {profileId} " +
                          "ORDER BY cm.sequence;";
 
-            List<Certificate> certs = new List<Certificate>();
+            List<X509Certificate2> certs = new List<X509Certificate2>();
 
             using (DbDataReader reader = MySqlHelper.ExecuteReader(ConnectionString, sql))
             {
                 while (reader.Read())
                 {
-                    Certificate recordEntity = new Certificate(
-                        reader.GetString("thumb_print"),
-                        reader.GetString("issuer"),
-                        reader.GetString("subject"),
-                        reader.GetDateTime("start_date"),
-                        reader.GetDateTime("end_date"),
-                        reader.GetInt32("key_length"),
-                        reader.GetString("algorithm"),
-                        reader.GetString("serial_number"),
-                        reader.GetInt32("version"),
-                        reader.GetBoolean("valid")
-                        );
+                    X509Certificate2 certificate = new X509Certificate2(reader.GetByteArray("raw_data"));
 
-                    certs.Add(recordEntity);
+                    certs.Add(certificate);
                 }
             }
             return certs;
         }
 
-        private MxRecordTlsSecurityProfile CreateTlsSecurityProfile(MxRecord record, ulong? id = 1, CipherSuite cipherSuite = CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA, List<Certificate> certificates = null)
+        private MxRecordTlsSecurityProfile CreateTlsSecurityProfile(MxRecord record, ulong? id = 1, CipherSuite cipherSuite = CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA, List<X509Certificate2> certificates = null)
         {
             TlsTestResult tlsTestResult = new TlsTestResult(TlsVersion.TlsV12, cipherSuite, CurveGroup.Ffdhe2048, SignatureHashAlgorithm.SHA1_DSA, null);
 
             return new MxRecordTlsSecurityProfile(record, new TlsSecurityProfile(id, null, new TlsTestResults(0, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult,
-                tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, certificates ?? new List<Certificate>())));
+                tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, certificates ?? new List<X509Certificate2>())));
         }
 
         private static TlsTestResult CreateTlsTestResult(DbDataReader reader, int testId)
@@ -682,7 +675,7 @@ namespace Dmarc.MxSecurityTester.Test.Dao
                 TlsTestResult test10Result, 
                 TlsTestResult test11Result, 
                 TlsTestResult test12Result, 
-                List<Certificate> certificates, 
+                List<X509Certificate2> certificates, 
                 DateTime lastChecked, 
                 ulong mxRecordId) 
                 : base(id, endDate, new TlsTestResults(failureCount, test1Result, test2Result, test3Result, 

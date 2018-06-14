@@ -1,14 +1,17 @@
 import React from 'react';
-
-import AggregateReportChartLegendItem from '../AggregateReportChartLegendItem';
+import { Header } from 'semantic-ui-react';
 
 import './AggregateReportChartLegend.css';
 
-export default ({ data }) => (
+export default ({ children }) => (
   <ul className="ChartLegend">
-    {data.map(_ => (
-      <li key={_.name}>
-        <AggregateReportChartLegendItem {..._} />
+    {children.map(({ name, background, stroke }) => (
+      <li key={name}>
+        <Header as="h2" className="ChartLegendHeader">
+          -
+        </Header>
+        <div className="ChartLegendMarker" style={{ background, stroke }} />
+        {name}
       </li>
     ))}
   </ul>

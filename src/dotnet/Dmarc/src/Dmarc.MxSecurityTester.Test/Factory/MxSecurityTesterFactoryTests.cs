@@ -18,6 +18,7 @@ namespace Dmarc.MxSecurityTester.Test.Factory
             System.Environment.SetEnvironmentVariable("SmtpHostName", "localhost");
             System.Environment.SetEnvironmentVariable("CacheHostName", "localhost");
             System.Environment.SetEnvironmentVariable("SnsTopicArn", "localhost");
+            System.Environment.SetEnvironmentVariable("SnsCertsTopicArn", "localhost");
 
             IMxSecurityTesterProcessorRunner mxSecurityTesterProcessorRunner = MxSecurityTesterFactory.CreateMxSecurityTesterProcessorRunner();
             Assert.That(mxSecurityTesterProcessorRunner, Is.Not.Null);

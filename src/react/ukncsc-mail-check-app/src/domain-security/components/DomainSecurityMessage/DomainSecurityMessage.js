@@ -7,7 +7,11 @@ import { removeMailtoHyperlinksRenderer as link } from 'common/helpers/markdown'
 import './DomainSecurityMessage.css';
 
 const DomainSecurityMessage = ({ children, markdown, ...props }) => (
-  <Message {...props} className="DomainSecurityMessage--container">
+  <Message
+    {...props}
+    style={{ margin: '0.2em 0em' }}
+    className="DomainSecurityMessage--container"
+  >
     {markdown ? <MarkDown source={children} renderers={{ link }} /> : children}
   </Message>
 );
@@ -18,7 +22,7 @@ DomainSecurityMessage.defaultProps = {
   success: false,
   info: false,
   markdown: false,
-  size: 'large',
+  size: null,
 };
 
 DomainSecurityMessage.propTypes = {

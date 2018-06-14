@@ -8,12 +8,12 @@ describe('AggregateReportChartLegend', () => {
   describe('when getting a chart legend', () => {
     beforeEach(() => {
       ({ container } = render(
-        <AggregateReportChartLegend
-          data={[
-            { name: 'item 1', color: '#fff000', stroke: '#ffffff' },
-            { name: 'item 2', color: '#ffff00', stroke: '#fffff0' },
+        <AggregateReportChartLegend>
+          {[
+            { name: 'item 1', background: '#fff000', stroke: '#ffffff' },
+            { name: 'item 2', background: '#ffff00', stroke: '#fffff0' },
           ]}
-        />
+        </AggregateReportChartLegend>
       ));
     });
 

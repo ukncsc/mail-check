@@ -62,15 +62,7 @@ namespace Dmarc.MxSecurityTester.Dao {
         /// <summary>
         ///    Looks up a localized string similar to INSERT INTO `certificate`
         ///(`thumb_print`,
-        ///`issuer`,
-        ///`subject`,
-        ///`start_date`,
-        ///`end_date`,
-        ///`key_length`,
-        ///`algorithm`,
-        ///`serial_number`,
-        ///`version`,
-        ///`valid`)
+        ///`raw_data`)
         ///VALUES.
         /// </summary>
         public static string InsertCertificates {
@@ -90,15 +82,7 @@ namespace Dmarc.MxSecurityTester.Dao {
         
         /// <summary>
         ///    Looks up a localized string similar to (@a{0},
-        ///@b{0},
-        ///@c{0},
-        ///@d{0},
-        ///@e{0},
-        ///@f{0},
-        ///@g{0},
-        ///@h{0},
-        ///@i{0},
-        ///@j{0}).
+        ///@b{0}).
         /// </summary>
         public static string InsertCertificateValuesFormatString {
             get {

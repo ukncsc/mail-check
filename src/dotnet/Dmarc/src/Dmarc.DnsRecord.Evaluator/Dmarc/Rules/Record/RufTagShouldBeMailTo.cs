@@ -4,7 +4,9 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules.Record
 {
     public class RufTagShouldBeMailTo : TagShouldBeMailTo<ReportUriForensic>
     {
-        public RufTagShouldBeMailTo() 
-            : base(DmarcRulesResource.RufTagShouldBeMailToErrorMessage){}
+        public RufTagShouldBeMailTo()
+            : base(DmarcRulesResource.RufTagShouldBeMailToErrorMessage)
+        {
+        }
     }
 }

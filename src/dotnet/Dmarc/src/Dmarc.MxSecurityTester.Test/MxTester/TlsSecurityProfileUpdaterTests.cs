@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Dmarc.Common.Interface.Logging;
 using Dmarc.Common.Interface.Tls.Domain;
-using Dmarc.Common.Logging;
 using Dmarc.MxSecurityTester.Dao.Entities;
 using Dmarc.MxSecurityTester.MxTester;
 using FakeItEasy;
 using NUnit.Framework;
-using Certificate = Dmarc.MxSecurityTester.Dao.Entities.Certificate;
 
 namespace Dmarc.MxSecurityTester.Test.MxTester
 {
@@ -91,14 +89,18 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
             Assert.That(securityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test12Result, Is.EqualTo(mxRecordTlsSecurityProfile2.TlsSecurityProfile.Results.Test12Result));
         }
 
-        private MxRecordTlsSecurityProfile CreateTlsSecurityProfile(ulong? id = 1, CipherSuite cipherSuite = CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA)
+        private MxRecordTlsSecurityProfile CreateTlsSecurityProfile(ulong? id = 1,
+            CipherSuite cipherSuite = CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA)
         {
-            TlsTestResult tlsTestResult = new TlsTestResult(TlsVersion.TlsV12, cipherSuite, CurveGroup.Ffdhe2048, SignatureHashAlgorithm.SHA1_DSA, null);
+            TlsTestResult tlsTestResult = new TlsTestResult(TlsVersion.TlsV12, cipherSuite, CurveGroup.Ffdhe2048,
+                SignatureHashAlgorithm.SHA1_DSA, null);
 
-            var tlsSecurityProfile = new TlsSecurityProfile(id, null, new TlsTestResults(0, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult,
-                tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, new List<Certificate>
+            var tlsSecurityProfile = new TlsSecurityProfile(id, null, new TlsTestResults(0, tlsTestResult,
+                tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult,
+                tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult,
+                new List<X509Certificate2>
                 {
-                    new Certificate("thumb", "issuer", "subject", DateTime.Now, DateTime.Now, 1, "alg", "serial", 1, true)
+                    TestCertificates.Certificate1
                 }));
 
             return new MxRecordTlsSecurityProfile(new MxRecord(1, "host"), tlsSecurityProfile);

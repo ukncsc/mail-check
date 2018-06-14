@@ -131,7 +131,7 @@ namespace Dmarc.DomainStatus.Api.Controllers
 
             OrganisationalDomain organisationalDomain = await _organisationalDomainProvider.GetOrganisationalDomain(dmarc.Domain.Name);
 
-            if (organisationalDomain.IsOrgDomain)
+            if (organisationalDomain.IsOrgDomain || organisationalDomain.IsTld)
             {
                 return new ObjectResult(dmarc.Model);
             }

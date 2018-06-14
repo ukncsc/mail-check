@@ -12,7 +12,7 @@ describe('DomainSecurityTitle', () => {
   describe('when failures are present', () => {
     beforeEach(() => {
       ({ container } = render(
-        <DomainSecurityTitle title="a" failures={['err!']} />
+        <DomainSecurityTitle failures={['err!']}>a</DomainSecurityTitle>
       ));
     });
 
@@ -28,7 +28,9 @@ describe('DomainSecurityTitle', () => {
   describe('when last checked is present', () => {
     beforeEach(() => {
       ({ container } = render(
-        <DomainSecurityTitle title="a" lastChecked="2018-01-01T12:00" />
+        <DomainSecurityTitle lastChecked="2018-01-01T12:00">
+          a
+        </DomainSecurityTitle>
       ));
     });
 
@@ -44,7 +46,7 @@ describe('DomainSecurityTitle', () => {
   describe('when warnings are present without failures', () => {
     beforeEach(() => {
       ({ container } = render(
-        <DomainSecurityTitle title="a" warnings={['warn!']} />
+        <DomainSecurityTitle warnings={['warn!']}>a</DomainSecurityTitle>
       ));
     });
 
@@ -60,7 +62,9 @@ describe('DomainSecurityTitle', () => {
   describe('when inconclusives are present', () => {
     beforeEach(() => {
       ({ container } = render(
-        <DomainSecurityTitle title="a" inconclusives={['inconclusive!']} />
+        <DomainSecurityTitle inconclusives={['inconclusive!']}>
+          a
+        </DomainSecurityTitle>
       ));
     });
 
@@ -75,15 +79,13 @@ describe('DomainSecurityTitle', () => {
 
   describe('when no warnings, failures or inconclusives are present', () => {
     beforeEach(() => {
-      ({ container } = render(<DomainSecurityTitle title="a" />));
+      ({ container } = render(<DomainSecurityTitle>a</DomainSecurityTitle>));
     });
 
     test('it should match the snapshot', () =>
       expect(container).toMatchSnapshot());
 
-    test('it should have a green check circle', () =>
-      expect(
-        container.getElementsByClassName('green check circle icon')
-      ).toHaveLength(1));
+    test('it should not have any icons', () =>
+      expect(container.getElementsByTagName('i')).toHaveLength(0));
   });
 });

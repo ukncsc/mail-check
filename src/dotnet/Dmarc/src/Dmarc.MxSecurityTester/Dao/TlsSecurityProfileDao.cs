@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Dmarc.Common.Data;
@@ -11,7 +13,6 @@ using Dmarc.Common.Interface.Tls.Domain;
 using Dmarc.MxSecurityTester.Config;
 using Dmarc.MxSecurityTester.Dao.Entities;
 using MySql.Data.MySqlClient;
-using Certificate = Dmarc.MxSecurityTester.Dao.Entities.Certificate;
 
 namespace Dmarc.MxSecurityTester.Dao
 {
@@ -74,7 +75,7 @@ namespace Dmarc.MxSecurityTester.Dao
                             domainValue.Add(record, profile);
                         }
 
-                        Certificate certificate = CreateCertificate(reader);
+                        X509Certificate2 certificate = CreateCertificate(reader);
                         if (certificate != null)
                         {
                             profile.TlsSecurityProfile.Results.Certificates.Add(certificate);
@@ -121,24 +122,13 @@ namespace Dmarc.MxSecurityTester.Dao
             );
         }
 
-        private static Certificate CreateCertificate(DbDataReader reader)
+        private static X509Certificate2 CreateCertificate(DbDataReader reader)
         {
             ulong? tlsSecurityProfileId = reader.GetUInt64Nullable("tls_security_profile_id");
 
-            return !tlsSecurityProfileId.HasValue || reader.IsDbNull("certificate_thumb_print")
+            return !tlsSecurityProfileId.HasValue || reader.IsDbNull("certificate_thumb_print") || reader.IsDbNull("certificate_raw_data")
                 ? null
-                : new Certificate(
-                    reader.GetString("certificate_thumb_print"),
-                    reader.GetString("certificate_issuer"),
-                    reader.GetString("certificate_subject"),
-                    reader.GetDateTime("certificate_start_date"),
-                    reader.GetDateTime("certificate_end_date"),
-                    reader.GetInt32("certifcate_key_length"),
-                    reader.GetString("certificate_algorithm"),
-                    reader.GetString("certificate_serial_number"),
-                    reader.GetInt32("certificate_version"),
-                    reader.GetBoolean("certificate_valid")
-                );
+                : new X509Certificate2(reader.GetByteArray("certificate_raw_data"));
         }
 
         private static MxRecord CreateMxRecord(DbDataReader reader)
@@ -171,7 +161,7 @@ namespace Dmarc.MxSecurityTester.Dao
 
                         await InsertOrUpdateSecurityProfiles(profiles, transaction);
 
-                        List<Certificate> certificates = profiles
+                        List<X509Certificate2> certificates = profiles
                             .SelectMany(_ => _.TlsSecurityProfile.Results.Certificates)
                             .GroupBy(_ => _.Thumbprint)
                             .Select(_ => _.First())
@@ -179,7 +169,7 @@ namespace Dmarc.MxSecurityTester.Dao
 
                         await InsertOrUpdateCertificates(certificates, transaction);
 
-                        List<Tuple<MxRecordTlsSecurityProfile, Tuple<int,Certificate>>> mappings = profiles
+                        List<Tuple<MxRecordTlsSecurityProfile, Tuple<int,X509Certificate2>>> mappings = profiles
                             .Select(_ => Tuple.Create(_, _.TlsSecurityProfile))
                             .Where(_ => _.Item2 != null)
                             .SelectMany(_ => _.Item2.Results.Certificates.Select((c, i) => Tuple.Create(_.Item1, Tuple.Create(i, c))))
@@ -305,7 +295,7 @@ namespace Dmarc.MxSecurityTester.Dao
             }
         }
 
-        private async Task InsertOrUpdateCertificates(List<Certificate> certificates, MySqlTransaction transaction)
+        private async Task InsertOrUpdateCertificates(List<X509Certificate2> certificates, MySqlTransaction transaction)
         {
             if (certificates.Any())
             {
@@ -317,19 +307,12 @@ namespace Dmarc.MxSecurityTester.Dao
                     stringBuilder.AppendFormat(TlsSecurityProfileDaoResources.InsertCertificateValuesFormatString, i);
                     stringBuilder.Append(i < certificates.Count - 1 ? "," : " ");
 
-                    Certificate certificate = certificates[i];
+                    X509Certificate2 certificate = certificates[i];
 
                     command.Parameters.AddWithValue($"a{i}", certificate.Thumbprint);
-                    command.Parameters.AddWithValue($"b{i}", certificate.Issuer);
-                    command.Parameters.AddWithValue($"c{i}", certificate.Subject);
-                    command.Parameters.AddWithValue($"d{i}", certificate.StartDate);
-                    command.Parameters.AddWithValue($"e{i}", certificate.EndDate);
-                    command.Parameters.AddWithValue($"f{i}", certificate.KeyLength);
-                    command.Parameters.AddWithValue($"g{i}", certificate.Algorithm);
-                    command.Parameters.AddWithValue($"h{i}", certificate.SerialNumber);
-                    command.Parameters.AddWithValue($"i{i}", certificate.Version);
-                    command.Parameters.AddWithValue($"j{i}", certificate.Valid);
+                    command.Parameters.AddWithValue($"b{i}", certificate.RawData);
                 }
+                
 
                 stringBuilder.Append(TlsSecurityProfileDaoResources.InsertCertificatesOnDuplicateKey);
 
@@ -339,7 +322,7 @@ namespace Dmarc.MxSecurityTester.Dao
             }
         }
 
-        private async Task InsertOrUpdateMappings(List<Tuple<MxRecordTlsSecurityProfile, Tuple<int, Certificate>>> mappings, MySqlTransaction transaction)
+        private async Task InsertOrUpdateMappings(List<Tuple<MxRecordTlsSecurityProfile, Tuple<int, X509Certificate2>>> mappings, MySqlTransaction transaction)
         {
             if (mappings.Any())
             {
@@ -351,7 +334,7 @@ namespace Dmarc.MxSecurityTester.Dao
                     stringBuilder.AppendFormat(TlsSecurityProfileDaoResources.InsertMappingValueFormatString, i);
                     stringBuilder.Append(i < mappings.Count - 1 ? "," : " ");
 
-                    Tuple<MxRecordTlsSecurityProfile, Tuple<int, Certificate>> mapping = mappings[i];
+                    Tuple<MxRecordTlsSecurityProfile, Tuple<int, X509Certificate2>> mapping = mappings[i];
 
                     command.Parameters.AddWithValue($"a{i}", mapping.Item2.Item1);
                     command.Parameters.AddWithValue($"b{i}", mapping.Item1.TlsSecurityProfile.Id);

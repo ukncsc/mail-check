@@ -13,14 +13,17 @@ namespace Dmarc.DnsRecord.Importer.Lambda.RecordProcessor
         private readonly IDnsRecordUpdater _dnsRecordUpdater;
         private readonly IMapper<List<RecordEntity>, DnsRecordMessage> _mapper;
         private readonly IPublisher _publisher;
+        private readonly IPublisherConfig _config;
 
         public PublishingDnsRecordUpdater(IDnsRecordUpdater dnsRecordUpdater,
             IMapper<List<RecordEntity>, DnsRecordMessage> mapper,
-            IPublisher publisher)
+            IPublisher publisher, 
+            IPublisherConfig config)
         {
             _dnsRecordUpdater = dnsRecordUpdater;
             _mapper = mapper;
             _publisher = publisher;
+            _config = config;
         }
 
         public async Task<List<RecordEntity>> UpdateRecord(Dictionary<DomainEntity, List<RecordEntity>> records)
@@ -32,7 +35,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.RecordProcessor
 
             if (dnsRecordMessage != null)
             {
-                await _publisher.Publish(dnsRecordMessage);
+                await _publisher.Publish(dnsRecordMessage, _config.PublisherConnectionString);
             }
 
             return recordEntities;

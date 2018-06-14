@@ -6,7 +6,8 @@ data "aws_iam_policy_document" "parameter-store-policy" {
   }
 
   statement {
-    actions   = ["ssm:GetParameter"]
+    actions = ["ssm:GetParameter", "ssm:PutParameter"]
+
     resources = ["arn:aws:ssm:${var.aws-region}:${var.aws-account-id}:parameter/${var.env-name}*"]
   }
 }

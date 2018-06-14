@@ -21,7 +21,7 @@ export default ({ companyLogo, productName, currentUser }) => (
           <Header as="h4">
             <CurrentUserMenu {...currentUser} />
           </Header>
-          <Header as="h1">{productName}</Header>
+          <Header as="h3">{productName}</Header>
         </Grid.Column>
       </Grid.Row>
     </Grid>

@@ -25,9 +25,9 @@ module "domainstatusapi" {
   prod-stage-task-count     = "3"
   health-check-grace-period = "300"
   docker-environment = ["ASPNETCORE_URLS=http://+:80",
-    "ReverseDnsApiEndpoint=https://api.${var.env-name}.i.mailcheck.service.ncsc.gov.uk/api/reverse-dns",
+    "ReverseDnsApiEndpoint=https://api.${var.env-name}.i.mailcheck.service.ncsc.gov.uk/api/reverse-dns/",
   ]
-  docker-environment-count = "1"
+  docker-environment-count = "2"
   # Assign to an ECS Cluster
   cluster-id           = "${module.api-cluster.cluster-id}"
   ecs-service-role-arn = "${module.api-cluster.ecs-service-role-arn}"

@@ -1,19 +1,16 @@
 import React from 'react';
 import debounce from 'lodash/debounce';
 import {
+  Divider,
   Grid,
   Input,
   Loader,
   Header,
   Message,
-  Divider,
+  Statistic,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import {
-  Pagination,
-  PaginationDisplay,
-  DomainsStatusDisplay,
-} from 'anti-spoofing/components';
+import { Pagination, DomainsStatusDisplay } from 'anti-spoofing/components';
 import { fetchMyDomains } from 'my-domains/store/my-domains';
 import { addMoreDomainsCopy, addDomainsCopy } from 'my-domains/data';
 
@@ -96,6 +93,7 @@ export class MyDomains extends React.Component {
             onChange={this.handleSearchChanged}
           />
         )}
+        <Divider hidden />
         {showLoading && (
           <Loader
             active
@@ -118,33 +116,30 @@ export class MyDomains extends React.Component {
           </Message>
         )}
         {showResults && (
-          <React.Fragment>
-            <Divider hidden />
-            <Grid>
-              <Grid.Row>
-                <Grid.Column width={4}>
-                  <PaginationDisplay
-                    page={page}
-                    pageSize={pageSize}
-                    collectionSize={results.domainCount}
-                  />
-                </Grid.Column>
-                <Grid.Column floated="right" width={12}>
-                  <DomainsStatusDisplay results={results} />
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row>
-                <Grid.Column floated="right" width={3}>
-                  <Pagination
-                    page={page}
-                    pageSize={pageSize}
-                    collectionSize={results.domainCount}
-                    selectPage={this.fetchOnPageChange}
-                  />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </React.Fragment>
+          <Grid stackable>
+            <Grid.Row>
+              <Grid.Column width={2} floated="right">
+                <Statistic
+                  label="Domains"
+                  value={results.domainCount}
+                  size="small"
+                />
+              </Grid.Column>
+              <Grid.Column width={10}>
+                <DomainsStatusDisplay results={results} />
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+              <Grid.Column floated="right">
+                <Pagination
+                  page={page}
+                  pageSize={pageSize}
+                  collectionSize={results.domainCount}
+                  selectPage={this.fetchOnPageChange}
+                />
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
         )}
       </React.Fragment>
     );
@@ -156,4 +151,7 @@ const mapDispatchToProps = dispatch => ({
   fetchMyDomains: (page, pageSize, search) =>
     dispatch(fetchMyDomains(page, pageSize, search)),
 });
-export default connect(mapStateToProps, mapDispatchToProps)(MyDomains);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MyDomains);

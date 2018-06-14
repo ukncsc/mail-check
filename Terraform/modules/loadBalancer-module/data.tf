@@ -5,8 +5,7 @@ data "aws_route53_zone" "service-zone" {
 }
 
 data "aws_acm_certificate" "lb-acm-cert" {
-
-  domain = "${var.lb-internal == "true" ? "*.${substr(data.aws_route53_zone.service-zone.name,0,length(data.aws_route53_zone.service-zone.name)-1)}" : "${var.balancer-fqdn}"}"
+  domain = "${var.certificate-name == "" ? "*.${substr(data.aws_route53_zone.service-zone.name,0,length(data.aws_route53_zone.service-zone.name)-1)}" : "${var.certificate-name}"}"
 
   statuses = ["ISSUED"]
 }

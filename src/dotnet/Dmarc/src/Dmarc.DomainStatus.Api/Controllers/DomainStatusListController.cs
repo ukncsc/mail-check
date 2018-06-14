@@ -133,7 +133,7 @@ namespace Dmarc.DomainStatus.Api.Controllers
 
             await Task.WhenAll(orgDomainTasks);
 
-            return orgDomainTasks.Select(_ => _.Result).Where(_ => !_.IsOrgDomain).ToDictionary(_ => _.Domain, _ => _.OrgDomain);
+            return orgDomainTasks.Select(_ => _.Result).Where(_ => !_.IsOrgDomain && !_.IsTld).ToDictionary(_ => _.Domain, _ => _.OrgDomain);
         }
 
         private List<DomainSecurityInfo> Merge(List<DomainSecurityInfo> existing, List<DomainSecurityInfo> updated, Dictionary<string, string> updatedToExistingLookup)

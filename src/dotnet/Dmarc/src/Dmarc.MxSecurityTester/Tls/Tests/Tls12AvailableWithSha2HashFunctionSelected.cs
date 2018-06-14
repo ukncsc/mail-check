@@ -6,7 +6,7 @@ namespace Dmarc.MxSecurityTester.Tls.Tests
 {
     public class Tls12AvailableWithSha2HashFunctionSelected : ITlsTest
     {
-        public int Id => (int)TlsTestType.Tls12AvailableWithSha2HashFunctionSelected + 1;
+        public int Id => (int)TlsTestType.Tls12AvailableWithSha2HashFunctionSelected;
 
         public string Name => nameof(Tls12AvailableWithSha2HashFunctionSelected);
 

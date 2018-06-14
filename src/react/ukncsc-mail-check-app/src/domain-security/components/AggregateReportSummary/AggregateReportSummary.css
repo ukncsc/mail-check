@@ -1,0 +1,8 @@
+.AggregateReportSummary--date-range {
+  display: inline-block;
+  font-weight: 600;
+  border-bottom: #bfc1c3 1px solid;
+  margin-bottom: 10px;
+  padding-right: 10px;
+  padding-bottom: 2px;
+}

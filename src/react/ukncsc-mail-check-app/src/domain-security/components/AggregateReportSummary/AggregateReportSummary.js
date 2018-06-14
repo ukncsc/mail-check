@@ -1,83 +1,92 @@
 import React from 'react';
 import startsWith from 'lodash/startsWith';
-import values from 'lodash/values';
-import { Grid, Header, Loader, Message } from 'semantic-ui-react';
-import { items } from 'domain-security/data';
+import numeral from 'numeral';
+import { Divider, Header, Grid, Message, Statistic } from 'semantic-ui-react';
 import {
   AggregateReportChart,
-  AggregateReportLegendExplanation,
-  AggregateReportStatistic,
+  AggregateReportChartLegend,
 } from 'domain-security/components';
+import { graphDescriptions } from 'domain-security/data';
 
-export default ({ aggregateReportInfo }) => {
-  const items1 = values(items);
+import './AggregateReportSummary.css';
 
-  const showLoader = aggregateReportInfo.loading;
+const showNoData = ({ loading, error, data }) => !loading && !error && !data;
 
-  const showNoData =
-    !aggregateReportInfo.loading &&
-    !aggregateReportInfo.error &&
-    !aggregateReportInfo.data;
+const showDontHavePermission = ({ error }) => error && startsWith(error, '403');
 
-  const showDontHavePermission =
-    aggregateReportInfo.error && startsWith(aggregateReportInfo.error, '403');
+const showError = ({ error }) => error && !startsWith(error, '403');
 
-  const showError =
-    aggregateReportInfo.error && !startsWith(aggregateReportInfo.error, '403');
+const showChart = ({ loading, error, data }) => !loading && !error && data;
 
-  const showChart =
-    !aggregateReportInfo.loading &&
-    !aggregateReportInfo.error &&
-    aggregateReportInfo.data;
+export default ({ data, ...props }) => (
+  <React.Fragment>
+    {showNoData({ data, ...props }) && (
+      <Message info>
+        Currently no aggregate report information to show for domain.
+      </Message>
+    )}
 
-  return (
-    <React.Fragment>
-      {showLoader && (
-        <Header as="h1">
-          <Loader active inline style={{ marginRight: 20 }} />
-        </Header>
-      )}
+    {showDontHavePermission(props) && (
+      <Message info>
+        You do have permission to view aggregate reporting for this domain.
+      </Message>
+    )}
 
-      {showNoData && (
-        <Message info>
-          Currently no aggregate report information to show for domain.
-        </Message>
-      )}
+    {showError(props) && (
+      <Message error>
+        There was a problem retrieving aggregate report information for this
+        domain: {props.error}
+      </Message>
+    )}
 
-      {showDontHavePermission && (
-        <Message info>
-          You do have permission to view aggregate reporting for this domain.
-        </Message>
-      )}
-
-      {showError && (
-        <Message error>
-          There was a problem retrieving aggregate report information for this
-          domain: {aggregateReportInfo.error}
-        </Message>
-      )}
-
-      {showChart && (
-        <React.Fragment>
-          <AggregateReportStatistic
-            title="Total emails"
-            value={aggregateReportInfo.data.totalEmail}
-            period="last 7 days"
-          />
-          <AggregateReportChart data={aggregateReportInfo.data.results} />
-          {items1.length > 0 && (
-            <Grid stackable>
-              <Grid.Row columns={items1.length}>
-                {items1.map(_ => (
-                  <Grid.Column key={_.title}>
-                    <AggregateReportLegendExplanation {..._} />
-                  </Grid.Column>
-                ))}
-              </Grid.Row>
-            </Grid>
-          )}
-        </React.Fragment>
-      )}
-    </React.Fragment>
-  );
-};
+    {showChart({ data, ...props }) && (
+      <React.Fragment>
+        <span className="AggregateReportSummary--date-range">Last 7 days</span>
+        <div>
+          <Statistic size="small">
+            <Statistic.Label style={{ fontWeight: 400 }}>
+              Total emails:
+            </Statistic.Label>
+            <Statistic.Value style={{ fontWeight: 500 }}>
+              {numeral(data.totalEmail).format('0.0a')}
+            </Statistic.Value>
+          </Statistic>
+        </div>
+        <Grid stackable>
+          <Grid.Row>
+            <Grid.Column width={10} style={{ padding: '0px' }}>
+              <AggregateReportChart
+                data={data.results}
+                descriptions={[...graphDescriptions].reverse()}
+              />
+            </Grid.Column>
+            <Grid.Column
+              width={2}
+              verticalAlign="bottom"
+              style={{ padding: '0px' }}
+            >
+              <AggregateReportChartLegend>
+                {graphDescriptions.map(
+                  ({ title: name, color: background, stroke }) => ({
+                    name,
+                    background,
+                    stroke,
+                  })
+                )}
+              </AggregateReportChartLegend>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row columns={graphDescriptions.length}>
+            {graphDescriptions.map(({ title, description }) => (
+              <Grid.Column key={title}>
+                <Header as="h5">{title}</Header>
+                <p>{description}</p>
+              </Grid.Column>
+            ))}
+          </Grid.Row>
+        </Grid>
+      </React.Fragment>
+    )}
+    <Divider hidden />
+  </React.Fragment>
+);

@@ -150,7 +150,6 @@ variable "db-users" {
     dnsrecordevaluator = "dnseval"
     aggregateparser    = "aggproc"
     domaininformation  = "dnsproc"
-    forensicparser     = "forproc"
     statsapi           = "statapi"
     statusapi          = "domstat"
     adminapi           = "admin"

@@ -1,3 +1,49 @@
 /*******************************
         Site Overrides
 *******************************/
+
+/*--------------
+     Types
+---------------*/
+
+/* Positive */
+.ui.positive.message {
+  background-color: @positiveBackgroundColor;
+  color: @positiveTextColor;
+  border-color: @green;
+}
+
+/* Success */
+.ui.success.message {
+  background-color: @successBackgroundColor;
+  color: @successTextColor;
+  border-color: @green;
+}
+
+/* Error */
+.ui.error.message {
+  background-color: @errorBackgroundColor;
+  color: @errorTextColor;
+  border-color: @red;
+}
+
+/* Negative */
+.ui.negative.message {
+  background-color: @negativeBackgroundColor;
+  color: @negativeTextColor;
+  border-color: @red;
+}
+
+/* Info */
+.ui.info.message {
+  background-color: @infoBackgroundColor;
+  color: @infoTextColor;
+  border-color: @blue;
+}
+
+/* Warning */
+.ui.warning.message {
+  background-color: @warningBackgroundColor;
+  color: @warningTextColor;
+  border-color: @yellow;
+}

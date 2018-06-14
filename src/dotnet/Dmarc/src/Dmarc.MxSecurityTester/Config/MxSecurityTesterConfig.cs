@@ -28,7 +28,7 @@ namespace Dmarc.MxSecurityTester.Config
         public string SmtpHostName { get; }
         public string CacheHostName { get; }
         public bool CachingEnabled { get; }
-        public string PublisherConnectionString { get; }
         public TimeSpan TlsConnectionTimeOut { get; }
+        public string PublisherConnectionString { get; }
     }
 }

@@ -12,6 +12,8 @@ import {
  * This component renders markdown from the API in GitHub Flavored Markdown: https://github.github.com/gfm/
  */
 
+ import './DomainSecurityDetailsMessages.css';
+
 const DomainSecurityDetailsMessages = ({
   type,
   failures,
@@ -22,7 +24,7 @@ const DomainSecurityDetailsMessages = ({
     {!!failures.length && (
       <React.Fragment>
         <DomainSecurityPill error>{failures.length} Urgent</DomainSecurityPill>
-        <p className="DomainSecurityDetails--description__error">
+        <p className="DomainSecuritySummaryMessages--intro">
           Your {type} has {pluralise('element', failures.length, true)} that{' '}
           {pluralise.singular('require', failures.length)} urgent attention.
         </p>
@@ -39,7 +41,7 @@ const DomainSecurityDetailsMessages = ({
         <DomainSecurityPill warning>
           {warnings.length} Advisory
         </DomainSecurityPill>
-        <p className="DomainSecurityDetails--description__warning">
+        <p className="DomainSecuritySummaryMessages--intro">
           Your {type} has {pluralise('element', warnings.length, true)} that can
           be improved.
         </p>
@@ -56,7 +58,7 @@ const DomainSecurityDetailsMessages = ({
         <DomainSecurityPill information>
           {inconclusives.length} Inconclusive
         </DomainSecurityPill>
-        <p className="DomainSecurityDetails--description__information">
+        <p className="DomainSecuritySummaryMessages--intro">
           Your {type} has {inconclusives.length} inconclusive{' '}
           {pluralise('element', inconclusives.length)}.
         </p>

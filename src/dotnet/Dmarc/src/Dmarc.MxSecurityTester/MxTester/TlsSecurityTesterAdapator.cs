@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Dmarc.Common.Interface.Tls.Domain;
 using Dmarc.MxSecurityTester.Dao.Entities;
-using Dmarc.MxSecurityTester.Mappers;
 using Dmarc.MxSecurityTester.Util;
-using Certificate = Dmarc.MxSecurityTester.Dao.Entities.Certificate;
 using TlsTestResult = Dmarc.MxSecurityTester.Dao.Entities.TlsTestResult;
 
 namespace Dmarc.MxSecurityTester.MxTester
@@ -28,10 +27,9 @@ namespace Dmarc.MxSecurityTester.MxTester
         {
             List<Console.TlsTestResult> results = await _tlsSecurityTester.Test(mxRecordTlsSecurityProfile.MxRecord.Hostname);
 
-            List<Certificate> certificates =
+            List<X509Certificate2> certificates =
                results.FirstOrDefault(_ => _.Result.Certificates.Any())?
-                   .Result.Certificates.Select(_ => _.MapCertificate(true))
-                   .ToList() ?? new List<Certificate>();
+                   .Result.Certificates.ToList() ?? new List<X509Certificate2>();
 
             return new MxRecordTlsSecurityProfile(mxRecordTlsSecurityProfile.MxRecord,
                     new TlsSecurityProfile(

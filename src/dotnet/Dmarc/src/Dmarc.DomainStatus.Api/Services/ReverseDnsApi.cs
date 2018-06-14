@@ -2,10 +2,12 @@
 using Dmarc.DomainStatus.Api.Domain;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Dmarc.DomainStatus.Api.Services
@@ -20,12 +22,14 @@ namespace Dmarc.DomainStatus.Api.Services
         private readonly HttpClient _client;
         private readonly IReverseDnsApiConfig _config;
         private readonly ILogger<ReverseDnsApi> _log;
+        private readonly JsonSerializerSettings _jsonSettings;
 
         public ReverseDnsApi(HttpClient client, IReverseDnsApiConfig config, ILogger<ReverseDnsApi> log)
         {
             _client = client;
             _config = config;
             _log = log;
+            _jsonSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
         }
 
         public async Task<List<AggregateReportExportItem>> AddReverseDnsInfoToExport(List<AggregateReportExportItem> export, DateTime date)
@@ -33,9 +37,14 @@ namespace Dmarc.DomainStatus.Api.Services
             Uri uri;
             if (Uri.TryCreate(_config.Endpoint, UriKind.Absolute, out uri))
             {
+                Uri reverseDnsInfoUri = new Uri(uri, "info");
+                string body = JsonConvert.SerializeObject(
+                    new ReverseDnsInfoApiRequest(export.Select(_ => _.SourceIp).ToList(), date),
+                    _jsonSettings);
+
                 HttpResponseMessage response = await _client.PostAsync(
-                    new Uri(uri, "/info"),
-                    new StringContent(JsonConvert.SerializeObject(new ReverseDnsInfoApiRequest(export.Select(_ => _.SourceIp).ToList(), date))));
+                    reverseDnsInfoUri,
+                    new StringContent(body, Encoding.UTF8, "application/json"));
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -45,7 +54,7 @@ namespace Dmarc.DomainStatus.Api.Services
                     return export.Select(_ => AddPtrInfo(reverseDnsInfoResponses, _)).ToList();
                 }
 
-                _log.LogWarning($"Request to Reverse DNS API failed with status code {response.StatusCode}");
+                _log.LogWarning($"Request to {reverseDnsInfoUri} failed with status code {response.StatusCode}");
             }
             else
             {

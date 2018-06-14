@@ -14,7 +14,7 @@ namespace Dmarc.MxSecurityTester.MxTester
     {
         private const int FailureCountBeforeCaching = 3;
         private const double RefreshIntervalSecondsMultiplier = 0.9;
-        private const string KeyPrefix = "MxRecordTlsSecurityProfile2";
+        private const string KeyPrefix = "MxRecordTlsSecurityProfile4";
 
         private readonly ITlsSecurityTesterAdapator _tlsSecurityTesterAdaptor;
         private readonly ICache _cache;

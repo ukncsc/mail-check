@@ -1,3 +1,8 @@
 /*******************************
          Site Overrides
 *******************************/
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('@{fontPath}/HelveticaNeue.ttf');
+}

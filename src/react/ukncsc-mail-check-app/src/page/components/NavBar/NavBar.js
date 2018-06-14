@@ -6,13 +6,25 @@ import startsWith from 'lodash/startsWith';
 
 import './NavBar.css';
 
-const VersatileLink = ({ link, external, children }) =>
+const VersatileLink = ({ link, external, style, children }) =>
   // waiting on https://github.com/airbnb/javascript/pull/1648 to fix below
   // eslint-disable-next-line jsx-a11y/anchor-is-valid
-  external ? <a href={link}>{children}</a> : <Link to={link}>{children}</Link>;
+  external ? (
+    <a href={link} style={style}>
+      {children}
+    </a>
+  ) : (
+    <Link to={link} style={style}>
+      {children}
+    </Link>
+  );
 
 const LinkedMenuItem = ({ name, link, pathname, external }) => (
-  <VersatileLink link={link} external={external}>
+  <VersatileLink
+    link={link}
+    external={external}
+    style={{ textDecoration: 'none' }}
+  >
     <Menu.Item name={name} active={startsWith(pathname, link)} />
   </VersatileLink>
 );

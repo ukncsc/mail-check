@@ -9,7 +9,7 @@ import './PageFooter.css';
 const LinksColumn = ({ link }) => (
   <Grid.Column width={link.width}>
     <List inverted>
-      <List.Header as="h3">{link.header}</List.Header>
+      <List.Header as="h4">{link.header}</List.Header>
       {link.items.map(item => (
         <List.Item href={item.href} key={item.href}>
           {item.icon && <List.Icon name={item.icon} />}
@@ -25,7 +25,7 @@ export default () => (
     <Segment attached="bottom" inverted>
       <Container>
         <Grid inverted stackable divided stretched>
-          <Grid.Column width={7} verticalAlign="middle">
+          <Grid.Column width={6} verticalAlign="middle">
             {
               // waiting on https://github.com/airbnb/javascript/pull/1648 to fix below
               /* eslint-disable jsx-a11y/anchor-is-valid */

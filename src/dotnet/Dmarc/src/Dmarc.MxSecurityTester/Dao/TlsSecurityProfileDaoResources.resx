@@ -120,15 +120,7 @@
   <data name="InsertCertificates" xml:space="preserve">
     <value>INSERT INTO `certificate`
 (`thumb_print`,
-`issuer`,
-`subject`,
-`start_date`,
-`end_date`,
-`key_length`,
-`algorithm`,
-`serial_number`,
-`version`,
-`valid`)
+`raw_data`)
 VALUES</value>
   </data>
   <data name="InsertCertificatesOnDuplicateKey" xml:space="preserve">
@@ -136,15 +128,7 @@ VALUES</value>
   </data>
   <data name="InsertCertificateValuesFormatString" xml:space="preserve">
     <value>(@a{0},
-@b{0},
-@c{0},
-@d{0},
-@e{0},
-@f{0},
-@g{0},
-@h{0},
-@i{0},
-@j{0})</value>
+@b{0})</value>
   </data>
   <data name="InsertMapping" xml:space="preserve">
     <value>INSERT INTO `certificate_mapping`
@@ -371,15 +355,7 @@ SELECT LAST_INSERT_ID();</value>
 	tls.test12_error as 'test12_error',
     temp.lst_checked AS 'last_checked',
     c.thumb_print AS 'certificate_thumb_print',
-    c.issuer AS 'certificate_issuer',
-    c.subject AS 'certificate_subject',
-    c.start_date AS 'certificate_start_date',
-    c.end_date AS 'certificate_end_date',
-    c.key_length AS 'certifcate_key_length',
-    c.algorithm AS 'certificate_algorithm',
-    c.serial_number AS 'certificate_serial_number',
-    c.version AS 'certificate_version',
-    c.valid AS 'certificate_valid'
+    c.raw_data AS 'certificate_raw_data'
 FROM (
 	SELECT d1.id as domain_id,
 	d1.name as domain_name,

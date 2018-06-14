@@ -184,10 +184,10 @@ class Admin extends React.Component {
       <Segment raised>
         <Grid stackable>
           <Grid.Row>
-            <Grid.Column width={13}>
+            <Grid.Column width={10}>
               <Header as="h1">Admin</Header>
             </Grid.Column>
-            <Grid.Column textAlign="right" width={3}>
+            <Grid.Column textAlign="right" width={2}>
               <Button.Group primary fluid>
                 <Dropdown
                   button

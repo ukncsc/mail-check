@@ -1,5 +1,5 @@
 .DomainSecurityMessage--container {
-  border-left: 8px solid !important;
-  max-width: 600px;
-  margin: 5px 0px 5px 0px !important;
+  border-width: 0px 0px 0px 8px;
+  border-style: solid;
+  max-width: 600px; 
 }

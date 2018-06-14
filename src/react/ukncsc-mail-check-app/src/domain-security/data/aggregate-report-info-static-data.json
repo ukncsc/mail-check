@@ -1,22 +1,41 @@
-{ "items" : {
-  "fullyTrusted" : {
-    "title" : "Fully trusted",
-    "description" : "Emails delivered with both successful SPF and DKIM."
-  },
-  "partiallyTrusted" : {
-    "title" : "Partially trusted",
-    "description" : "Emails delivered with either successful SPF or DKIM."
-  },
-  "untrusted" : {
-    "title" : "Untrusted",
-    "description" : "Emails delivered where SPF and DKIM both failed."
-  },
-  "quarantined" : {
-    "title" : "Quarantined",
-    "description" : "Emails sent to spam folder because both SPF and DKIM failed."
-  },
-  "rejected" : {
-    "title" : "Rejected",
-    "description" : "Emails not delivered to the user because both SPF and DKIM failed."
-  }
-}}
+{
+  "graphDescriptions": [
+    {
+      "key": "fullyTrusted",
+      "title": "Fully trusted",
+      "description": "Emails delivered with both successful SPF and DKIM.",
+      "color": "#c6cd80",
+      "stroke": "#1a1e04"
+    },
+    {
+      "key": "partiallyTrusted",
+      "title": "Partially trusted",
+      "description": "Emails delivered with either successful SPF or DKIM.",
+      "color": "#98f0e9",
+      "stroke": "#0b2321"
+    },
+    {
+      "key": "untrusted",
+      "title": "Untrusted",
+      "description": "Emails delivered where SPF and DKIM both failed.",
+      "color": "#9fd0fb",
+      "stroke": "#071f3d"
+    },
+    {
+      "key": "quarantined",
+      "title": "Quarantined",
+      "description":
+        "Emails sent to spam folder because both SPF and DKIM failed.",
+      "color": "#f5c05e",
+      "stroke": "#221803"
+    },
+    {
+      "key": "rejected",
+      "title": "Rejected",
+      "description":
+        "Emails not delivered to the user because both SPF and DKIM failed.",
+      "color": "#f0a1f1",
+      "stroke": "#3a0936"
+    }
+  ]
+}

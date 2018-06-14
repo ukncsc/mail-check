@@ -16,26 +16,22 @@ namespace Dmarc.Common.Messaging.Sns.Publisher
         private const string Version = "Version";
 
         private readonly IAmazonSimpleNotificationService _simpleNotificationService;
-        private readonly IPublisherConfig _publisherConfig;
 
         private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
 
-        public SnsPublisher(IAmazonSimpleNotificationService simpleNotificationService,
-            IPublisherConfig publisherConfig)
+        public SnsPublisher(IAmazonSimpleNotificationService simpleNotificationService)
         {
             _simpleNotificationService = simpleNotificationService;
-            _publisherConfig = publisherConfig;
         }
 
-        public async Task Publish<T>(T message)
+        public async Task Publish<T>(T message, string topic)
         {
             string stringMessage = JsonConvert.SerializeObject(message, _serializerSettings);
 
-            PublishRequest publishRequest = new PublishRequest(_publisherConfig.PublisherConnectionString,
-                stringMessage)
+            PublishRequest publishRequest = new PublishRequest(topic, stringMessage)
             {
                 MessageAttributes = new Dictionary<string, MessageAttributeValue>
                 {

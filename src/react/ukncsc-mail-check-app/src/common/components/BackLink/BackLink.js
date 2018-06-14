@@ -18,7 +18,7 @@ const DynamicBackLink = ({ link, history, children }) => (
 
 const BackLink = props => (
   <DynamicBackLink {...props}>
-    <Icon name="caret left" />Back
+    <Icon name="caret left" style={{ textDecoration: 'none' }} />Back
   </DynamicBackLink>
 );
 

@@ -164,15 +164,16 @@ node {
 
 // ---------------------Build dotnet code
 
-
 	stage('Dotnet Build') {
 	    if (env.DOTNETCOMPILE == "true") {
 	        env.PROJECT = "src/dotnet/Dmarc/src/"
+			
 			sh "rm -rf ${env.DOTNETBINARYSTASH}"
             sh "mkdir -p ${env.DOTNETBINARYSTASH}"	
 			sh "cp -r ${env.PROJECT}* ${env.DOTNETBINARYSTASH}"
+			
 			env.PROJECT = "${env.DOTNETBINARYSTASH}"
-			sh "rm -rf /mnt/jenkins-home/.nuget"
+			sh "rm -rf /mnt/jenkins-home/.nuget"			
             sh "cd ${env.PROJECT}; ${env.DOTNET} restore"
 
 			sh "#!/bin/bash \n" +
@@ -265,14 +266,6 @@ node {
     stage('Package AggregateReportParser') {
 	    if (env.DOTNETCOMPILE == "true") {
             sh "cd ${env.PROJECT}Dmarc.AggregateReport.Parser.Lambda; ${env.DOTNET} lambda package -c Release -o ${env.DOTNETPUBLISHSTASH}AggregateReportParser.zip"
-        }
-	}
-
-// ---------------------ForensicReportParser
-
-    stage('Package ForensicReportParser') {
-	    if (env.DOTNETCOMPILE == "true") {
-            sh "cd ${env.PROJECT}Dmarc.ForensicReport.Parser.Lambda; ${env.DOTNET} lambda package -c Release -o ${env.DOTNETPUBLISHSTASH}ForensicReportParser.zip"
         }
 	}
 
@@ -418,6 +411,7 @@ node {
 			if ("${BRANCH_NAME}" != "master") {   
 				env.NODE_ENV="development"
 			}
+			sh "${env.AWS} s3 cp s3://ncsc-mailcheck-static-assets/HelveticaNeue.ttf src/react/ukncsc-semantic-ui-theme/src/themes/default/assets/fonts/"
 			sh "cd src/react/ukncsc-semantic-ui-theme;${env.YARN} unlink || exit 0"
 			sh "cd src/react/ukncsc-semantic-ui-theme;${env.YARN};${env.YARN} build;${env.YARN} link" 
 			env.NODE_PATH= "src/"
@@ -476,7 +470,11 @@ node {
    
 	env.APPLY = "false"
 	if (fileExists("Terraform/prod-env/${env.TFVARS_FILE}")) {
-            sh "cd Terraform/prod-env/prod-env; ${env.TERRAFORM} init -backend=true -force-copy -input=false -backend-config=\"key=${env.STATE_KEY}/terraform.tfstate\""
+		    sshagent(["${env.PRIVATE_SSH_DEPLOY_KEY_ID}"]) {
+				// add some logic here for TOFU
+				sh "mkdir -p ~/.ssh;ssh-keyscan github.com | tee -a ~/.ssh/known_hosts"
+                sh "cd Terraform/prod-env/prod-env; ${env.TERRAFORM} init -backend=true -force-copy -input=false -backend-config=\"key=${env.STATE_KEY}/terraform.tfstate\""
+			}
             sh "cd Terraform/prod-env/prod-env; cp ${env.DOTNETPUBLISHSTASH}*.zip . "
 //          sh "${env.TERRAFORM} get Terraform/prod-env/prod-env"
             if (fileExists("${env.TF_PLAN_FILE}")) {
