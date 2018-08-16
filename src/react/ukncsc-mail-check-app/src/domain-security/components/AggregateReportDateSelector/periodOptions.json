@@ -1,0 +1,7 @@
+[
+  { "text": "Last 7 days", "value": 7 },
+  { "text": "Last 14 days", "value": 14 },
+  { "text": "Last 30 days", "value": 30 },
+  { "text": "Last 3 months", "value": 90 },
+  { "text": "Last 6 months", "value": 180 }
+]

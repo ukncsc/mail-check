@@ -133,7 +133,7 @@ AND (@search IS null OR d.name LIKE CONCAT('%', @search, '%'))</value>
     <value>SELECT 
 d.id as domain_id,
 d.name as domain_name,
-MAX(IF(tls.mx_record_id IS NULL, 4, COALESCE(GREATEST(test1_result,test2_result,test3_result, test4_result, test5_result, test6_result, test7_result, test8_result, test9_result, test10_result, test11_result, test12_result), 0))) as tls_status,
+MAX(IF(tls.mx_record_id IS NULL, 4, tls.tls_status)) as tls_status,
 dmarc.record IS NOT NULL as has_dmarc,
 COALESCE(dmarc_rm.max_error_severity, 
 IF(COUNT(DISTINCT(dmarc.id)) = 0, 'none',
@@ -159,7 +159,7 @@ ORDER BY d.name;</value>
     <value>SELECT 
 d.id as domain_id,
 d.name as domain_name,
-MAX(IF(tls.mx_record_id IS NULL, 4, COALESCE(GREATEST(test1_result,test2_result,test3_result, test4_result, test5_result, test6_result, test7_result, test8_result, test9_result, test10_result, test11_result, test12_result), 0))) as tls_status,
+MAX(IF(tls.mx_record_id IS NULL, 4, tls.tls_status)) as tls_status,
 dmarc.record IS NOT NULL as has_dmarc,
 COALESCE(dmarc_rm.max_error_severity, 
 	IF(COUNT(DISTINCT(dmarc.id)) = 0, 'none',
@@ -186,7 +186,7 @@ LIMIT @offset,@pageSize;</value>
     <value>SELECT 
 d.id as domain_id,
 d.name as domain_name,
-MAX(IF(tls.mx_record_id IS NULL, 4, COALESCE(GREATEST(test1_result,test2_result,test3_result, test4_result, test5_result, test6_result, test7_result, test8_result, test9_result, test10_result, test11_result, test12_result), 0))) as tls_status,
+MAX(IF(tls.mx_record_id IS NULL, 4, tls.tls_status)) as tls_status,
 dmarc.record IS NOT NULL as has_dmarc,
 COALESCE(dmarc_rm.max_error_severity, 
 IF(COUNT(DISTINCT(dmarc.id)) = 0, 'none',
@@ -212,5 +212,37 @@ AND (@search IS NULL OR d.name LIKE CONCAT('%', @search,'%'))
 GROUP BY d.id
 ORDER BY d.name
 LIMIT @offset, @pageSize;</value>
+  </data>
+  <data name="SelectSubdomains" xml:space="preserve">
+    <value>SELECT d.id AS domain_id, d.name AS domain_name, dmarc.record IS NOT NULL as has_dmarc, COALESCE(dmarc_rm.max_error_severity, "none") AS dmarc_status, COALESCE(spf_rm.max_error_severity, "none") AS spf_status, COALESCE(MAX(tls.tls_status), 0) AS tls_status
+FROM domain d
+LEFT JOIN dns_record_mx mx 
+ON mx.domain_id = d.id
+LEFT JOIN dns_record_mx_tls_evaluator_results tls 
+ON mx.id = tls.mx_record_id
+LEFT JOIN dns_record_dmarc dmarc 
+ON dmarc.domain_id = d.id
+LEFT JOIN dns_record_dmarc_read_model dmarc_rm  
+ON dmarc_rm.domain_id = d.id
+LEFT JOIN dns_record_spf spf 
+ON spf.domain_id = d.id
+LEFT JOIN dns_record_spf_read_model spf_rm 
+ON spf_rm.domain_id = d.id
+WHERE d.name LIKE CONCAT("%.", LOWER(@domain))
+AND (d.publish=b'1' OR d.monitor=b'1')
+AND d.exdirectory=b'0'
+AND mx.end_date IS NULL
+AND dmarc.end_date IS NULL
+AND spf.end_date IS NULL
+GROUP BY d.id
+ORDER BY d.name
+LIMIT @pageSize
+OFFSET @offset;</value>
+  </data>
+  <data name="SelectWelcomeSearchResult" xml:space="preserve">
+    <value>SELECT id, name FROM domain
+WHERE name = @term
+AND (monitor = 1 || publish = 1)
+LIMIT 1;</value>
   </data>
 </root>

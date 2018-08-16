@@ -7,7 +7,9 @@ namespace Dmarc.DomainStatus.Api.Validation
     {
         public DomainRequestValidator()
         {
-            RuleFor(dr => dr.Id).GreaterThanOrEqualTo(0);
+            RuleFor(dr => dr.Id)
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("An ID must be greater than zero");
         }
     }
 }

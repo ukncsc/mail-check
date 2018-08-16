@@ -59,24 +59,28 @@ namespace Dmarc.MxSecurityEvaluator.Processors
                 _log.Debug(
                     $"MX record with ID {mxRecordTlsProfile.MxRecordId} has no hostname, saving null results.");
             }
-            else if (mxRecordTlsProfile.ConnectionResults.HasFailedConnection())
-            {
-                await _tlsRecordDao.SaveTlsEvaluatorResults(mxRecordTlsProfile, EvaluatorResults.ConnectionFailedResults);
-
-                _log.Debug(
-                    $"MX record with ID {mxRecordTlsProfile.MxRecordId} TLS connection failed, saving single inconclusive result.");
-            }
             else
             {
-                var tlsEvaluatorResults = _mxSecurityEvaluator.Evaluate(mxRecordTlsProfile.ConnectionResults);
+                string failedConnectionErrors = mxRecordTlsProfile.ConnectionResults.GetFailedConnectionErrors();
 
-                await _tlsRecordDao.SaveTlsEvaluatorResults(mxRecordTlsProfile, tlsEvaluatorResults);
+                if (string.IsNullOrWhiteSpace(failedConnectionErrors))
+                {
+                    var tlsEvaluatorResults = _mxSecurityEvaluator.Evaluate(mxRecordTlsProfile.ConnectionResults);
 
-                _log.Debug(
-                    $"Evaluated TLS connection results for MX record with ID {mxRecordTlsProfile.MxRecordId}.");
+                    await _tlsRecordDao.SaveTlsEvaluatorResults(mxRecordTlsProfile, tlsEvaluatorResults);
+
+                    _log.Debug(
+                        $"Evaluated TLS connection results for MX record with ID {mxRecordTlsProfile.MxRecordId}.");
+                }
+                else
+                {
+                    await _tlsRecordDao.SaveTlsEvaluatorResults(mxRecordTlsProfile,
+                        EvaluatorResults.GetConnectionFailedResults(failedConnectionErrors));
+
+                    _log.Debug(
+                        $"MX record with ID {mxRecordTlsProfile.MxRecordId} TLS connection failed, saving single inconclusive result.");
+                }
             }
         }
-
-        
     }
 }

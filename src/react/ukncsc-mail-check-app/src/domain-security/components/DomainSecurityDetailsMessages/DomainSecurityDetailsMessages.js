@@ -1,21 +1,14 @@
 import React from 'react';
-import map from 'lodash/map';
 import pluralise from 'pluralize';
 import PropTypes from 'prop-types';
 import { Divider } from 'semantic-ui-react';
-import {
-  DomainSecurityMessage,
-  DomainSecurityPill,
-} from 'domain-security/components';
-
-/**
- * This component renders markdown from the API in GitHub Flavored Markdown: https://github.github.com/gfm/
- */
-
- import './DomainSecurityDetailsMessages.css';
+import { DomainSecurityPill } from 'domain-security/components';
+import { MailCheckMessage } from 'common/components';
+import './DomainSecurityDetailsMessages.css';
 
 const DomainSecurityDetailsMessages = ({
   type,
+  markdown,
   failures,
   warnings,
   inconclusives,
@@ -25,13 +18,14 @@ const DomainSecurityDetailsMessages = ({
       <React.Fragment>
         <DomainSecurityPill error>{failures.length} Urgent</DomainSecurityPill>
         <p className="DomainSecuritySummaryMessages--intro">
-          Your {type} has {pluralise('element', failures.length, true)} that{' '}
+          Your {type} configuration has{' '}
+          {pluralise('element', failures.length, true)} that{' '}
           {pluralise.singular('require', failures.length)} urgent attention.
         </p>
-        {map(failures, (description, i) => (
-          <DomainSecurityMessage error markdown key={i}>
+        {failures.map((description, i) => (
+          <MailCheckMessage error markdown={markdown} key={i}>
             {description}
-          </DomainSecurityMessage>
+          </MailCheckMessage>
         ))}
         <Divider hidden />
       </React.Fragment>
@@ -42,13 +36,13 @@ const DomainSecurityDetailsMessages = ({
           {warnings.length} Advisory
         </DomainSecurityPill>
         <p className="DomainSecuritySummaryMessages--intro">
-          Your {type} has {pluralise('element', warnings.length, true)} that can
-          be improved.
+          Your {type} configuration has{' '}
+          {pluralise('element', warnings.length, true)} that can be improved.
         </p>
-        {map(warnings, (description, i) => (
-          <DomainSecurityMessage warning markdown key={i}>
+        {warnings.map((description, i) => (
+          <MailCheckMessage warning markdown={markdown} key={i}>
             {description}
-          </DomainSecurityMessage>
+          </MailCheckMessage>
         ))}
         <Divider hidden />
       </React.Fragment>
@@ -59,13 +53,13 @@ const DomainSecurityDetailsMessages = ({
           {inconclusives.length} Inconclusive
         </DomainSecurityPill>
         <p className="DomainSecuritySummaryMessages--intro">
-          Your {type} has {inconclusives.length} inconclusive{' '}
+          Your {type} configuration has {inconclusives.length} inconclusive{' '}
           {pluralise('element', inconclusives.length)}.
         </p>
-        {map(inconclusives, (description, i) => (
-          <DomainSecurityMessage markdown key={i}>
+        {inconclusives.map((description, i) => (
+          <MailCheckMessage markdown={markdown} key={i}>
             {description}
-          </DomainSecurityMessage>
+          </MailCheckMessage>
         ))}
       </React.Fragment>
     )}
@@ -75,22 +69,22 @@ const DomainSecurityDetailsMessages = ({
         <React.Fragment>
           <DomainSecurityPill>1 Positive</DomainSecurityPill>
           <Divider hidden />
-          <DomainSecurityMessage success>
-            {type} is well configured.
-          </DomainSecurityMessage>
+          <MailCheckMessage success>{type} well configured.</MailCheckMessage>
         </React.Fragment>
       )}
   </React.Fragment>
 );
 
 DomainSecurityDetailsMessages.defaultProps = {
+  markdown: false,
   failures: [],
   warnings: [],
   inconclusives: [],
 };
 
 DomainSecurityDetailsMessages.propTypes = {
-  type: PropTypes.oneOf(['DMARC', 'SPF', 'TLS']).isRequired,
+  type: PropTypes.string.isRequired,
+  markdown: PropTypes.bool,
   failures: PropTypes.arrayOf(PropTypes.string),
   warnings: PropTypes.arrayOf(PropTypes.string),
   inconclusives: PropTypes.arrayOf(PropTypes.string),

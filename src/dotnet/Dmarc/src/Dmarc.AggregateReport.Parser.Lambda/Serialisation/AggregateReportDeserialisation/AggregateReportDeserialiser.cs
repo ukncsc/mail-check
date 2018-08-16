@@ -47,6 +47,12 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Serialisation.AggregateReportDeser
                             throw new ArgumentException("Root of aggregate report must be feedback.");
                         }
 
+                        XElement versionElement = feedback.SingleOrDefault("version");
+                        double candidateVersion;
+                        double? version = double.TryParse(versionElement?.Value, out candidateVersion) 
+                            ? candidateVersion 
+                            : (double?)null;
+
                         ReportMetadata reportMetadata = _reportMetadataDeserialiser.Deserialise(feedback.Single("report_metadata"));
                         PolicyPublished policyPublished = _policyPublishedDeserialiser.Deserialise(feedback.Single("policy_published"));
 
@@ -59,7 +65,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Serialisation.AggregateReportDeser
 
                         Record[] records = _recordDeserialiser.Deserialise(recordElements);
 
-                        Domain.Dmarc.AggregateReport aggregateReport = new Domain.Dmarc.AggregateReport(reportMetadata, policyPublished, records);
+                        Domain.Dmarc.AggregateReport aggregateReport = new Domain.Dmarc.AggregateReport(version, reportMetadata, policyPublished, records);
                         return new AggregateReportInfo(aggregateReport, emailMetadata, attachment.AttachmentMetadata);
                     }
                 }

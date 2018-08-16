@@ -1,6 +1,3 @@
-
-using Dmarc.DnsRecord.Importer.Lambda.Util;
-
 namespace Dmarc.DnsRecord.Importer.Lambda.Dns.Client.RecordInfos
 {
     public class MxRecordInfo : RecordInfo
@@ -25,15 +22,14 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Dns.Client.RecordInfos
 
         protected bool Equals(MxRecordInfo other)
         {
-            return StringUtils.SpaceInsensitiveEquals(Host, other.Host) && 
-                Preference == other.Preference;
+            return string.Equals(Host, other.Host) && Preference == other.Preference;
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((MxRecordInfo) obj);
         }
 

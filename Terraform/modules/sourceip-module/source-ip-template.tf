@@ -5,43 +5,19 @@ data "template_file" "internal-sources" {
     sourceips = "${join(",",distinct(values(var.internal-sources)))}"
   }
 }
-
-data "template_file" "government-sources" {
+data "template_file" "external-sources" {
   template = "$${sourceips}"
 
   vars {
-    sourceips = "${join(",",distinct(values(var.government-sources)))}"
+    sourceips = "${join(",",distinct(values(var.external-sources)))}"
   }
 }
 
-data "template_file" "police-sources" {
+
+data "template_file" "all-sources" {
   template = "$${sourceips}"
 
   vars {
-    sourceips = "${join(",",distinct(values(var.police-sources)))}"
-  }
-}
-
-data "template_file" "localgov-sources" {
-  template = "$${sourceips}"
-
-  vars {
-    sourceips = "${join(",",distinct(values(var.localgov-sources)))}"
-  }
-}
-
-data "template_file" "nhs-sources" {
-  template = "$${sourceips}"
-
-  vars {
-    sourceips = "${join(",",distinct(values(var.nhs-sources)))}"
-  }
-}
-
-data "template_file" "all-external-sources" {
-  template = "$${sourceips}"
-
-  vars {
-    sourceips = "${join(",",distinct(compact(concat(values(var.nhs-sources), values(var.localgov-sources), values(var.police-sources), values(var.government-sources)))))}"
+    sourceips = "${join(",",distinct(compact(concat(values(var.internal-sources), values(var.external-sources)))))}"
   }
 }

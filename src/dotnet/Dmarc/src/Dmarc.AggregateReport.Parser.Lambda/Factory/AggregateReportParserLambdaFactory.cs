@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.SimpleNotificationService;
@@ -11,6 +12,7 @@ using Dmarc.AggregateReport.Parser.Lambda.Dao;
 using Dmarc.AggregateReport.Parser.Lambda.Dao.Entities;
 using Dmarc.AggregateReport.Parser.Lambda.Domain;
 using Dmarc.AggregateReport.Parser.Lambda.Parser;
+using Dmarc.AggregateReport.Parser.Lambda.Publishers;
 using Dmarc.AggregateReport.Parser.Lambda.Serialisation.AggregateReportDeserialisation;
 using Dmarc.Common.Data;
 using Dmarc.Common.Environment;
@@ -37,6 +39,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Factory
                 .AddTransient<IAmazonS3>(provider => new AmazonS3Client(new EnvironmentVariablesAWSCredentials()))
                 .AddTransient<ILambdaReportParserConfig, LambdaAggregateReportParserConfig>()
                 .AddTransient<IPublisherConfig, LambdaAggregateReportParserConfig>()
+                .AddTransient<IDkimSelectorPublisherConfig, DkimSelectorPublisherConfig>()
                 .AddTransient<IReportDaoAsync<AggregateReportEntity>, AggregateReportParserDaoAsync>()
                 .AddTransient<IAmazonSimpleSystemsManagement>(p => new AmazonSimpleSystemsManagementClient(new EnvironmentVariablesAWSCredentials()))
                 .AddTransient<IParameterStoreRequest, ParameterStoreRequest>()
@@ -73,6 +76,8 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Factory
                 .AddTransient<IAmazonSQS>(provider => new AmazonSQSClient(new EnvironmentVariablesAWSCredentials()))
                 .AddTransient<IAmazonSimpleNotificationService>(provider => new AmazonSimpleNotificationServiceClient(new EnvironmentVariablesAWSCredentials()))
                 .AddTransient<IPublisher, SnsPublisher>()
+                .AddTransient<IMessagePublisher, DkimSelectorSeenPublisher>()
+                .AddTransient<IMessagePublisher, AggregateReportIpAddressesMessagePublisher>()   
                 .BuildServiceProvider();
 
             return serviceProvider.GetService<IQueueProcessor>();
@@ -88,9 +93,8 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Factory
 
             services.AddTransient<IPublishingEmailMessageInfoProcessor<AggregateReportInfo>>(_ => new AggregateReportPublishingEmailMessageInfoProcessor<AggregateReportInfo>(
                 _.GetService<IPersistentEmailMessageInfoProcessor<AggregateReportInfo>>(),
-                _.GetService<IPublisher>(),
-                _.GetService<ILogger>(),
-                _.GetRequiredService<IPublisherConfig>()));
+                _.GetService<IEnumerable<IMessagePublisher>>(),
+                _.GetService<ILogger>()));
 
             services.AddTransient<IS3EmailMessageProcessor>(_ => new S3EmailMessageProcessor<AggregateReportInfo>(
                 _.GetService<IS3EmailMessageClient>(),

@@ -11,11 +11,21 @@ namespace Dmarc.Admin.Api.Validation
     {
         public EntitySearchRequestValidator()
         {
-            RuleFor(r => r.Search).Matches(@"\A[^\r\n$<>%;/\\]{0,50}\z");
+            CascadeMode = CascadeMode.StopOnFirstFailure;
 
-            RuleFor(r => r.Limit).GreaterThanOrEqualTo(1).LessThanOrEqualTo(200);
+            RuleFor(r => r.Search)
+                .Matches(@"\A[^\r\n$<>%;/\\]{0,50}\z")
+                .WithMessage("A search must not contain any special characters.");
 
-            RuleFor(r => r.IncludedIds).Must(r => r.All(_ => _ >= 0));
+            RuleFor(r => r.Limit)
+                .GreaterThanOrEqualTo(1)
+                .WithMessage("A limit must be greater than zero.")
+                .LessThanOrEqualTo(200)
+                .WithMessage("A limit must be 200 or less.");
+
+            RuleFor(r => r.IncludedIds)
+                .Must(r => r.All(_ => _ >= 0))
+                .WithMessage("All included IDs must be greater than zero.");
         }
     }
 }

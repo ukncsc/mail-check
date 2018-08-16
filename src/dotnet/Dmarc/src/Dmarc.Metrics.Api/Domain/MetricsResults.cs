@@ -12,9 +12,6 @@ namespace Dmarc.Metrics.Api.Domain
         public long DomainsAggregateReporting { get; set; }
         public long AggregateReportsReceived { get; set; }
         public long EmailsBlocked { get; set; }
-        public long DomainsForensicReporting { get; set; }
-        public long ForensicReportsReceived { get; set; }
         public long RuaConfiguredForMailCheck { get; set; }
-        public long RufConfiguredForMailCheck { get; set; }
     }
 }

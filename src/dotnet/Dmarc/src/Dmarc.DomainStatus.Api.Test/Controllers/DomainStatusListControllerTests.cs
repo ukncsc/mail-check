@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using Dmarc.DomainStatus.Api.Services;
+using Dmarc.Common.Validation;
 
 namespace Dmarc.DomainStatus.Api.Test.Controllers
 {
@@ -34,6 +36,9 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
 
         private DomainStatusListController _domainStatusListController;
         private IDomainStatusListDao _domainStatusListDao;
+        private ICertificateEvaluatorApi _certificateEvaluatorApi;
+        private IDomainValidator _domainValidator;
+        private IPublicDomainListValidator _publicDomainValidator;
         private IOrganisationalDomainProvider _organisationDomainProvider;
         private IValidator<DomainsRequest> _domainRequestValidator;
 
@@ -43,9 +48,10 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             _domainStatusListDao = A.Fake<IDomainStatusListDao>();
             _organisationDomainProvider = A.Fake<IOrganisationalDomainProvider>();
             _domainRequestValidator = A.Fake<IValidator<DomainsRequest>>();
+            _certificateEvaluatorApi = A.Fake<ICertificateEvaluatorApi>();
 
             _domainStatusListController = new DomainStatusListController(_domainStatusListDao, _organisationDomainProvider,
-                _domainRequestValidator, A.Fake<ILogger<DomainStatusListController>>());
+                _certificateEvaluatorApi, _domainValidator, _publicDomainValidator, _domainRequestValidator, A.Fake<ILogger<DomainStatusListController>>());
 
             _domainStatusListController.ControllerContext = new ControllerContext
             {
@@ -69,6 +75,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
 
             Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfo(A<int>._, A<int>._, A<string>._)).MustNotHaveHappened();
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).MustNotHaveHappened();
             A.CallTo(() => _domainStatusListDao.GetDomainsCount(A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _organisationDomainProvider.GetOrganisationalDomain(A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByDomainNames(A<List<string>>._)).MustNotHaveHappened();
@@ -80,12 +87,14 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             A.CallTo(() => _domainRequestValidator.ValidateAsync(A<DomainsRequest>._, CancellationToken.None))
                 .Returns(Task.FromResult(new ValidationResult(new List<ValidationFailure>())));
 
-            A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfo(A<int>._, A<int>._, A<string>._)).Returns(
-                new List<DomainSecurityInfo>
-                {
-                    CreateDomainSecurityInfo(DomainId1, SubDomain1, true, Success),
-                    CreateDomainSecurityInfo(DomainId2, SubDomain2, true, Warning)
-                });
+            var domainSecurityInfos = new List<DomainSecurityInfo>()
+            {
+                CreateDomainSecurityInfo(DomainId1, SubDomain1, true, Success),
+                CreateDomainSecurityInfo(DomainId2, SubDomain2, true, Warning)
+            };
+
+            A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfo(A<int>._, A<int>._, A<string>._)).Returns(domainSecurityInfos);
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).Returns(domainSecurityInfos);
 
             DomainsRequest request = new DomainsRequest();
             IActionResult result = await _domainStatusListController.GetDomainsSecurityInfo(request);
@@ -107,6 +116,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
 
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfo(A<int>._, A<int>._, A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _domainStatusListDao.GetDomainsCount(A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _organisationDomainProvider.GetOrganisationalDomain(A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByDomainNames(A<List<string>>._)).MustNotHaveHappened();
         }
@@ -117,12 +127,14 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             A.CallTo(() => _domainRequestValidator.ValidateAsync(A<DomainsRequest>._, CancellationToken.None))
                 .Returns(Task.FromResult(new ValidationResult(new List<ValidationFailure>())));
 
-            A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfo(A<int>._, A<int>._, A<string>._)).Returns(
-                Task.FromResult(new List<DomainSecurityInfo>
-                {
-                    CreateDomainSecurityInfo(DomainId1, SubDomain1, false, Error),
-                    CreateDomainSecurityInfo(DomainId2, SubDomain2, true, Warning)
-                }));
+            var domainSecurityInfos = new List<DomainSecurityInfo>()
+            {
+                CreateDomainSecurityInfo(DomainId1, SubDomain1, false, Error),
+                CreateDomainSecurityInfo(DomainId2, SubDomain2, true, Warning)
+            };
+
+            A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfo(A<int>._, A<int>._, A<string>._)).Returns(domainSecurityInfos);
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).Returns(domainSecurityInfos);
 
             A.CallTo(() => _organisationDomainProvider.GetOrganisationalDomain(SubDomain1))
                 .Returns(Task.FromResult(new OrganisationalDomain(OrgDomain1, SubDomain1)));
@@ -153,6 +165,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
 
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfo(A<int>._, A<int>._, A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _domainStatusListDao.GetDomainsCount(A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _organisationDomainProvider.GetOrganisationalDomain(A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByDomainNames(A<List<string>>._)).MustHaveHappened(Repeated.Exactly.Once);
         }
@@ -163,12 +176,14 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             A.CallTo(() => _domainRequestValidator.ValidateAsync(A<DomainsRequest>._, CancellationToken.None))
                 .Returns(Task.FromResult(new ValidationResult(new List<ValidationFailure>())));
 
-            A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfo(A<int>._, A<int>._, A<string>._)).Returns(
-                Task.FromResult(new List<DomainSecurityInfo>
-                {
-                    CreateDomainSecurityInfo(DomainId1, SubDomain1, false, Error),
-                    CreateDomainSecurityInfo(DomainId2, SubDomain2, true, Warning)
-                }));
+            var domainSecurityInfos = new List<DomainSecurityInfo>()
+            {
+                CreateDomainSecurityInfo(DomainId1, SubDomain1, false, Error),
+                CreateDomainSecurityInfo(DomainId2, SubDomain2, true, Warning)
+            };
+
+            A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfo(A<int>._, A<int>._, A<string>._)).Returns(domainSecurityInfos);
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).Returns(domainSecurityInfos);
 
             A.CallTo(() => _organisationDomainProvider.GetOrganisationalDomain(SubDomain1))
                 .Returns(Task.FromResult(new OrganisationalDomain(OrgDomain1, SubDomain1)));
@@ -198,6 +213,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             Assert.That(response.DomainSecurityInfos[1].DmarcStatus, Is.EqualTo(Warning));
 
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfo(A<int>._, A<int>._, A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _domainStatusListDao.GetDomainsCount(A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _organisationDomainProvider.GetOrganisationalDomain(A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByDomainNames(A<List<string>>._)).MustHaveHappened(Repeated.Exactly.Once);
@@ -218,6 +234,8 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
 
             Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByUserId(A<int>._, A<int>._, A<int>._, A<string>._)).MustNotHaveHappened();
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).MustNotHaveHappened();
+
             A.CallTo(() => _domainStatusListDao.GetDomainsCountByUserId(A<int>._, A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _organisationDomainProvider.GetOrganisationalDomain(A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByDomainNames(A<List<string>>._)).MustNotHaveHappened();
@@ -241,6 +259,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             Assert.That(response.DomainSecurityInfos, Is.Empty);
 
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByUserId(A<int>._, A<int>._, A<int>._, A<string>._)).MustNotHaveHappened();
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).MustNotHaveHappened();
             A.CallTo(() => _domainStatusListDao.GetDomainsCountByUserId(A<int>._, A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _organisationDomainProvider.GetOrganisationalDomain(A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByDomainNames(A<List<string>>._)).MustNotHaveHappened();
@@ -254,12 +273,14 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             A.CallTo(() => _domainRequestValidator.ValidateAsync(A<DomainsRequest>._, CancellationToken.None))
                 .Returns(Task.FromResult(new ValidationResult(new List<ValidationFailure>())));
 
-            A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByUserId(A<int>._, A<int>._, A<int>._, A<string>._)).Returns(
-                new List<DomainSecurityInfo>
-                {
-                    CreateDomainSecurityInfo(DomainId1, SubDomain1, true, Success),
-                    CreateDomainSecurityInfo(DomainId2, SubDomain2, true, Warning)
-                });
+            var domainSecurityInfos = new List<DomainSecurityInfo>()
+            {
+                CreateDomainSecurityInfo(DomainId1, SubDomain1, true, Success),
+                CreateDomainSecurityInfo(DomainId2, SubDomain2, true, Warning)
+            };
+
+            A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByUserId(A<int>._, A<int>._, A<int>._, A<string>._)).Returns(domainSecurityInfos);
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).Returns(domainSecurityInfos);
 
             DomainsRequest request = new DomainsRequest();
             IActionResult result = await _domainStatusListController.GetDomainsSecurityInfoByUserId(request);
@@ -280,6 +301,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             Assert.That(response.DomainSecurityInfos[1].DmarcStatus, Is.EqualTo(Warning));
 
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByUserId(A<int>._, A<int>._, A<int>._, A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _domainStatusListDao.GetDomainsCountByUserId(A<int>._, A<string>._)).MustHaveHappened(Repeated.Exactly.Twice);
             A.CallTo(() => _organisationDomainProvider.GetOrganisationalDomain(A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByDomainNames(A<List<string>>._)).MustNotHaveHappened();
@@ -293,12 +315,14 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             A.CallTo(() => _domainRequestValidator.ValidateAsync(A<DomainsRequest>._, CancellationToken.None))
                 .Returns(Task.FromResult(new ValidationResult(new List<ValidationFailure>())));
 
-            A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByUserId(A<int>._, A<int>._, A<int>._, A<string>._)).Returns(
-                Task.FromResult(new List<DomainSecurityInfo>
-                {
-                    CreateDomainSecurityInfo(DomainId1, SubDomain1, false, Error),
-                    CreateDomainSecurityInfo(DomainId2, SubDomain2, true, Warning)
-                }));
+            var domainSecurityInfos = new List<DomainSecurityInfo>()
+            {
+                CreateDomainSecurityInfo(DomainId1, SubDomain1, false, Error),
+                CreateDomainSecurityInfo(DomainId2, SubDomain2, true, Warning)
+            };
+
+            A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByUserId(A<int>._, A<int>._, A<int>._, A<string>._)).Returns(domainSecurityInfos);
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).Returns(domainSecurityInfos);
 
             A.CallTo(() => _organisationDomainProvider.GetOrganisationalDomain(SubDomain1))
                 .Returns(Task.FromResult(new OrganisationalDomain(OrgDomain1, SubDomain1)));
@@ -328,6 +352,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             Assert.That(response.DomainSecurityInfos[1].DmarcStatus, Is.EqualTo(Warning));
 
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByUserId(A<int>._, A<int>._, A<int>._, A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _domainStatusListDao.GetDomainsCountByUserId(A<int>._, A<string>._)).MustHaveHappened(Repeated.Exactly.Twice);
             A.CallTo(() => _organisationDomainProvider.GetOrganisationalDomain(A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByDomainNames(A<List<string>>._)).MustHaveHappened(Repeated.Exactly.Once);
@@ -341,12 +366,14 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             A.CallTo(() => _domainRequestValidator.ValidateAsync(A<DomainsRequest>._, CancellationToken.None))
                 .Returns(Task.FromResult(new ValidationResult(new List<ValidationFailure>())));
 
-            A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByUserId(A<int>._, A<int>._, A<int>._, A<string>._)).Returns(
-                Task.FromResult(new List<DomainSecurityInfo>
-                {
-                    CreateDomainSecurityInfo(DomainId1, SubDomain1, false, Error),
-                    CreateDomainSecurityInfo(DomainId2, SubDomain2, true, Warning)
-                }));
+            var domainSecurityInfos = new List<DomainSecurityInfo>()
+            {
+                CreateDomainSecurityInfo(DomainId1, SubDomain1, false, Error),
+                CreateDomainSecurityInfo(DomainId2, SubDomain2, true, Warning)
+            };
+
+            A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByUserId(A<int>._, A<int>._, A<int>._, A<string>._)).Returns(domainSecurityInfos);
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).Returns(domainSecurityInfos);
 
             A.CallTo(() => _organisationDomainProvider.GetOrganisationalDomain(SubDomain1))
                 .Returns(Task.FromResult(new OrganisationalDomain(OrgDomain1, SubDomain1)));
@@ -376,12 +403,14 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             Assert.That(response.DomainSecurityInfos[1].DmarcStatus, Is.EqualTo(Warning));
 
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByUserId(A<int>._, A<int>._, A<int>._, A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(A<List<DomainSecurityInfo>>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _domainStatusListDao.GetDomainsCountByUserId(A<int>._, A<string>._)).MustHaveHappened(Repeated.Exactly.Twice);
             A.CallTo(() => _organisationDomainProvider.GetOrganisationalDomain(A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _domainStatusListDao.GetDomainsSecurityInfoByDomainNames(A<List<string>>._)).MustHaveHappened(Repeated.Exactly.Once);
         }
 
         #region TestSupport
+
         private DomainSecurityInfo CreateDomainSecurityInfo(int domainId, string domainName, bool hasDmarc, Status dmarcStatus)
         {
             Domain.Domain domain = new Domain.Domain(domainId, domainName);
@@ -401,6 +430,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
                 }
             };
         }
+
         #endregion TestSupport
     }
 }

@@ -24,11 +24,26 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         }
 
         [Test]
+        [TestCase(Error.TCP_CONNECTION_FAILED,
+            "The server did not present a STARTTLS command with a response code (250)")]
+        [TestCase(Error.SESSION_INITIALIZATION_FAILED,
+            "The server did not present a STARTTLS command with a response code (250)")]
+        public void ErrorsShouldHaveErrorDescriptionInResult(Error error, string description)
+        {
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error, description, null);
+            ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
+
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
+            StringAssert.Contains($"Error description \"{description}\".", _sut.Test(connectionResults).Description);
+        }
+
+        [Test]
         [TestCase(Error.TCP_CONNECTION_FAILED)]
         [TestCase(Error.SESSION_INITIALIZATION_FAILED)]
         public void TcpErrorsShouldResultInInconclusive(Error error)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error, null, null);
            ConnectionResults connectionResults =
                 TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 
@@ -41,7 +56,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(Error.INSUFFICIENT_SECURITY)]
         public void ConnectionRefusedErrorsShouldResultInPass(Error error)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error, null, null);
            ConnectionResults connectionResults =
                 TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 
@@ -51,7 +66,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [Test]
         public void OtherErrorsShouldResultInInconclusive()
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(Error.INTERNAL_ERROR);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(Error.INTERNAL_ERROR, null, null);
            ConnectionResults connectionResults =
                 TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 
@@ -71,7 +86,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CurveGroup.UnknownGroup8192)]
         public void GoodCurveGroupsShouldResultInAPass(CurveGroup curveGroup)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null, null, null);
             ConnectionResults connectionResults =
                 TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 
@@ -81,7 +96,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [Test]
         public void Unknown1024GroupShouldResultInAWarn()
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, CurveGroup.UnknownGroup1024, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, CurveGroup.UnknownGroup1024, null, null, null, null, null);
             ConnectionResults connectionResults =
                 TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 
@@ -95,7 +110,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CurveGroup.Unknown)]
         public void Known1024GroupShouldResultInAFail(CurveGroup curveGroup)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null, null, null);
             ConnectionResults connectionResults =
                 TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 
@@ -105,7 +120,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [Test]
         public void NoCurveGroupShouldResultInInconslusive()
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, null, null, null, null, null, null);
             ConnectionResults connectionResults =
                 TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureDiffieHellmanGroupSelected, tlsConnectionResult);
 

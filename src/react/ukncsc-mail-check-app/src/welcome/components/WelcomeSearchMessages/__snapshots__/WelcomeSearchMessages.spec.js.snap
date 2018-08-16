@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WelcomeSearchMessages when an error occurs it should match the snapshot 1`] = `
+<div>
+  <div
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui error message MailCheckMessage--container"
+  >
+    something has gone wrong
+  </div>
+  <div
+    class="ui hidden divider"
+  />
+</div>
+`;
+
+exports[`WelcomeSearchMessages when is no result for a non public sector domain it should match the snapshot 1`] = `
+<div>
+  <div
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui info message MailCheckMessage--container"
+  >
+    foo.com
+    is not currently monitored by Mail Check. Please email
+    <a
+      href="mailto:mailcheck@digital.ncsc.gov.uk?Subject=Add foo.com to Mail Check"
+    >
+      mailcheck@digital.ncsc.gov.uk
+    </a>
+    to have 
+    foo.com
+    added to Mail Check.
+  </div>
+  <div
+    class="ui hidden divider"
+  />
+</div>
+`;
+
+exports[`WelcomeSearchMessages when there is no result for a public sector domain it should match the snapshot 1`] = `
+<div>
+  <div
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui info message MailCheckMessage--container"
+  >
+    foo.gov.uk
+    is not currently monitored by Mail Check.
+    <a
+      href=""
+    >
+      Add 
+      foo.gov.uk
+      to Mail Check
+    </a>
+    .
+  </div>
+  <div
+    class="ui hidden divider"
+  />
+</div>
+`;

@@ -60,9 +60,8 @@ namespace Dmarc.Metrics.Api.Dao {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to SELECT week_beginning, p_monitor + p_block p_any,p_monitor, p_block, rua_mc, ruf_mc, domains, users, dws.domains_reporting domains_aggregate_reporting, aggregate_report_count, emails_blocked, dwsf.domains_reporting domains_forensic_reporting, forensic_report_count 
+        ///    Looks up a localized string similar to SELECT week_beginning, p_monitor + p_block p_any,p_monitor, p_block, rua_mc, ruf_mc, domains, users, dws.domains_reporting domains_aggregate_reporting, aggregate_report_count, emails_blocked
         ///FROM derived_weekly_stats dws 
-        ///JOIN derived_weekly_stats_forensic dwsf USING (week_beginning)
         ///WHERE (week_beginning &gt; @start OR @start IS NULL) 
         ///AND (week_beginning &lt; @end  OR @end  IS NULL);.
         /// </summary>

@@ -74,3 +74,13 @@ variable "s3-bucket-arns" {
   type    = "string"
   default = ""
 }
+
+variable "environment" {
+  type = "map"
+  default = {}
+}
+
+variable "sns-arns" {
+  type = "list"
+  default = []
+}

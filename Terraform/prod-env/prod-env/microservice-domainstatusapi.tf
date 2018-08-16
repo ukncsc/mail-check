@@ -11,12 +11,12 @@ module "domainstatusapi" {
   subnet-ids         = "${join(",", aws_subnet.dmarc-env-subnet.*.id)}"
   subnet-cidr        = "${join(",", values(var.zone-subnets))}"
   //route53-zone-id           = "${aws_route53_zone.service-zone.id}"
-  //admin-subnets             = "${data.aws_vpc.build-vpc.cidr_block}"
+  //admin-subnets             = "${var.build-vpc-cidr-block}"
   cloudwatch-alerts-sns-arn = "${aws_sns_topic.cloudwatch-alerts.arn}"
 
   # Docker container setttings
 
-  registry-url              = "727873987145.dkr.ecr.eu-west-2.amazonaws.com/${var.env-name}/domainstatusapi:${var.dotnet-container-githash}"
+  registry-url              = "${var.ecr-aws-account-id}.dkr.ecr.${var.aws-region}.amazonaws.com/${var.env-name}/domainstatusapi:${var.dotnet-container-githash}"
   command                   = "Dmarc.DomainStatus.Api.dll"
   service-name              = "domainstatusapi"
   container-memory          = "${var.default-container-memory}"
@@ -26,8 +26,9 @@ module "domainstatusapi" {
   health-check-grace-period = "300"
   docker-environment = ["ASPNETCORE_URLS=http://+:80",
     "ReverseDnsApiEndpoint=https://api.${var.env-name}.i.mailcheck.service.ncsc.gov.uk/api/reverse-dns/",
+    "CertificateEvaluatorApiEndpoint=https://api.${var.env-name}.i.mailcheck.service.ncsc.gov.uk/api/certificates/",
   ]
-  docker-environment-count = "2"
+  docker-environment-count = "3"
   # Assign to an ECS Cluster
   cluster-id           = "${module.api-cluster.cluster-id}"
   ecs-service-role-arn = "${module.api-cluster.ecs-service-role-arn}"

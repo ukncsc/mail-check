@@ -14,9 +14,9 @@
       "version": "1.0.5"
     },
     "Microsoft.Extensions.DependencyInjection": "1.0.2",
-    "Newtonsoft.Json": "9.0.1",
     "Microsoft.Extensions.CommandLineUtils": "1.0.0",
-    "Dmarc.MxSecurityTester.Contract": "1.0.0-*"
+    "Dmarc.MxSecurityTester.Contract": "1.0.0-*",
+    "Newtonsoft.Json": "11.0.2"
   },
 
   "frameworks": {

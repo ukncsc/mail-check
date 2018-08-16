@@ -14,6 +14,7 @@ namespace Dmarc.Common.Tls.BouncyCastle
     internal class TestTlsClientProtocol : TlsClientProtocol
     {
         private Error? _error;
+        private string _errorMessage;
 
         public TestTlsClientProtocol(Stream stream, SecureRandom secureRandom)
             : base(stream, secureRandom)
@@ -43,21 +44,23 @@ namespace Dmarc.Common.Tls.BouncyCastle
             }
             catch (TlsFatalAlertReceived e)
             {
-                _error = (Error)e.AlertDescription;
-                return new TlsConnectionResult(_error.Value);
+                _error = (Error) e.AlertDescription;
+                _errorMessage = e.Message;
+                return new TlsConnectionResult(_error.Value, e.Message, null);
             }
             catch (TlsFatalAlert e)
             {
-                _error = (Error)e.AlertDescription;
-                return new TlsConnectionResult(_error.Value);
+                _error = (Error) e.AlertDescription;
+                _errorMessage = e.Message;
+                return new TlsConnectionResult(_error.Value, e.Message, null);
             }
             catch (Exception e)
             {
                 _error = Error.INTERNAL_ERROR;
-                return new TlsConnectionResult(_error.Value);
+                _errorMessage = e.Message;
+                return new TlsConnectionResult(_error.Value, e.Message, null);
             }
 
-           
             switch (mKeyExchange.GetType().Name)
             {
                 case nameof(TestTlsDheKeyExchange):
@@ -87,10 +90,10 @@ namespace Dmarc.Common.Tls.BouncyCastle
             TlsVersion version = Context.ServerVersion.ToTlsVersion();
             CipherSuite cipherSuite = mSecurityParameters.CipherSuite.ToCipherSuite();
             SignatureHashAlgorithm signatureHashAlgorithm = keyExchange.EcSignatureAndHashAlgorithm.ToSignatureAlgorithm();
-            List<X509Certificate2> certificates = mSessionParameters.PeerCertificate.ToCertificateList();
+            List<X509Certificate2> certificates = mPeerCertificate.ToCertificateList();
 
             base.CleanupHandshake();
-            return new TlsConnectionResult(version, cipherSuite, group, signatureHashAlgorithm, certificates, _error);
+            return new TlsConnectionResult(version, cipherSuite, group, signatureHashAlgorithm, _error, _errorMessage, null, certificates);
         }
 
         private TlsConnectionResult ProcessKeyExchange(TestTlsDhKeyExchange keyExchange)
@@ -99,11 +102,10 @@ namespace Dmarc.Common.Tls.BouncyCastle
 
             TlsVersion version = Context.ServerVersion.ToTlsVersion();
             CipherSuite cipherSuite = mSecurityParameters.CipherSuite.ToCipherSuite();
-            //SignatureHashAlgorithm signatureHashAlgorithm = keyExchange.EcSignatureAndHashAlgorithm.ToSignatureAlgorithm();
-            List<X509Certificate2> certificates = mSessionParameters.PeerCertificate.ToCertificateList();
+            List<X509Certificate2> certificates = mPeerCertificate.ToCertificateList();
 
             base.CleanupHandshake();
-            return new TlsConnectionResult(version, cipherSuite, group, null, certificates, _error);
+            return new TlsConnectionResult(version, cipherSuite, group, null, _error, _errorMessage, null, certificates);
         }
 
         private TlsConnectionResult ProcessKeyExchange(TestTlsEcDheKeyExchange keyExchange)
@@ -114,10 +116,10 @@ namespace Dmarc.Common.Tls.BouncyCastle
             TlsVersion version = Context.ServerVersion.ToTlsVersion();
             CipherSuite cipherSuite = mSecurityParameters.CipherSuite.ToCipherSuite();
             SignatureHashAlgorithm signatureHashAlgorithm = keyExchange.EcSignatureAndHashAlgorithm.ToSignatureAlgorithm();
-            List<X509Certificate2> certificates = mSessionParameters.PeerCertificate.ToCertificateList();
+            List<X509Certificate2> certificates = mPeerCertificate.ToCertificateList();
 
             base.CleanupHandshake();
-            return new TlsConnectionResult(version, cipherSuite, curve, signatureHashAlgorithm, certificates, _error);
+            return new TlsConnectionResult(version, cipherSuite, curve, signatureHashAlgorithm, _error, _errorMessage, null, certificates);
         }
 
         private TlsConnectionResult ProcessKeyExchange(TestTlsEcDhKeyExchange keyExchange)
@@ -127,21 +129,20 @@ namespace Dmarc.Common.Tls.BouncyCastle
             CurveGroup curve = curveName.ToCurve();
             TlsVersion version = Context.ServerVersion.ToTlsVersion();
             CipherSuite cipherSuite = mSecurityParameters.CipherSuite.ToCipherSuite();
-            //SignatureHashAlgorithm signatureHashAlgorithm = keyExchange.EcSignatureAndHashAlgorithm.ToSignatureAlgorithm();
-            List<X509Certificate2> certificates = mSessionParameters.PeerCertificate.ToCertificateList();
+            List<X509Certificate2> certificates = mPeerCertificate.ToCertificateList();
 
             base.CleanupHandshake();
-            return new TlsConnectionResult(version, cipherSuite, curve, null, certificates, _error);
+            return new TlsConnectionResult(version, cipherSuite, curve, null,  _error, _errorMessage, null, certificates);
         }
 
         private TlsConnectionResult ProcessKeyExchange(TlsRsaKeyExchange keyExchange)
         {
             TlsVersion version = Context.ServerVersion.ToTlsVersion();
             CipherSuite cipherSuite = mSecurityParameters.CipherSuite.ToCipherSuite();
-            List<X509Certificate2> certificates = mSessionParameters.PeerCertificate.ToCertificateList();
+            List<X509Certificate2> certificates = mPeerCertificate.ToCertificateList();
 
             base.CleanupHandshake();
-            return new TlsConnectionResult(version, cipherSuite, null, null, certificates, _error);
+            return new TlsConnectionResult(version, cipherSuite, null, null,  _error, _errorMessage, null, certificates);
         }
 
         protected override void CleanupHandshake() { }

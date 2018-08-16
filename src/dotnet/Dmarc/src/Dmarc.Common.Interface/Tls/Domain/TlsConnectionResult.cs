@@ -2,21 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using Newtonsoft.Json;
 
 namespace Dmarc.Common.Interface.Tls.Domain
 {
     public class TlsConnectionResult
     {
-        public TlsConnectionResult(Error error) 
-            : this(null, null, null, null, null, error)
+        public TlsConnectionResult(Error error, string errorDescription, List<string> smtpResponses) 
+            : this(null, null, null, null, error, errorDescription, smtpResponses)
         {}
+
+
+        [JsonConstructor]
+        public TlsConnectionResult(TlsVersion? version,
+            CipherSuite? cipherSuite,
+            CurveGroup? curveGroup,
+            SignatureHashAlgorithm? signatureHashAlgorithm,
+            Error? error,
+            string errorDescription,
+            List<string> smtpResponses
+        ) : this(version, cipherSuite, curveGroup, signatureHashAlgorithm, error, errorDescription, smtpResponses, null)
+        {
+
+        }
 
         public TlsConnectionResult(TlsVersion? version, 
             CipherSuite? cipherSuite,
             CurveGroup? curveGroup, 
             SignatureHashAlgorithm? signatureHashAlgorithm,
-            List<X509Certificate2> certificates,
-            Error? error)
+            Error? error,
+            string errorDescription,
+            List<string> smtpResponses,
+            List<X509Certificate2> certificates = null
+            )
         {
             Version = version;
             CipherSuite = cipherSuite;
@@ -24,14 +42,19 @@ namespace Dmarc.Common.Interface.Tls.Domain
             SignatureHashAlgorithm = signatureHashAlgorithm;
             Certificates = certificates ?? new List<X509Certificate2>();
             Error = error;
+            ErrorDescription = errorDescription;
+            SmtpResponses = smtpResponses;
         }
 
         public TlsVersion? Version { get; }
         public CipherSuite? CipherSuite { get; }
         public CurveGroup? CurveGroup { get; }
         public SignatureHashAlgorithm? SignatureHashAlgorithm { get; }
+        [JsonIgnore]
         public List<X509Certificate2> Certificates { get; }
         public Error? Error { get; }
+        public string ErrorDescription { get; }
+        public List<string> SmtpResponses { get; }
 
         public override string ToString()
         {

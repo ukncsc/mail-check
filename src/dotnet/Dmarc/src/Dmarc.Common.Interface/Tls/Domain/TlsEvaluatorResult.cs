@@ -1,6 +1,6 @@
 ﻿namespace Dmarc.Common.Interface.Tls.Domain
 {
-    public enum EvaluatorResult { PASS = 0, PENDING = 1, INCONCLUSIVE = 2, WARNING = 3, FAIL = 4 }
+    public enum EvaluatorResult { UNKNOWN = -1, PASS = 0, PENDING = 1, INCONCLUSIVE = 2, WARNING = 3, FAIL = 4 }
 
     public class TlsEvaluatorResult
     {

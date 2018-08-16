@@ -1,6 +1,6 @@
 module "certificate-evaluator" {
-  source                 = "git@github.com:ukncsc/MailCheck.CertificateEvaluator//infrastructure/modules/certificate-evaluator-microservice?ref=814f387"
-  artefact-version       = "814f387"
+  source                 = "git@github.com:ukncsc/MailCheck.CertificateEvaluator//infrastructure/modules/certificate-evaluator-microservice?ref=8131b8a"
+  artefact-version       = "8131b8a"
   vpc-id                 = "${aws_vpc.dmarc-env.id}"
   aws-account-id         = "${var.aws-account-id}"
   aws-region             = "${var.aws-region}"
@@ -10,7 +10,7 @@ module "certificate-evaluator" {
   db-password            = "${var.db-password}"
   db-name                = "certificates"
   db-replica-count       = "${var.db-replica-count}"
-  db-snapshot-to-restore = ""
+  db-snapshot-to-restore = "${var.db-microservice-certificate-evaluator-snapshot-to-restore}"
   db-master-size         = "db.t2.small"
   db-replica-size        = "db.t2.small"
   db-kms-key-id          = "${var.db-kms-key-id}"
@@ -25,10 +25,15 @@ module "certificate-evaluator" {
 
   # Assign to a load balancer
   target-group-arn = "${element(module.loadbalancer-internal.target-group-arns, index(module.loadbalancer-internal.target-group-paths, "certificates"))}"
+  load-balancer-arn = "${module.loadbalancer-internal.lb-arn}"
+
 
   # Subscribe to topics
   input-queue-subscriptions      = "${aws_sns_topic.securitytester-certificates.arn}"
   input-queue-subscription-count = "1"
+
+  # SNS topic for monitoring alerts
+  alerts-topic-arn = "${aws_sns_topic.cloudwatch-alerts.arn}"
 }
 
 resource "aws_security_group_rule" "api-cluster-access-to-certificate-evaluator-db" {
@@ -54,6 +59,6 @@ resource "aws_security_group_rule" "build-access-to-certificate-evaluator-db" {
   from_port         = "3306"
   to_port           = "3306"
   protocol          = "tcp"
-  cidr_blocks       = ["${data.aws_vpc.build-vpc.cidr_block}"]
+  cidr_blocks       = ["${var.build-vpc-cidr-block}"]
   security_group_id = "${module.certificate-evaluator.db-security-group-id}"
 }

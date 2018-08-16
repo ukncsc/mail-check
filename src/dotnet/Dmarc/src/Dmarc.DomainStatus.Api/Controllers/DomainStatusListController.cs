@@ -7,11 +7,13 @@ using Dmarc.Common.Interface.PublicSuffix;
 using Dmarc.Common.Interface.PublicSuffix.Domain;
 using Dmarc.DomainStatus.Api.Dao.DomainStatusList;
 using Dmarc.DomainStatus.Api.Domain;
-using Dmarc.DomainStatus.Api.Util;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Dmarc.DomainStatus.Api.Services;
+using Dmarc.Common.Validation;
+using Dmarc.Common.Api.Domain;
 
 namespace Dmarc.DomainStatus.Api.Controllers
 {
@@ -20,16 +22,25 @@ namespace Dmarc.DomainStatus.Api.Controllers
     {
         private readonly IDomainStatusListDao _domainStatusListDao;
         private readonly IOrganisationalDomainProvider _organisationalDomainProvider;
+        private readonly ICertificateEvaluatorApi _certificateEvaluatorApi;
+        private readonly IDomainValidator _domainValidator;
+        private readonly IPublicDomainListValidator _publicDomainValidator;
         private readonly IValidator<DomainsRequest> _domainsRequestValidator;
         private readonly ILogger<DomainStatusListController> _log;
 
         public DomainStatusListController(IDomainStatusListDao domainStatusListDao,
             IOrganisationalDomainProvider organisationalDomainProvider,
+            ICertificateEvaluatorApi certificateEvaluatorApi,
+            IDomainValidator domainValidator,
+            IPublicDomainListValidator publicDomainValidator,
             IValidator<DomainsRequest> domainsRequestValidator,
             ILogger<DomainStatusListController> log)
         {
             _domainStatusListDao = domainStatusListDao;
             _organisationalDomainProvider = organisationalDomainProvider;
+            _certificateEvaluatorApi = certificateEvaluatorApi;
+            _domainValidator = domainValidator;
+            _publicDomainValidator = publicDomainValidator;
             _domainsRequestValidator = domainsRequestValidator;
             _log = log;
         }
@@ -38,7 +49,9 @@ namespace Dmarc.DomainStatus.Api.Controllers
         [Route("domains_security")]
         public Task<IActionResult> GetDomainsSecurityInfo(DomainsRequest request)
         {
-            Func<DomainsSecurityResponse, List<DomainSecurityInfo>, DomainsSecurityResponse> responseFactory = (response, items) => new DomainsSecurityResponse(items, response.DomainCount);
+            Func<DomainsSecurityResponse, List<DomainSecurityInfo>, DomainsSecurityResponse> responseFactory = (response, items) =>
+                new DomainsSecurityResponse(items, response.DomainCount);
+
             return GetDomainSecurityInfoInternal(request, GetDomainsSecurityInfoResponse, responseFactory);
         }
 
@@ -46,20 +59,61 @@ namespace Dmarc.DomainStatus.Api.Controllers
         [Route("domains_security/user")]
         public Task<IActionResult> GetDomainsSecurityInfoByUserId(DomainsRequest request)
         {
-            Func<MyDomainsResponse, List<DomainSecurityInfo>, MyDomainsResponse> responseFactory = (response, items) => new MyDomainsResponse(items, response.DomainCount, response.UserDomainCount);
+            Func<MyDomainsResponse, List<DomainSecurityInfo>, MyDomainsResponse> responseFactory = (response, items) =>
+                new MyDomainsResponse(items, response.DomainCount, response.UserDomainCount);
+
             return GetDomainSecurityInfoInternal(request, GetDomainsSecurityInfoResponseByUserId, responseFactory);
+        }
+
+        [HttpGet]
+        [Route("welcome")]
+        public async Task<IActionResult> GetWelcomeSearchResult(DomainsRequest request)
+        {
+            if (!_domainValidator.IsValidDomain(request.Search))
+            {
+                return BadRequest(new ErrorResponse("Please enter a valid domain."));
+            }
+
+            WelcomeSearchResult result = await _domainStatusListDao.GetWelcomeSearchResult(request.Search);
+            bool isPublicSectorOrg = _publicDomainValidator.IsValidPublicDomain(request.Search);
+
+            return new ObjectResult(new WelcomeSearchResponse(result, isPublicSectorOrg));
+        }
+
+        [HttpGet]
+        [Route("subdomains")]
+        public Task<IActionResult> GetSubdomains(DomainsRequest request)
+        {
+            Func<DomainsSecurityResponse, List<DomainSecurityInfo>, DomainsSecurityResponse> responseFactory = (response, items) =>
+                new DomainsSecurityResponse(items, 0);
+
+            return GetDomainSecurityInfoInternal(request, GetSubdomainsResponse, responseFactory);
+        }
+
+        private async Task<DomainsSecurityResponse> GetSubdomainsResponse(DomainsRequest request)
+        {
+            List<DomainSecurityInfo> subdomains =
+                await _domainStatusListDao.GetSubdomains(request.Search, request.Page.Value, request.PageSize.Value);
+
+            List<DomainSecurityInfo> resultsWithCertificateStatus =
+                await _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(subdomains);
+
+            return new DomainsSecurityResponse(resultsWithCertificateStatus, 0);
         }
 
         private async Task<DomainsSecurityResponse> GetDomainsSecurityInfoResponse(DomainsRequest request)
         {
-            Task<List<DomainSecurityInfo>> getDomainSecurityInfoTask 
+            Task<List<DomainSecurityInfo>> getDomainSecurityInfoTask
                 = _domainStatusListDao.GetDomainsSecurityInfo(request.Page.Value, request.PageSize.Value, request.Search);
 
             Task<long> getDomainCountTask = _domainStatusListDao.GetDomainsCount(request.Search);
 
             await Task.WhenAll(getDomainSecurityInfoTask, getDomainCountTask);
 
-            return new DomainsSecurityResponse(getDomainSecurityInfoTask.Result, getDomainCountTask.Result);
+            List<DomainSecurityInfo> resultsWithCertificateStatus = await _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(
+                getDomainSecurityInfoTask.Result);
+
+            return new DomainsSecurityResponse(resultsWithCertificateStatus, getDomainCountTask.Result);
         }
 
         private async Task<MyDomainsResponse> GetDomainsSecurityInfoResponseByUserId(DomainsRequest request)
@@ -80,7 +134,10 @@ namespace Dmarc.DomainStatus.Api.Controllers
 
             await Task.WhenAll(getDomainSecurityInfoTask, getDomainCountTask, getUserDomainCountTask);
 
-            return new MyDomainsResponse(getDomainSecurityInfoTask.Result, getDomainCountTask.Result, getUserDomainCountTask.Result);
+            List<DomainSecurityInfo> resultsWithCertificateStatus = await _certificateEvaluatorApi.UpdateTlsWithCertificateEvaluatorStatus(
+                getDomainSecurityInfoTask.Result);
+
+            return new MyDomainsResponse(resultsWithCertificateStatus, getDomainCountTask.Result, getUserDomainCountTask.Result);
         }
 
         private async Task<IActionResult> GetDomainSecurityInfoInternal<T>(DomainsRequest request,
@@ -92,10 +149,10 @@ namespace Dmarc.DomainStatus.Api.Controllers
             {
                 string errorString = validationResult.GetErrorString();
                 _log.LogWarning($"Bad request: {errorString}");
-                return BadRequest(new ValidationError(errorString));
+                return BadRequest(new ErrorResponse(errorString));
             }
 
-            T domainsSecurityResponse = 
+            T domainsSecurityResponse =
                 await getDomainSecurityInfoResponse(request);
 
             List<DomainSecurityInfo> domainSecurityInfoWithoutDmarcRecord =
@@ -115,14 +172,14 @@ namespace Dmarc.DomainStatus.Api.Controllers
             }
 
             List<string> organisationalDomains = nonOrgDomainsWithoutDmarcRecordForOrgDomains.Values.Distinct().ToList();
-             
+
             List<DomainSecurityInfo> orgDomainSecurityInfos = await _domainStatusListDao
                 .GetDomainsSecurityInfoByDomainNames(organisationalDomains);
 
             List<DomainSecurityInfo> updatedDomainSecurityInfos = Merge(domainsSecurityResponse.DomainSecurityInfos, orgDomainSecurityInfos,
                 nonOrgDomainsWithoutDmarcRecordForOrgDomains);
 
-            return new ObjectResult(updateResponseFactory(domainsSecurityResponse, updatedDomainSecurityInfos)); 
+            return new ObjectResult(updateResponseFactory(domainsSecurityResponse, updatedDomainSecurityInfos));
         }
 
         private async Task<Dictionary<string, string>> GetOrganisationalDomains(
@@ -146,7 +203,7 @@ namespace Dmarc.DomainStatus.Api.Controllers
                 DomainSecurityInfo updatedDomainSecurityInfo;
                 if (updatedDictionary.TryGetValue(subDomainOrgDomainPair.Value, out updatedDomainSecurityInfo) && updatedDomainSecurityInfo.HasDmarc)
                 {
-                    existingDictionary[subDomainOrgDomainPair.Key] = 
+                    existingDictionary[subDomainOrgDomainPair.Key] =
                         CreateOrganistionDomainSecurityInfo(existingDictionary[subDomainOrgDomainPair.Key], updatedDomainSecurityInfo);
                 }
             }
@@ -163,16 +220,6 @@ namespace Dmarc.DomainStatus.Api.Controllers
                 domainSecurityInfo.TlsStatus,
                 orgDomainSecurityInfo.DmarcStatus,
                 domainSecurityInfo.SpfStatus);
-        }
-
-        private class ValidationError
-        {
-            public ValidationError(string message)
-            {
-                Message = message;
-            }
-
-            public string Message { get; }
         }
     }
 }

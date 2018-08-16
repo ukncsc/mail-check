@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Dmarc.DomainStatus.Api.Dao.DomainStatus
 {
@@ -23,9 +24,9 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus
 
         Task<DmarcReadModel> GetDmarcReadModel(string domainName);
 
-        Task<int> GetAggregateReportTotalEmailCount(int domainId, DateTime startDate, DateTime endDate);
+        Task<int> GetAggregateReportTotalEmailCount(int domainId, DateTime startDate, DateTime endDate, bool includeSubdomains);
 
-        Task<SortedDictionary<DateTime, AggregateSummaryItem>> GetAggregateReportSummary(int domainId, DateTime startDate, DateTime endDate);
+        Task<SortedDictionary<DateTime, AggregateSummaryItem>> GetAggregateReportSummary(int domainId, DateTime startDate, DateTime endDate, bool includeSubdomains);
 
         Task<List<AggregateReportExportItem>> GetAggregateReportExport(int domainId, DateTime date);
     }
@@ -73,7 +74,7 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus
                _ => _.AddWithValue("domainName", domainName), CreateDmarcReadModel, _ => _log.LogDebug(_), nameof(GetDmarcReadModel));
         }
 
-        public Task<int> GetAggregateReportTotalEmailCount(int domainId, DateTime startDate, DateTime endDate)
+        public Task<int> GetAggregateReportTotalEmailCount(int domainId, DateTime startDate, DateTime endDate, bool includeSubdomains)
         {
             Action<MySqlParameterCollection> addParameters = parameterCollection =>
             {
@@ -82,11 +83,15 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus
                 parameterCollection.AddWithValue("endDate", endDate.ToString("yyyy-MM-dd"));
             };
 
-            return Db.ExecuteScalarTimed(_connectionInfo, DomainStatusDaoResources.SelectAggregateReportTotalEmailCount,
-               addParameters, _ => _ == DBNull.Value ? 0 : (int)(decimal)_, _ => _log.LogDebug(_), nameof(GetAggregateReportTotalEmailCount));
+            string query = includeSubdomains
+                ? DomainStatusDaoResources.SelectAggregateReportTotalEmailCountWithSubdomains
+                : DomainStatusDaoResources.SelectAggregateReportTotalEmailCount;
+
+            return Db.ExecuteScalarTimed(_connectionInfo, query, addParameters, _ => _ == DBNull.Value ? 0 : (int)(decimal)_,
+                _ => _log.LogDebug(_), nameof(GetAggregateReportTotalEmailCount));
         }
 
-        public Task<SortedDictionary<DateTime, AggregateSummaryItem>> GetAggregateReportSummary(int domainId, DateTime startDate, DateTime endDate)
+        public Task<SortedDictionary<DateTime, AggregateSummaryItem>> GetAggregateReportSummary(int domainId, DateTime startDate, DateTime endDate, bool includeSubdomains)
         {
             Action<MySqlParameterCollection> addParameters = parameterCollection =>
             {
@@ -95,8 +100,11 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus
                 parameterCollection.AddWithValue("endDate", endDate.ToString("yyyy-MM-dd"));
             };
 
-            return Db.ExecuteReaderTimed(_connectionInfo, DomainStatusDaoResources.SelectAggregateReportSummary,
-                addParameters, CreateAggegateReportSummary, _ => _log.LogDebug(_), nameof(GetAggregateReportSummary));
+            string query = includeSubdomains
+                ? DomainStatusDaoResources.SelectAggregateReportSummaryWithSubdomains
+                : DomainStatusDaoResources.SelectAggregateReportSummary;
+
+            return Db.ExecuteReaderTimed(_connectionInfo, query, addParameters, CreateAggegateReportSummary, _ => _log.LogDebug(_), nameof(GetAggregateReportSummary));
         }
 
         public Task<List<AggregateReportExportItem>> GetAggregateReportExport(int domainId, DateTime date)
@@ -163,9 +171,22 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus
         {
             var results = new List<TlsEvaluatorResult>();
 
-            for (int i = 1; i <= 12; i++)
+            if (!string.IsNullOrWhiteSpace(reader.GetString("data")))
             {
-                results.Add(new TlsEvaluatorResult((EvaluatorResult?)reader.GetUInt16Nullable($"test{i}_result"), reader.GetString($"test{i}_description")));
+                TlsResults tlsResults = JsonConvert.DeserializeObject<TlsResults>(reader.GetString("data"));
+
+                results.Add(tlsResults.Tls12AvailableWithBestCipherSuiteSelected);
+                results.Add(tlsResults.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList);
+                results.Add(tlsResults.Tls12AvailableWithSha2HashFunctionSelected);
+                results.Add(tlsResults.Tls12AvailableWithWeakCipherSuiteNotSelected);
+                results.Add(tlsResults.Tls11AvailableWithBestCipherSuiteSelected);
+                results.Add(tlsResults.Tls11AvailableWithWeakCipherSuiteNotSelected);
+                results.Add(tlsResults.Tls10AvailableWithBestCipherSuiteSelected);
+                results.Add(tlsResults.Tls10AvailableWithWeakCipherSuiteNotSelected);
+                results.Add(tlsResults.Ssl3FailsWithBadCipherSuite);
+                results.Add(tlsResults.TlsSecureEllipticCurveSelected);
+                results.Add(tlsResults.TlsSecureDiffieHellmanGroupSelected);
+                results.Add(tlsResults.TlsWeakCipherSuitesRejected);
             }
 
             return results;

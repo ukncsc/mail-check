@@ -3,8 +3,8 @@
 exports[`DomainSecuritySummaryMessages when failures or warnings are present should match the snapshot 1`] = `
 <div>
   <div
-    style="margin: 0.2em 0em;"
-    class="ui error message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui error message MailCheckMessage--container"
   >
     DMARC
     configuration has 
@@ -12,8 +12,8 @@ exports[`DomainSecuritySummaryMessages when failures or warnings are present sho
     urgent issue
   </div>
   <div
-    style="margin: 0.2em 0em;"
-    class="ui warning message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui warning message MailCheckMessage--container"
   >
     DMARC
     configuration has 

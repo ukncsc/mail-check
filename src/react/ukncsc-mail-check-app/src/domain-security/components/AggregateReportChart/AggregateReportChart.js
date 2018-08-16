@@ -24,10 +24,13 @@ const dataReducer = (accumulator, value, key) => ({
   ...reduce(Object.keys(value), pointsReducer(accumulator, value, key), {}),
 });
 
-const CustomTooltip = ({ descriptions, text, ...props }) => (
+const CustomTooltip = ({ descriptions, text, date, datum, ...props }) => (
   <VictoryTooltip
     {...props}
-    text={descriptions.map(({ title }, i) => `${title}: ${text[i]}`).reverse()}
+    text={[
+      date(datum.x),
+      ...descriptions.map(({ title }, i) => `${title}: ${text[i]}`).reverse(),
+    ]}
   />
 );
 
@@ -60,7 +63,12 @@ export default class AggregateReportChart extends Component {
           <VictoryVoronoiContainer
             voronoiDimension="x"
             labels={d => `${d.y}`}
-            labelComponent={<CustomTooltip descriptions={descriptions} />}
+            labelComponent={
+              <CustomTooltip
+                descriptions={descriptions}
+                date={x => moment(x).format('Do MMMM YYYY')}
+              />
+            }
           />
         }
       >

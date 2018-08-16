@@ -12,7 +12,10 @@ using Dmarc.Common.Interface.Logging;
 using Dmarc.Common.Interface.Tls.Domain;
 using Dmarc.MxSecurityTester.Config;
 using Dmarc.MxSecurityTester.Dao.Entities;
+using Dmarc.MxSecurityTester.Util;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Dmarc.MxSecurityTester.Dao
 {
@@ -27,6 +30,11 @@ namespace Dmarc.MxSecurityTester.Dao
         private readonly IConnectionInfoAsync _connectionInfo;
         private readonly IMxSecurityTesterConfig _mxSecurityTesterConfig;
         private readonly ILogger _log;
+
+        private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
 
         public DomainTlsSecurityProfileDao(IConnectionInfoAsync connectionInfo,
             IMxSecurityTesterConfig mxSecurityTesterConfig,
@@ -78,7 +86,7 @@ namespace Dmarc.MxSecurityTester.Dao
                         X509Certificate2 certificate = CreateCertificate(reader);
                         if (certificate != null)
                         {
-                            profile.TlsSecurityProfile.Results.Certificates.Add(certificate);
+                            profile.TlsSecurityProfile.TlsResults.Certificates.Add(certificate);
                         }
                     }
                 }
@@ -93,33 +101,49 @@ namespace Dmarc.MxSecurityTester.Dao
         {
             return new TlsSecurityProfile(
                 reader.GetUInt64Nullable("tls_security_profile_id"),
-                null,
-                new TlsTestResults(
-                reader.GetInt32("failure_count"),
-                CreateTlsTestResult(reader, 1),
-                CreateTlsTestResult(reader, 2),
-                CreateTlsTestResult(reader, 3),
-                CreateTlsTestResult(reader, 4),
-                CreateTlsTestResult(reader, 5),
-                CreateTlsTestResult(reader, 6),
-                CreateTlsTestResult(reader, 7),
-                CreateTlsTestResult(reader, 8),
-                CreateTlsTestResult(reader, 9),
-                CreateTlsTestResult(reader, 10),
-                CreateTlsTestResult(reader, 11),
-                CreateTlsTestResult(reader, 12),
-                null));
+                null, CreateTlsTestResults(reader));
         }
 
-        private static TlsTestResult CreateTlsTestResult(DbDataReader reader, int testId)
+        private static TlsTestResults CreateTlsTestResults(DbDataReader reader)
         {
-            return new TlsTestResult(
-                (TlsVersion?)reader.GetInt32Nullable($"test{testId}_tls_version"),
-                (CipherSuite?)reader.GetInt32Nullable($"test{testId}_cipher_suite"),
-                (CurveGroup?)reader.GetInt32Nullable($"test{testId}_curve_group"),
-                (SignatureHashAlgorithm?)reader.GetInt32Nullable($"test{testId}_signature_hash_alg"),
-                (Error?)reader.GetInt32Nullable($"test{testId}_error")
-            );
+            string jsonData = reader.GetString($"data");
+
+            if (string.IsNullOrEmpty(jsonData))
+            {
+                return new TlsTestResults(
+                    reader.GetInt32("failure_count"), EmptyTlsTestResultsWithoutCertificate,
+                    new List<X509Certificate2>());
+            }
+
+            TlsTestResultsWithoutCertificate results = CreateTlsTestResult(reader);
+
+            return new TlsTestResults(
+                reader.GetInt32("failure_count"), results, null);
+        }
+
+        private static TlsTestResultsWithoutCertificate EmptyTlsTestResultsWithoutCertificate => new TlsTestResultsWithoutCertificate(new TlsTestResult(null, null, null, null, null, null, null),
+            new TlsTestResult(null, null, null, null, null, null, null),
+            new TlsTestResult(null, null, null, null, null, null, null),
+            new TlsTestResult(null, null, null, null, null, null, null),
+            new TlsTestResult(null, null, null, null, null, null, null),
+            new TlsTestResult(null, null, null, null, null, null, null),
+            new TlsTestResult(null, null, null, null, null, null, null),
+            new TlsTestResult(null, null, null, null, null, null, null),
+            new TlsTestResult(null, null, null, null, null, null, null),
+            new TlsTestResult(null, null, null, null, null, null, null),
+            new TlsTestResult(null, null, null, null, null, null, null),
+            new TlsTestResult(null, null, null, null, null, null, null));
+
+        private static TlsTestResultsWithoutCertificate CreateTlsTestResult(DbDataReader reader)
+        {
+            string jsonData = reader.GetString("data");
+
+            if (string.IsNullOrWhiteSpace(jsonData))
+            {
+                return EmptyTlsTestResultsWithoutCertificate;
+            }
+
+            return JsonConvert.DeserializeObject<TlsTestResultsWithoutCertificate>(jsonData);
         }
 
         private static X509Certificate2 CreateCertificate(DbDataReader reader)
@@ -151,28 +175,32 @@ namespace Dmarc.MxSecurityTester.Dao
             Stopwatch stopwatch = Stopwatch.StartNew();
             if (domainSecurityProfiles.Any())
             {
-                using (MySqlConnection connection = new MySqlConnection(await _connectionInfo.GetConnectionStringAsync()))
+                using (MySqlConnection connection =
+                    new MySqlConnection(await _connectionInfo.GetConnectionStringAsync()))
                 {
                     await connection.OpenAsync().ConfigureAwait(false);
 
                     using (MySqlTransaction transaction = connection.BeginTransaction())
                     {
-                        List<MxRecordTlsSecurityProfile> profiles = domainSecurityProfiles.SelectMany(_ => _.Profiles).ToList();
+                        List<MxRecordTlsSecurityProfile> profiles =
+                            domainSecurityProfiles.SelectMany(_ => _.Profiles).ToList();
 
                         await InsertOrUpdateSecurityProfiles(profiles, transaction);
 
                         List<X509Certificate2> certificates = profiles
-                            .SelectMany(_ => _.TlsSecurityProfile.Results.Certificates)
+                            .SelectMany(_ => _.TlsSecurityProfile.TlsResults.Certificates)
                             .GroupBy(_ => _.Thumbprint)
                             .Select(_ => _.First())
                             .ToList();
 
                         await InsertOrUpdateCertificates(certificates, transaction);
 
-                        List<Tuple<MxRecordTlsSecurityProfile, Tuple<int,X509Certificate2>>> mappings = profiles
+                        List<Tuple<MxRecordTlsSecurityProfile, Tuple<int, X509Certificate2>>> mappings = profiles
                             .Select(_ => Tuple.Create(_, _.TlsSecurityProfile))
                             .Where(_ => _.Item2 != null)
-                            .SelectMany(_ => _.Item2.Results.Certificates.Select((c, i) => Tuple.Create(_.Item1, Tuple.Create(i, c))))
+                            .SelectMany(_ =>
+                                _.Item2.TlsResults.Certificates.Select((c, i) =>
+                                    Tuple.Create(_.Item1, Tuple.Create(i, c))))
                             .ToList();
 
                         await InsertOrUpdateMappings(mappings, transaction);
@@ -183,6 +211,7 @@ namespace Dmarc.MxSecurityTester.Dao
                     connection.Close();
                 }
             }
+
             stopwatch.Stop();
             _log.Debug($"Updating records took {stopwatch.Elapsed}");
         }
@@ -200,83 +229,12 @@ namespace Dmarc.MxSecurityTester.Dao
                     stringBuilder.Append(i < profiles.Count - 1 ? "," : " ");
 
                     MxRecordTlsSecurityProfile profile = profiles[i];
-
+                    
                     command.Parameters.AddWithValue($"a{i}", profile.TlsSecurityProfile.Id);
                     command.Parameters.AddWithValue($"b{i}", profile.MxRecord.Id);
                     command.Parameters.AddWithValue($"c{i}", profile.TlsSecurityProfile.EndDate);
-                    command.Parameters.AddWithValue($"d{i}", profile.TlsSecurityProfile.Results.FailureCount);
-
-                    command.Parameters.AddWithValue($"e{i}", (int?)profile.TlsSecurityProfile.Results.Test1Result.Version);
-                    command.Parameters.AddWithValue($"f{i}", (int?)profile.TlsSecurityProfile.Results.Test1Result.CipherSuite);
-                    command.Parameters.AddWithValue($"g{i}", (int?)profile.TlsSecurityProfile.Results.Test1Result.CurveGroup);
-                    command.Parameters.AddWithValue($"h{i}", (int?)profile.TlsSecurityProfile.Results.Test1Result.SignatureHashAlgorithm);
-                    command.Parameters.AddWithValue($"i{i}", (int?)profile.TlsSecurityProfile.Results.Test1Result.Error);
-
-                    command.Parameters.AddWithValue($"j{i}", (int?)profile.TlsSecurityProfile.Results.Test2Result.Version);
-                    command.Parameters.AddWithValue($"k{i}", (int?)profile.TlsSecurityProfile.Results.Test2Result.CipherSuite);
-                    command.Parameters.AddWithValue($"l{i}", (int?)profile.TlsSecurityProfile.Results.Test2Result.CurveGroup);
-                    command.Parameters.AddWithValue($"m{i}", (int?)profile.TlsSecurityProfile.Results.Test2Result.SignatureHashAlgorithm);
-                    command.Parameters.AddWithValue($"n{i}", (int?)profile.TlsSecurityProfile.Results.Test2Result.Error);
-
-                    command.Parameters.AddWithValue($"o{i}", (int?)profile.TlsSecurityProfile.Results.Test3Result.Version);
-                    command.Parameters.AddWithValue($"p{i}", (int?)profile.TlsSecurityProfile.Results.Test3Result.CipherSuite);
-                    command.Parameters.AddWithValue($"q{i}", (int?)profile.TlsSecurityProfile.Results.Test3Result.CurveGroup);
-                    command.Parameters.AddWithValue($"r{i}", (int?)profile.TlsSecurityProfile.Results.Test3Result.SignatureHashAlgorithm);
-                    command.Parameters.AddWithValue($"s{i}", (int?)profile.TlsSecurityProfile.Results.Test3Result.Error);
-
-                    command.Parameters.AddWithValue($"t{i}", (int?)profile.TlsSecurityProfile.Results.Test4Result.Version);
-                    command.Parameters.AddWithValue($"u{i}", (int?)profile.TlsSecurityProfile.Results.Test4Result.CipherSuite);
-                    command.Parameters.AddWithValue($"v{i}", (int?)profile.TlsSecurityProfile.Results.Test4Result.CurveGroup);
-                    command.Parameters.AddWithValue($"w{i}", (int?)profile.TlsSecurityProfile.Results.Test4Result.SignatureHashAlgorithm);
-                    command.Parameters.AddWithValue($"x{i}", (int?)profile.TlsSecurityProfile.Results.Test4Result.Error);
-
-                    command.Parameters.AddWithValue($"y{i}", (int?)profile.TlsSecurityProfile.Results.Test5Result.Version);
-                    command.Parameters.AddWithValue($"z{i}", (int?)profile.TlsSecurityProfile.Results.Test5Result.CipherSuite);
-                    command.Parameters.AddWithValue($"aa{i}", (int?)profile.TlsSecurityProfile.Results.Test5Result.CurveGroup);
-                    command.Parameters.AddWithValue($"ab{i}", (int?)profile.TlsSecurityProfile.Results.Test5Result.SignatureHashAlgorithm);
-                    command.Parameters.AddWithValue($"ac{i}", (int?)profile.TlsSecurityProfile.Results.Test5Result.Error);
-
-                    command.Parameters.AddWithValue($"ad{i}", (int?)profile.TlsSecurityProfile.Results.Test6Result.Version);
-                    command.Parameters.AddWithValue($"ae{i}", (int?)profile.TlsSecurityProfile.Results.Test6Result.CipherSuite);
-                    command.Parameters.AddWithValue($"af{i}", (int?)profile.TlsSecurityProfile.Results.Test6Result.CurveGroup);
-                    command.Parameters.AddWithValue($"ag{i}", (int?)profile.TlsSecurityProfile.Results.Test6Result.SignatureHashAlgorithm);
-                    command.Parameters.AddWithValue($"ah{i}", (int?)profile.TlsSecurityProfile.Results.Test6Result.Error);
-
-                    command.Parameters.AddWithValue($"ai{i}", (int?)profile.TlsSecurityProfile.Results.Test7Result.Version);
-                    command.Parameters.AddWithValue($"aj{i}", (int?)profile.TlsSecurityProfile.Results.Test7Result.CipherSuite);
-                    command.Parameters.AddWithValue($"ak{i}", (int?)profile.TlsSecurityProfile.Results.Test7Result.CurveGroup);
-                    command.Parameters.AddWithValue($"al{i}", (int?)profile.TlsSecurityProfile.Results.Test7Result.SignatureHashAlgorithm);
-                    command.Parameters.AddWithValue($"am{i}", (int?)profile.TlsSecurityProfile.Results.Test7Result.Error);
-
-                    command.Parameters.AddWithValue($"an{i}", (int?)profile.TlsSecurityProfile.Results.Test8Result.Version);
-                    command.Parameters.AddWithValue($"ao{i}", (int?)profile.TlsSecurityProfile.Results.Test8Result.CipherSuite);
-                    command.Parameters.AddWithValue($"ap{i}", (int?)profile.TlsSecurityProfile.Results.Test8Result.CurveGroup);
-                    command.Parameters.AddWithValue($"aq{i}", (int?)profile.TlsSecurityProfile.Results.Test8Result.SignatureHashAlgorithm);
-                    command.Parameters.AddWithValue($"ar{i}", (int?)profile.TlsSecurityProfile.Results.Test8Result.Error);
-                                                      
-                    command.Parameters.AddWithValue($"as{i}", (int?)profile.TlsSecurityProfile.Results.Test9Result.Version);
-                    command.Parameters.AddWithValue($"at{i}", (int?)profile.TlsSecurityProfile.Results.Test9Result.CipherSuite);
-                    command.Parameters.AddWithValue($"au{i}", (int?)profile.TlsSecurityProfile.Results.Test9Result.CurveGroup);
-                    command.Parameters.AddWithValue($"av{i}", (int?)profile.TlsSecurityProfile.Results.Test9Result.SignatureHashAlgorithm);
-                    command.Parameters.AddWithValue($"aw{i}", (int?)profile.TlsSecurityProfile.Results.Test9Result.Error);
-                                                      
-                    command.Parameters.AddWithValue($"ax{i}", (int?)profile.TlsSecurityProfile.Results.Test10Result.Version);
-                    command.Parameters.AddWithValue($"ay{i}", (int?)profile.TlsSecurityProfile.Results.Test10Result.CipherSuite);
-                    command.Parameters.AddWithValue($"az{i}", (int?)profile.TlsSecurityProfile.Results.Test10Result.CurveGroup);
-                    command.Parameters.AddWithValue($"ba{i}", (int?)profile.TlsSecurityProfile.Results.Test10Result.SignatureHashAlgorithm);
-                    command.Parameters.AddWithValue($"bb{i}", (int?)profile.TlsSecurityProfile.Results.Test10Result.Error);
-                                                      
-                    command.Parameters.AddWithValue($"bc{i}", (int?)profile.TlsSecurityProfile.Results.Test11Result.Version);
-                    command.Parameters.AddWithValue($"bd{i}", (int?)profile.TlsSecurityProfile.Results.Test11Result.CipherSuite);
-                    command.Parameters.AddWithValue($"be{i}", (int?)profile.TlsSecurityProfile.Results.Test11Result.CurveGroup);
-                    command.Parameters.AddWithValue($"bf{i}", (int?)profile.TlsSecurityProfile.Results.Test11Result.SignatureHashAlgorithm);
-                    command.Parameters.AddWithValue($"bg{i}", (int?)profile.TlsSecurityProfile.Results.Test11Result.Error);
-                                                     
-                    command.Parameters.AddWithValue($"bh{i}", (int?)profile.TlsSecurityProfile.Results.Test12Result.Version);
-                    command.Parameters.AddWithValue($"bi{i}", (int?)profile.TlsSecurityProfile.Results.Test12Result.CipherSuite);
-                    command.Parameters.AddWithValue($"bj{i}", (int?)profile.TlsSecurityProfile.Results.Test12Result.CurveGroup);
-                    command.Parameters.AddWithValue($"bk{i}", (int?)profile.TlsSecurityProfile.Results.Test12Result.SignatureHashAlgorithm);
-                    command.Parameters.AddWithValue($"bl{i}", (int?)profile.TlsSecurityProfile.Results.Test12Result.Error);
+                    command.Parameters.AddWithValue($"d{i}", profile.TlsSecurityProfile.TlsResults.FailureCount);
+                    command.Parameters.AddWithValue($"e{i}", JsonConvert.SerializeObject(profile.TlsSecurityProfile.TlsResults.Results, _serializerSettings));
                 }
 
                 stringBuilder.Append(TlsSecurityProfileDaoResources.InsertRecordOnDuplicateKey);

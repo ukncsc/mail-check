@@ -91,7 +91,7 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus {
         ///ad.untrusted_quarantine_count as &apos;quarantined&apos;,
         ///ad.untrusted_reject_count as  &apos;rejected&apos;,
         ///ad.total_email_count as &apos;total&apos;
-        ///FROM derived_aggregate_daily_rollup ad
+        ///FROM derived_aggregate_daily ad
         ///WHERE ad.domain_id = @domainId
         ///AND ad.effective_date BETWEEN @startDate AND @endDate;.
         /// </summary>
@@ -102,14 +102,45 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to SELECT SUM(ad.total_email_count) as &apos;total_email&apos;
+        ///    Looks up a localized string similar to SELECT
+        ///ad.effective_date as &apos;effective_date&apos;,
+        ///ad.full_compliance_count as &apos;fully_trusted&apos;,
+        ///(ad.dkim_only_count + ad.spf_only_count) as &apos;partially_trusted&apos;,
+        ///ad.untrusted_pass_count as &apos;untrusted&apos;,
+        ///ad.untrusted_quarantine_count as &apos;quarantined&apos;,
+        ///ad.untrusted_reject_count as  &apos;rejected&apos;,
+        ///ad.total_email_count as &apos;total&apos;
         ///FROM derived_aggregate_daily_rollup ad
+        ///WHERE ad.domain_id = @domainId
+        ///AND ad.effective_date BETWEEN @startDate AND @endDate;.
+        /// </summary>
+        public static string SelectAggregateReportSummaryWithSubdomains {
+            get {
+                return ResourceManager.GetString("SelectAggregateReportSummaryWithSubdomains", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to SELECT SUM(ad.total_email_count) as &apos;total_email&apos;
+        ///FROM derived_aggregate_daily ad
         ///WHERE ad.domain_id = @domainId
         ///AND ad.effective_date BETWEEN @startDate AND @endDate;.
         /// </summary>
         public static string SelectAggregateReportTotalEmailCount {
             get {
                 return ResourceManager.GetString("SelectAggregateReportTotalEmailCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to SELECT SUM(ad.total_email_count) as &apos;total_email&apos;
+        ///FROM derived_aggregate_daily_rollup ad
+        ///WHERE ad.domain_id = @domainId
+        ///AND ad.effective_date BETWEEN @startDate AND @endDate;.
+        /// </summary>
+        public static string SelectAggregateReportTotalEmailCountWithSubdomains {
+            get {
+                return ResourceManager.GetString("SelectAggregateReportTotalEmailCountWithSubdomains", resourceCulture);
             }
         }
         

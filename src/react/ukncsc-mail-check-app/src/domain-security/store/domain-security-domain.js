@@ -1,15 +1,14 @@
 import { createAction, handleActions } from 'redux-actions';
-import get from 'lodash/get';
 import { mailCheckApiFetch } from 'common/helpers';
 
 const fetchRequestDomainSecurityDomainAction =
-  'mailCheck/domainSecurity/FETCH_DOMAIN_REQUEST';
+  'mailCheck/domainSecurity/domain/FETCH_REQUEST';
 
 const fetchSuccessDomainSecurityDomainAction =
-  'mailCheck/domainSecurity/FETCH_DOMAIN_SUCCESS';
+  'mailCheck/domainSecurity/domain/FETCH_SUCCESS';
 
 const fetchErrorDomainSecurityDomainAction =
-  'mailCheck/domainSecurity/FETCH_DOMAIN_ERROR';
+  'mailCheck/domainSecurity/domain/FETCH_ERROR';
 
 export const fetchRequestDomainSecurityDomain = createAction(
   fetchRequestDomainSecurityDomainAction
@@ -56,4 +55,4 @@ export default handleActions(
 );
 
 export const getDomainSecurityDomain = state => id =>
-  get(state, `domainSecurity.domain[${id}]`, {});
+  state.domainSecurity.domain[id];

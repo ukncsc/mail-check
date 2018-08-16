@@ -63,6 +63,7 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Factory
                 .AddTransient<IRule<DmarcRecord>, RufTagShouldBeMailTo>()
                 .AddTransient<IRule<DmarcRecord>, RufTagShouldNotHaveMoreThanTwoUris>()
                 .AddTransient<IRule<DmarcRecord>, SubDomainPolicyShouldBeQuarantineOrReject>()
+                .AddTransient<IRule<DmarcRecord>, SubDomainPolicyShouldNotBeOnNonOrganisationalDomain>()
                 .AddTransient<IImplicitProvider<Tag>, ImplicitProvider<Tag>>()
                 .AddTransient<IImplicitProviderStrategy<Tag>, ReportIntervalImplicitProvider>()
                 .AddTransient<IImplicitProviderStrategy<Tag>, ReportFormatImplicitProvider>()

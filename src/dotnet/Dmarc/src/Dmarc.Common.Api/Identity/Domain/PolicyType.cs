@@ -3,5 +3,6 @@
     public class PolicyType
     {
         public const string Admin = "Admin";
+        public const string Standard = "Standard";
     }
 }

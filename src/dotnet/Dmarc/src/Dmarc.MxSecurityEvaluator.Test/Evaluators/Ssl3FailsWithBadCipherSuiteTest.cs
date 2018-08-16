@@ -25,14 +25,49 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         }
 
         [Test]
+        [TestCase(Error.TCP_CONNECTION_FAILED,
+            "The server did not present a STARTTLS command with a response code (250)")]
+        [TestCase(Error.SESSION_INITIALIZATION_FAILED,
+            "The server did not present a STARTTLS command with a response code (250)")]
+        [TestCase(Error.BAD_CERTIFICATE,
+            "The server returned bad certificate")]
+        public void ErrorsShouldHaveErrorDescriptionInResult(Error error, string description)
+        {
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error, description, null);
+            ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
+
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
+            StringAssert.Contains($"Error description \"{description}\".", _sut.Test(connectionResults).Description);
+        }
+
+        [Test]
+        [TestCase(Error.HANDSHAKE_FAILURE, "Handshake failure!")]
+        [TestCase(Error.PROTOCOL_VERSION, "Incorrect Protocol version!")]
+        [TestCase(Error.INSUFFICIENT_SECURITY, "Insufficient security!")]
+        public void ConnectionRefusedErrorsShouldResultInPassWithoutErrorDescription(Error error, string description)
+        {
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error, null, null);
+            ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
+
+            TlsEvaluatorResult result = _sut.Test(connectionResults);
+
+            Assert.AreEqual(result.Result, EvaluatorResult.PASS);
+            Assert.That(result.Description, Is.Null);
+        }
+
+
+        [Test]
         [TestCase(Error.TCP_CONNECTION_FAILED)]
         [TestCase(Error.SESSION_INITIALIZATION_FAILED)]
         public void TcpErrorsShouldResultInInconclusive(Error error)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error);
+            string errorDescription = "Something went wrong!";
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error, errorDescription, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
-
-            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
+            TlsEvaluatorResult result = _sut.Test(connectionResults);
+            Assert.AreEqual(result.Result, EvaluatorResult.INCONCLUSIVE);
+            StringAssert.Contains($"Error description \"{errorDescription}\".", result.Description);
         }
 
         [Test]
@@ -41,7 +76,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(Error.INSUFFICIENT_SECURITY)]
         public void ConnectionRefusedErrorsShouldResultInPass(Error error)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error, null, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
 
             Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.PASS);
@@ -50,16 +85,18 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [Test]
         public void OtherErrorsShouldResultInInconclusive()
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(Error.INTERNAL_ERROR);
+            string errorDescription = "Something went wrong!";
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(Error.INTERNAL_ERROR, errorDescription, null);
             ConnectionResults connectionResults =TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
-
-            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
+            TlsEvaluatorResult result = _sut.Test(connectionResults);
+            Assert.AreEqual(result.Result, EvaluatorResult.INCONCLUSIVE);
+            StringAssert.Contains($"Error description \"{errorDescription}\".", result.Description);
         }
 
         [Test]
         public void UnaccountedForCipherSuiteResponseShouldResultInInconclusive()
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA, null, null, null, null, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
 
             Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
@@ -71,7 +108,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA)]
         public void NoPfsCipherSuiteShouldResultInWarning(CipherSuite cipherSuite)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
 
             Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.WARNING);
@@ -95,7 +132,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA)]
         public void InsecureCipherSuitesShouldResultInFail(CipherSuite cipherSuite)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Ssl3FailsWithBadCipherSuite, tlsConnectionResult);
 
             Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.FAIL);

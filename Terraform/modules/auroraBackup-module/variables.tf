@@ -14,7 +14,7 @@ variable "lambda-memory" {
 
 variable "lambda-timeout" {
   type    = "string"
-  default = "30"
+  default = "300"
 }
 
 variable "source-or-dest" {

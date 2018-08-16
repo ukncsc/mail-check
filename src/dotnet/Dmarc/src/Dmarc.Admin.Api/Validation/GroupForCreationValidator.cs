@@ -7,7 +7,13 @@ namespace Dmarc.Admin.Api.Validation
     {
         public GroupForCreationValidator()
         {
-            RuleFor(g => g.Name).NotNull().Matches(@"\A[^\r\n$<>%;/\\]{1,255}\z");
+            CascadeMode = CascadeMode.StopOnFirstFailure;
+
+            RuleFor(g => g.Name)
+                .NotNull()
+                .WithMessage("A name cannot be null.")
+                .Matches(@"\A[^\r\n$<>%;/\\]{1,255}\z")
+                .WithMessage("A name must not contain special characters.");
         }
     }
 }

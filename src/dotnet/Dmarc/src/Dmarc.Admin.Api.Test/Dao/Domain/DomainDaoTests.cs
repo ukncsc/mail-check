@@ -63,7 +63,7 @@ namespace Dmarc.Admin.Api.Test.Dao.Domain
         [Test]
         public async Task CreateDomainCorrectlyInsertsDomain()
         {
-            Api.Domain.Domain domain = await _domainDao.CreateDomain(Domain1);
+            Api.Domain.Domain domain = await _domainDao.CreateDomain(Domain1, 321);
 
             List<Api.Domain.Domain> domains = TestHelpers.GetAllDomains(ConnectionString);
 

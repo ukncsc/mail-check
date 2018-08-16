@@ -1,121 +1,143 @@
 variable "env-name" {
-  type = "string"
+  description = "environment name, added to all objects, keep it short"
+  type        = "string"
 }
 
 variable "ssh-key-name" {
-  type = "string"
+  description = "Default SSH key to apply to EC2 instances"
+  type        = "string"
 }
 
 variable "aws-account-id" {
-  type = "string"
+  description = "AWS Account number"
+  type        = "string"
 }
 
 variable "aws-region" {
-  type = "string"
+  description = "AWS region in which to deploy the environment"
+  type        = "string"
 }
 
 variable "aws-region-name" {
-  type = "string"
+  description = "friendly name for AWS region for descriptions"
+  type        = "string"
 }
 
 variable "aws-secondary-region" {
-  description = "For services not supported in the primary region"
+  description = "For the Common environment using cross environment services such as SES"
   type        = "string"
 }
 
 variable "aws-secondary-region-name" {
-  description = "For services not supported in the primary region"
+  description = "friendly name for secondary AWS region for descriptions"
   type        = "string"
 }
 
 variable "zone-count" {
-  type = "string"
+  description = "number of AZs in which to deploy the solution"
+  type        = "string"
 }
 
 variable "zone-names" {
-  type = "map"
+  description = "backend AZ names"
+  type        = "map"
 }
 
 variable "zone-subnets" {
-  type = "map"
+  description = "backend AZ subnets"
+  type        = "map"
 }
 
 variable "frontend-zone-names" {
-  type = "map"
+  description = "frontend AZ names"
+  type        = "map"
 }
 
 variable "frontend-zone-subnets" {
-  type = "map"
+  description = "frontend AZ subnets"
+  type        = "map"
 }
 
 variable "public-zone-count" {
-  type = "string"
+  description = "Number of publc zones"
+  type        = "string"
 }
 
 variable "natgw-count" {
-  type = "string"
+  description = "number of NAT gateways to create, could be less than AZs"
+  type        = "string"
 }
 
 variable "public-zone-names" {
-  type = "map"
+  description = "public internet facing AZ names"
+  type        = "map"
 }
 
 variable "public-zone-subnets" {
-  type = "map"
+  description = "public internet facing AZ subnets"
+  type        = "map"
 }
 
 variable "vpc-cidr-block" {
-  type = "string"
+  description = "CIDR block for entire VPC"
+  type        = "string"
 }
 
 variable "db-master-size" {
-  type = "string"
+  description = "Master database instance size"
+  type        = "string"
 }
 
 variable "db-replica-size" {
-  type = "string"
+  description = "Replica database instance size"
+  type        = "string"
 }
 
 variable "db-replica-count" {
-  type = "string"
+  description = "Number of replicas"
+  type        = "string"
 }
 
 variable "db-snapshot-to-restore" {
-  type    = "string"
-  default = ""
+  description = "Name of database snapshot, blank for default database"
+  type        = "string"
+  default     = ""
 }
 
 variable "db-kms-key-id" {
-  type    = "string"
-  default = ""
+  description = "KMS key to encrypt database at rest"
+  type        = "string"
+  default     = ""
+}
+
+variable "db-name" {
+  description = "database name"
+  type        = "string"
 }
 
 variable "db-username" {
-  type = "string"
+  description = "database admin username"
+  type        = "string"
 }
 
 variable "db-password" {
-  type = "string"
+  description = "database admin password"
+  type        = "string"
 }
 
 variable "build-vpc" {
-  type = "string"
+  description = "VPC id to create VPC peering and routing"
+  type        = "string"
 }
 
 variable "build-route-table" {
-  type = "string"
-}
-
-variable "bastion-ami" {
-  type = "string"
-}
-
-variable "bastion-type" {
-  type = "string"
+  description = "build VPC routing table in which to create a route"
+  type        = "string"
 }
 
 variable "web-url" {
-  type = "string"
+  description = "Base URL for the web app"
+  type        = "string"
 }
 
 variable "email-domain" {
@@ -123,7 +145,8 @@ variable "email-domain" {
 }
 
 variable "cors-origin" {
-  type = "string"
+  description = "CORS origin for API calls"
+  type        = "string"
 }
 
 variable "parent-zone" {
@@ -131,20 +154,19 @@ variable "parent-zone" {
 }
 
 variable "aggregate-report-bucket" {
-  type = "string"
-}
-
-variable "forensic-report-bucket" {
-  type = "string"
+  description = "Name of the S3 bucket to receive aggregate reports from SES"
+  type        = "string"
 }
 
 variable "create-buckets" {
-  type    = "string"
-  default = "0"
+  description = "Manage the S3 bucket with this terraform (1)"
+  type        = "string"
+  default     = "0"
 }
 
 variable "db-users" {
-  type = "map"
+  description = "map of database users to a short name that fits within the MySQL username constraints"
+  type        = "map"
 
   default = {
     dnsrecordevaluator = "dnseval"
@@ -156,64 +178,128 @@ variable "db-users" {
     metricsapi         = "metrics"
     securitytester     = "sectest"
     securityevaluator  = "seceval"
+    quicksight         = "quickst"
   }
 }
 
-variable "db-name" {
-  type = "string"
-}
-
 variable "auth-OIDC-client-id" {
-  type = "string"
+  description = "OIDC client id passed to the apache module mod_auth_oid"
+  type        = "string"
 }
 
 variable "auth-OIDC-client-secret" {
-  type = "string"
+  description = "OIDC client secret passed to the apache module mod_auth_oid"
+  type        = "string"
 }
 
 variable "auth-OIDC-provider-metadata" {
-  type    = "string"
-  default = ""
+  description = "OIDC metadata URI endpoint passed to the apache module mod_auth_oid to receive configuration for that provider"
+  type        = "string"
+  default     = ""
+}
+
+variable "frontend-OIDCCryptoPassphrase" {
+  description = "Encryption key used to store session information in the frontend cache"
+  type        = "string"
 }
 
 variable "default-instance-type" {
-  type    = "string"
-  default = "t2.micro"
+  description = "If not overridden (most are), all instances will be of this type"
+  type        = "string"
+  default     = "t2.micro"
 }
 
 variable "default-container-memory" {
-  type    = "string"
-  default = "300"
+  description = "Amount of RAM to assign containers if not overriden"
+  type        = "string"
+  default     = "300"
 }
 
 variable "disable-firewall" {
-  type    = "string"
-  default = "false"
+  description = "If true the frontend web server will be open to the internet"
+  type        = "string"
+  default     = "false"
 }
 
 variable "allow-external" {
-  type    = "string"
-  default = "false"
+  description = "If true allows IP addresses classed as external access to the frontend web server"
+  type        = "string"
+  default     = "false"
 }
 
 variable "dotnet-container-githash" {
-  type = "string"
+  description = "Passed in by the pipeline to automatically upgrade API containers to the latest build by modify the task definition in the infrastructure"
+  type        = "string"
 }
 
 variable "frontend-container-githash" {
+  description = "Passed in by the pipeline to automatically upgrade frontend containers to the latest build by modify the task definition in the infrastructure"
+
   type = "string"
 }
 
 variable "backup-account" {
-  type    = "string"
-  default = ""
+  description = "Account used to store database snapshots for DR purposes"
+  type        = "string"
+  default     = ""
 }
 
 variable "KmsKeySource" {
+  description = "KMS key used to store database snapshots for DR purposes"
+
   type    = "string"
   default = ""
 }
 
-variable "frontend-OIDCCryptoPassphrase" {
+variable "role-to-assume" {
+  description = "Role for terraform to assume with permissions in the correct account"
+  type        = "string"
+  default     = ""
+}
+
+variable "allowed-account-ids" {
+  description = "List of account ids that terraform is allowd to modify"
+  type        = "string"
+  default     = ""
+}
+
+variable "build-account-id" {
+  description = "AWS account id containing the build environment for VPC peering"
+  type        = "string"
+  default     = ""
+}
+
+variable "build-vpc-cidr-block" {
+  description = "CIDR block of the build VPC to create a route"
+  type        = "string"
+  default     = ""
+}
+
+variable "ecr-aws-account-id" {
+  description = "AWS account id for docker container registries (ECR)"
+  type        = "string"
+}
+
+variable "db-microservice-certificate-evaluator-snapshot-to-restore" {
+  description = "DB snapshot to restore into the certificate evaluator microservice"
+  type        = "string"
+  default     = ""
+}
+
+variable "db-microservice-reverse-dns-snapshot-to-restore" {
+  description = "DB snapshot to restore into the reverse dns microservice"
+  type        = "string"
+  default     = ""
+}
+
+variable "db-microservice-dkim-snapshot-to-restore" {
+  description = "DB snapshot to restore into the dkim microservice"
+  type        = "string"
+  default     = ""
+}
+
+variable "s3-replication-source-aws-account-id" {
+  description = "If the source S3 bucket for reports is in a different account this will set up the bucket policy"
   type = "string"
+  default = ""
 }

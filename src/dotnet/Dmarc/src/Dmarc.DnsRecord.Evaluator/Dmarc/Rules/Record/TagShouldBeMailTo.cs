@@ -8,7 +8,7 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules.Record
         where T : ReportUri
     {
         private readonly string _errorFormatString;
-        private const string Scheme = "mailto";
+        private const string Prefix = "mailto:";
 
         protected TagShouldBeMailTo(string errorFormatString)
         {
@@ -20,7 +20,7 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules.Record
             T t = record.Tags.OfType<T>().FirstOrDefault();
 
             //ignore null uri schemes as these will already have parsing error.
-            if (t == null || t.Uris.Select(_ => _.Uri.Uri?.Scheme).Where(_ => _ != null).All(_ => _ == Scheme))
+            if (t == null || t.Uris.All(_ => string.IsNullOrWhiteSpace(_.Value)) || t.Uris.Select(_ => _.Value.ToLower()).All(_ => _.StartsWith(Prefix)))
             {
                 error = null;
                 return false;

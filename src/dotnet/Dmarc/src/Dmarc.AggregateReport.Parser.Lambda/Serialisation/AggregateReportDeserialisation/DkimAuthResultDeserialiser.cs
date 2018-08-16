@@ -28,6 +28,8 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Serialisation.AggregateReportDeser
         {
             string domain = element.Single("domain").Value;
 
+            string selector = element.SingleOrDefault("selector")?.Value;
+
             //nullable this deviates from spec
             //but some providers provide values not in the spec
             DkimResult dkimResultCandidate;
@@ -35,7 +37,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Serialisation.AggregateReportDeser
 
             string dkimHumanResult = element.SingleOrDefault("human_result")?.Value;
 
-            return new DkimAuthResult(domain, dkimResult, dkimHumanResult);
+            return new DkimAuthResult(domain, selector, dkimResult, dkimHumanResult);
         }
     }
 }

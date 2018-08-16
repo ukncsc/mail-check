@@ -15,33 +15,36 @@ import { fetchMyDomains } from 'my-domains/store/my-domains';
 import { addMoreDomainsCopy, addDomainsCopy } from 'my-domains/data';
 
 export class MyDomains extends React.Component {
-  constructor(props) {
-    super(props);
-    this.fetchOnSearchChange = debounce(
-      search =>
-        this.props.fetchMyDomains(1, this.props.mydomains.pageSize, search),
-      300
+  state = {
+    userHasDomains: false,
+  };
+
+  fetchOnSearchChange = debounce(
+    search =>
+      this.props.fetchMyDomains(1, this.props.mydomains.pageSize, search),
+    300
+  );
+
+  fetchInitial = () => {
+    this.props.fetchMyDomains(
+      this.props.mydomains.page,
+      this.props.mydomains.pageSize,
+      this.props.mydomains.search
     );
-    this.fetchInitial = () => {
-      this.props.fetchMyDomains(
-        this.props.mydomains.page,
-        this.props.mydomains.pageSize,
-        this.props.mydomains.search
-      );
-    };
-    this.fetchOnPageChange = page => {
-      this.props.fetchMyDomains(
-        page,
-        this.props.mydomains.pageSize,
-        this.props.mydomains.search
-      );
-    };
-    this.handleSearchChanged = event =>
-      this.fetchOnSearchChange(event.target.value);
-  }
-  componentWillMount() {
+  };
+
+  fetchOnPageChange = page => {
+    this.props.fetchMyDomains(
+      page,
+      this.props.mydomains.pageSize,
+      this.props.mydomains.search
+    );
+  };
+
+  handleSearchChanged = event => this.fetchOnSearchChange(event.target.value);
+
+  componentDidMount() {
     this.fetchInitial();
-    this.setState({ userHasDomains: false });
   }
 
   componentWillReceiveProps(nextProps) {

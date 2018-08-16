@@ -40,7 +40,8 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
 
             MxRecordTlsSecurityProfile securityProfile = CreateSecurityProfile();
 
-            MxRecordTlsSecurityProfile updatedSecurityProfile = await _cachingTlsSecurityTesterAdaptor.Test(securityProfile);
+            MxRecordTlsSecurityProfile updatedSecurityProfile =
+                await _cachingTlsSecurityTesterAdaptor.Test(securityProfile);
 
             A.CallTo(() => _cache.GetString(A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _tlsSecurityTesterAdaptor.Test(securityProfile)).MustHaveHappened(Repeated.Exactly.Once);
@@ -51,12 +52,14 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
         public async Task CachingEnabledAndValueInCacheValueFromCacheReturned()
         {
             MxRecordTlsSecurityProfile securityProfile = CreateSecurityProfile();
-            string serializedSecurityProfile = JsonConvert.SerializeObject(securityProfile.TlsSecurityProfile.Results);
+            string serializedSecurityProfile =
+                JsonConvert.SerializeObject(securityProfile.TlsSecurityProfile.TlsResults);
 
             A.CallTo(() => _config.CachingEnabled).Returns(true);
             A.CallTo(() => _cache.GetString(A<string>._)).Returns(Task.FromResult(serializedSecurityProfile));
 
-            MxRecordTlsSecurityProfile updatedSecurityProfile = await _cachingTlsSecurityTesterAdaptor.Test(securityProfile);
+            MxRecordTlsSecurityProfile updatedSecurityProfile =
+                await _cachingTlsSecurityTesterAdaptor.Test(securityProfile);
 
             Assert.That(updatedSecurityProfile.TlsSecurityProfile, Is.EqualTo(securityProfile.TlsSecurityProfile));
 
@@ -71,14 +74,16 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
             MxRecordTlsSecurityProfile securityProfile = CreateSecurityProfile();
 
             A.CallTo(() => _config.CachingEnabled).Returns(true);
-            A.CallTo(() => _cache.GetString(A<string>._)).Returns(Task.FromResult((string)null));
+            A.CallTo(() => _cache.GetString(A<string>._)).Returns(Task.FromResult((string) null));
             A.CallTo(() => _tlsSecurityTesterAdaptor.Test(securityProfile)).Returns(Task.FromResult(securityProfile));
 
-            MxRecordTlsSecurityProfile updatedSecurityProfile = await _cachingTlsSecurityTesterAdaptor.Test(securityProfile);
+            MxRecordTlsSecurityProfile updatedSecurityProfile =
+                await _cachingTlsSecurityTesterAdaptor.Test(securityProfile);
 
             A.CallTo(() => _cache.GetString(A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _tlsSecurityTesterAdaptor.Test(securityProfile)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => _cache.SetString(A<string>._, A<string>._, A<TimeSpan>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _cache.SetString(A<string>._, A<string>._, A<TimeSpan>._))
+                .MustHaveHappened(Repeated.Exactly.Once);
         }
 
         [Test]
@@ -87,10 +92,11 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
             MxRecordTlsSecurityProfile securityProfile = CreateSecurityProfile(1);
 
             A.CallTo(() => _config.CachingEnabled).Returns(true);
-            A.CallTo(() => _cache.GetString(A<string>._)).Returns(Task.FromResult((string)null));
+            A.CallTo(() => _cache.GetString(A<string>._)).Returns(Task.FromResult((string) null));
             A.CallTo(() => _tlsSecurityTesterAdaptor.Test(securityProfile)).Returns(Task.FromResult(securityProfile));
 
-            MxRecordTlsSecurityProfile updatedSecurityProfile = await _cachingTlsSecurityTesterAdaptor.Test(securityProfile);
+            MxRecordTlsSecurityProfile updatedSecurityProfile =
+                await _cachingTlsSecurityTesterAdaptor.Test(securityProfile);
 
             A.CallTo(() => _cache.GetString(A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _tlsSecurityTesterAdaptor.Test(securityProfile)).MustHaveHappened(Repeated.Exactly.Once);
@@ -103,41 +109,45 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
             MxRecordTlsSecurityProfile securityProfile = CreateSecurityProfile(3);
 
             A.CallTo(() => _config.CachingEnabled).Returns(true);
-            A.CallTo(() => _cache.GetString(A<string>._)).Returns(Task.FromResult((string)null));
+            A.CallTo(() => _cache.GetString(A<string>._)).Returns(Task.FromResult((string) null));
             A.CallTo(() => _tlsSecurityTesterAdaptor.Test(securityProfile)).Returns(Task.FromResult(securityProfile));
 
-            MxRecordTlsSecurityProfile updatedSecurityProfile = await _cachingTlsSecurityTesterAdaptor.Test(securityProfile);
+            MxRecordTlsSecurityProfile updatedSecurityProfile =
+                await _cachingTlsSecurityTesterAdaptor.Test(securityProfile);
 
             A.CallTo(() => _cache.GetString(A<string>._)).MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _tlsSecurityTesterAdaptor.Test(securityProfile)).MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => _cache.SetString(A<string>._, A<string>._, A<TimeSpan>._)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _cache.SetString(A<string>._, A<string>._, A<TimeSpan>._))
+                .MustHaveHappened(Repeated.Exactly.Once);
         }
 
         private MxRecordTlsSecurityProfile CreateSecurityProfile(int failureCount = 0)
         {
             MxRecord mxRecord = new MxRecord(1, "host");
 
-            TlsTestResult tlsTestResult = new TlsTestResult(TlsVersion.TlsV12, CipherSuite.TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA, CurveGroup.Ffdhe2048, SignatureHashAlgorithm.SHA1_DSA, null);
+            TlsTestResult tlsTestResult = new TlsTestResult(TlsVersion.TlsV12,
+                CipherSuite.TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA, CurveGroup.Ffdhe2048,
+                SignatureHashAlgorithm.SHA1_DSA, null, null, null);
 
             TlsSecurityProfile tlsSecurityProfile = new TlsSecurityProfile(
                 1,
                 null,
                 new TlsTestResults(
-                failureCount,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                new List<X509Certificate2> { TestCertificates.Certificate1 }
-            ));
+                    failureCount,
+                    new TlsTestResultsWithoutCertificate(tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult),
+                    new List<X509Certificate2> {TestCertificates.Certificate1}
+                ));
 
             return new MxRecordTlsSecurityProfile(mxRecord, tlsSecurityProfile);
         }

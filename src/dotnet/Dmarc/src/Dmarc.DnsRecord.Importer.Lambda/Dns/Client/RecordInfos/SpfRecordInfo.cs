@@ -1,5 +1,3 @@
-using Dmarc.DnsRecord.Importer.Lambda.Util;
-
 namespace Dmarc.DnsRecord.Importer.Lambda.Dns.Client.RecordInfos
 {
     public class SpfRecordInfo : RecordInfo
@@ -13,9 +11,10 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Dns.Client.RecordInfos
 
         public string Record { get; }
 
+
         protected bool Equals(SpfRecordInfo other)
         {
-            return StringUtils.SpaceInsensitiveEquals(Record, other.Record);
+            return string.Equals(Record, other.Record);
         }
 
         public override bool Equals(object obj)
@@ -28,7 +27,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Dns.Client.RecordInfos
 
         public override int GetHashCode()
         {
-            return Record?.GetHashCode() ?? 0;
+            return (Record != null ? Record.GetHashCode() : 0);
         }
 
         public override string ToString()

@@ -72,12 +72,17 @@ export default WrappedComponent =>
           .join(' '),
       }));
 
-    searchEntities = (dropDownProps, searchTerm) => {
+    searchEntities = (dropDownProps, searchTerm = '') => {
       const { results, selected } = this.props.entitySuggestions;
       return results.filter(
         r =>
-          r.name.toLowerCase().startsWith(searchTerm.toLowerCase()) &&
-          indexOf(selected, r.id) === -1
+          r.name
+            ? r.name.toLowerCase().startsWith(searchTerm.toLowerCase())
+            : (r.firstName.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
+                r.lastName
+                  .toLowerCase()
+                  .startsWith(searchTerm.toLowerCase())) &&
+              indexOf(selected, r.id) === -1
       );
     };
 

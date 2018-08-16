@@ -15,6 +15,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Dmarc.Common.Api.Domain;
 
 namespace Dmarc.Admin.Api.Controllers
 {
@@ -33,7 +34,7 @@ namespace Dmarc.Admin.Api.Controllers
 
         public UserController(IUserDao userDao,
             IGroupDao groupDao,
-            IDomainDao domainDao, 
+            IDomainDao domainDao,
             IGroupUserDao groupUserDao,
             IValidator<GetEntitiesByRelatedIdRequest> searchablePagedRequestValidator,
             IValidator<ChangeMembershipRequest> idEntityIdsRequestValidator,
@@ -64,8 +65,8 @@ namespace Dmarc.Admin.Api.Controllers
             int id;
             int? idValue = int.TryParse(sid, out id) ? id : (int?)null;
 
-            List<DomainPermission> domainPermissions = role == RoleType.Standard 
-                ? await _userDao.GetDomainPermissions(id) 
+            List<DomainPermission> domainPermissions = role == RoleType.Standard
+                ? await _userDao.GetDomainPermissions(id)
                 : new List<DomainPermission>();
 
             User user = new User(idValue, firstName, lastName, email, role);
@@ -80,7 +81,9 @@ namespace Dmarc.Admin.Api.Controllers
         {
             User user = await _userDao.GetUserById(id);
 
-            return user == null ? (IActionResult) NotFound() : new ObjectResult(user);
+            return user == null
+                ? NotFound(new ErrorResponse("User not found."))
+                : new ObjectResult(user);
         }
 
         [Route("{id}/group", Name = nameof(GetUserGroups))]
@@ -92,7 +95,7 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             List<Group> groups = await _groupDao.GetGroupsByUserId(request.Id, request.Search, request.Page, request.PageSize);
@@ -108,7 +111,7 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             List<Domain.Domain> domains = await _domainDao.GetDomainsByUserId(request.Id, request.Search, request.Page, request.PageSize);
@@ -125,12 +128,12 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             List<Tuple<int, int>> groupUsers = request.EntityIds.Select(_ => Tuple.Create(_, request.Id)).ToList();
             await _groupUserDao.AddGroupUsers(groupUsers);
-            
+
             return CreatedAtRoute(nameof(GetUserGroups), new { request.Id }, null);
         }
 
@@ -144,13 +147,13 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             List<Tuple<int, int>> groupUsers = request.EntityIds.Select(_ => Tuple.Create(_, request.Id)).ToList();
             await _groupUserDao.DeleteGroupUsers(groupUsers);
 
-            return new OkObjectResult(new {});
+            return new OkObjectResult(new { });
         }
 
         [HttpPost]
@@ -163,12 +166,12 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
-            User newUser =  await _userDao.CreateUser(user);
+            User newUser = await _userDao.CreateUser(user);
 
-            return CreatedAtRoute(nameof(GetUser), new {id = newUser.Id }, newUser);
+            return CreatedAtRoute(nameof(GetUser), new { id = newUser.Id }, newUser);
         }
 
         [Authorize(Policy = PolicyType.Admin)]
@@ -180,7 +183,7 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             List<User> users = await _userDao.GetUsersByFirstNameLastNameEmail(request.Search, request.Limit, request.IncludedIds);

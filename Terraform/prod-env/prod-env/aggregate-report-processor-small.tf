@@ -18,5 +18,8 @@ module "aggregate-report-processor-small" {
   sqs-queue-count               = 1
   sqs-queue-arns                = "${aws_sqs_queue.aggregate-report-queue1.arn}"
   s3-bucket-arns                = "arn:aws:s3:::${var.aggregate-report-bucket}/*"
+  environment = {DkimSelectorsTopicArn = "${aws_sns_topic.selector-seen-in-aggregate-report.arn}"}
   MaxS3ObjectSizeKilobytes      = "100"
+  sns-arns = [ "${aws_sns_topic.selector-seen-in-aggregate-report.arn}" ]
+
 }

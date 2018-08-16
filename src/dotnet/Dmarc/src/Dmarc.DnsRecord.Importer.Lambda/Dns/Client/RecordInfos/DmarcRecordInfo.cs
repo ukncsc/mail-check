@@ -1,5 +1,3 @@
-using Dmarc.DnsRecord.Importer.Lambda.Util;
-
 namespace Dmarc.DnsRecord.Importer.Lambda.Dns.Client.RecordInfos
 {
     public class DmarcRecordInfo : RecordInfo
@@ -15,7 +13,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Dns.Client.RecordInfos
 
         protected bool Equals(DmarcRecordInfo other)
         {
-            return StringUtils.SpaceInsensitiveEquals(Record, other.Record);
+            return string.Equals(Record, other.Record);
         }
 
         public override bool Equals(object obj)
@@ -28,7 +26,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Dns.Client.RecordInfos
 
         public override int GetHashCode()
         {
-            return Record?.GetHashCode() ?? 0;
+            return Record != null ? Record.GetHashCode() : 0;
         }
 
         public override string ToString()

@@ -2,11 +2,11 @@
 {
     public enum Status
     {
-        Error,
-        Warning,
-        Info,
-        Success,
-        Pending,
-        None
+        Success = 0,
+        Info = 1,
+        Pending = 2,
+        None = 3,
+        Warning = 4,
+        Error = 5,
     }
 }

@@ -92,5 +92,7 @@ namespace Dmarc.Common.Tls.BouncyCastle
             return new TestTlsEcDhKeyExchange(keyExchange, mSupportedSignatureAlgorithms,
                 _namedCurves, mClientECPointFormats, mServerECPointFormats);
         }
+
+        public override void NotifySecureRenegotiation(bool secureRenegotiation){}
     }
 }

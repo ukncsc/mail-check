@@ -7,8 +7,15 @@ namespace Dmarc.AggregateReport.Api.Validation
     {
         public DateRangeDomainRequestValidator()
         {
-            RuleFor(dr => dr.BeginDateUtc).NotNull();
-            RuleFor(dr => dr.EndDateUtc).NotNull();
+            CascadeMode = CascadeMode.StopOnFirstFailure;
+
+            RuleFor(dr => dr.BeginDateUtc)
+                .NotNull()
+                .WithMessage("A valid begin date must be provided.");
+
+            RuleFor(dr => dr.EndDateUtc)
+                .NotNull()
+                .WithMessage("A valid end date must be provided.");
         }
     }
 }

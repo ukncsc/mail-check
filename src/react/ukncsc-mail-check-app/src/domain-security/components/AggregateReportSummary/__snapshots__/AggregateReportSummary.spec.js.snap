@@ -2,11 +2,134 @@
 
 exports[`AggregateReportSummary when successfully retrieves data it should match the snapshot 1`] = `
 <div>
-  <span
-    class="AggregateReportSummary--date-range"
+  <form
+    class="ui form"
   >
-    Last 7 days
-  </span>
+    <div
+      style="padding-bottom: 20px;"
+      class="ui stackable grid"
+    >
+      <div
+        class="row"
+      >
+        <div
+          class="nine wide column"
+        >
+          <div
+            class="field AggregateReportSummary--date-range"
+          >
+            <div
+              role="listbox"
+              aria-expanded="false"
+              class="ui dropdown"
+              tabindex="0"
+            >
+              <div
+                class="text"
+                role="alert"
+                aria-live="polite"
+              />
+              <i
+                aria-hidden="true"
+                class="dropdown icon"
+              />
+              <div
+                class="menu transition"
+              >
+                <div
+                  style="pointer-events: all;"
+                  role="option"
+                  aria-checked="false"
+                  aria-selected="true"
+                  class="selected item"
+                >
+                  <span
+                    class="text"
+                  >
+                    Last 7 days
+                  </span>
+                </div>
+                <div
+                  style="pointer-events: all;"
+                  role="option"
+                  aria-checked="false"
+                  aria-selected="false"
+                  class="item"
+                >
+                  <span
+                    class="text"
+                  >
+                    Last 14 days
+                  </span>
+                </div>
+                <div
+                  style="pointer-events: all;"
+                  role="option"
+                  aria-checked="false"
+                  aria-selected="false"
+                  class="item"
+                >
+                  <span
+                    class="text"
+                  >
+                    Last 30 days
+                  </span>
+                </div>
+                <div
+                  style="pointer-events: all;"
+                  role="option"
+                  aria-checked="false"
+                  aria-selected="false"
+                  class="item"
+                >
+                  <span
+                    class="text"
+                  >
+                    Last 3 months
+                  </span>
+                </div>
+                <div
+                  style="pointer-events: all;"
+                  role="option"
+                  aria-checked="false"
+                  aria-selected="false"
+                  class="item"
+                >
+                  <span
+                    class="text"
+                  >
+                    Last 6 months
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="three wide column"
+        >
+          <div
+            class="field"
+          >
+            <div
+              class="ui checked toggle checkbox"
+            >
+              <input
+                class="hidden"
+                readonly=""
+                tabindex="0"
+                type="checkbox"
+                value=""
+              />
+              <label>
+                Include subdomains
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
   <div>
     <div
       class="ui small statistic"

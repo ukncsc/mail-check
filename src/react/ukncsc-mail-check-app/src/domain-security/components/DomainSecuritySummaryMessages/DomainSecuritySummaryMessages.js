@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { DomainSecurityMessage } from 'domain-security/components';
+import { MailCheckMessage } from 'common/components';
 
 const DomainSecuritySummaryMessages = ({
   type,
@@ -10,33 +10,31 @@ const DomainSecuritySummaryMessages = ({
 }) => (
   <React.Fragment>
     {!!failures && (
-      <DomainSecurityMessage error>
+      <MailCheckMessage error>
         {type} configuration has {failures} urgent issue{failures === 1
           ? ''
           : 's'}
-      </DomainSecurityMessage>
+      </MailCheckMessage>
     )}
     {!!warnings && (
-      <DomainSecurityMessage warning>
+      <MailCheckMessage warning>
         {type} configuration has {warnings} advisory issue{warnings === 1
           ? ''
           : 's'}
-      </DomainSecurityMessage>
+      </MailCheckMessage>
     )}
     {!!inconclusives && (
-      <DomainSecurityMessage information>
+      <MailCheckMessage>
         {type} configuration has {inconclusives} inconclusive issue{inconclusives ===
         1
           ? ''
           : 's'}
-      </DomainSecurityMessage>
+      </MailCheckMessage>
     )}
     {!failures &&
       !warnings &&
       !inconclusives && (
-        <DomainSecurityMessage success>
-          {type} is well configured.
-        </DomainSecurityMessage>
+        <MailCheckMessage success>{type} well configured.</MailCheckMessage>
       )}
   </React.Fragment>
 );
@@ -48,7 +46,7 @@ DomainSecuritySummaryMessages.defaultProps = {
 };
 
 DomainSecuritySummaryMessages.propTypes = {
-  type: PropTypes.oneOf(['DMARC', 'SPF', 'TLS']).isRequired,
+  type: PropTypes.string.isRequired,
   failures: PropTypes.number,
   warnings: PropTypes.number,
   inconclusives: PropTypes.number,

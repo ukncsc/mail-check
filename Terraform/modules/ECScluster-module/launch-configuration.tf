@@ -110,12 +110,8 @@ cat <<'EOF' > ./security-updates
 #!/bin/bash
 sudo yum update -y --security
 sudo yum update -y ecs-init
-sudo service docker restart
-sleep 5
-sudo start ecs
-# Forcefully restart the instance if the docker daemon has failed to restart
-# see https://github.com/docker/docker/issues/25382
-docker ps || sudo reboot
+sleep 10
+sudo reboot
 
 EOF
 

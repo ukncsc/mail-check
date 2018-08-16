@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { render } from 'react-testing-library';
 import BackLink from './BackLink';
 
@@ -9,9 +9,9 @@ describe('BackLink', () => {
   describe('when rendered with a link', () => {
     beforeEach(() => {
       ({ container } = render(
-        <BrowserRouter>
+        <MemoryRouter>
           <BackLink link="/bleh" />
-        </BrowserRouter>
+        </MemoryRouter>
       ));
     });
 
@@ -27,9 +27,9 @@ describe('BackLink', () => {
   describe('when rendered without a link', () => {
     beforeEach(() => {
       ({ container } = render(
-        <BrowserRouter>
+        <MemoryRouter>
           <BackLink />
-        </BrowserRouter>
+        </MemoryRouter>
       ));
     });
 

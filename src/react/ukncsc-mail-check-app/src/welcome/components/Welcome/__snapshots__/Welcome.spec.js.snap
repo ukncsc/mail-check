@@ -1,0 +1,131 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Welcome when displayed for the first time it should match the snapshot 1`] = `
+<div>
+  <h1
+    style="margin-top: 10px;"
+    class="ui header"
+  >
+    Mail Check
+  </h1>
+  <div
+    class="ui hidden divider"
+  />
+  <p
+    style="max-width: 600px;"
+  >
+    Mail Check helps you understand how secure your email server configuration is, and how to improve and maintain it. The tool checks DMARC, SPF, and TLS configuration, and processes DMARC reports to help you understand them.
+  </p>
+  <h4
+    style="display: inline-block;"
+    class="ui header"
+  >
+    Check your email domain
+  </h4>
+  <form
+    class="ui form"
+  >
+    <div
+      class="field"
+    >
+      <div
+        style="max-width: 600px;"
+        class="ui fluid input"
+      >
+        <input
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+    <div
+      class="disabled field"
+    >
+      <button
+        class="ui blue disabled button"
+        disabled=""
+        role="button"
+        tabindex="-1"
+      >
+        Show results
+      </button>
+    </div>
+  </form>
+  <div
+    class="ui hidden divider"
+  />
+</div>
+`;
+
+exports[`Welcome when the user has searched it should match the snapshot 1`] = `
+<div>
+  <h1
+    style="margin-top: 10px;"
+    class="ui header"
+  >
+    Mail Check
+  </h1>
+  <div
+    class="ui hidden divider"
+  />
+  <p
+    style="max-width: 600px;"
+  >
+    Mail Check helps you understand how secure your email server configuration is, and how to improve and maintain it. The tool checks DMARC, SPF, and TLS configuration, and processes DMARC reports to help you understand them.
+  </p>
+  <h4
+    style="display: inline-block;"
+    class="ui header"
+  >
+    Check your email domain
+  </h4>
+  <form
+    class="ui form"
+  >
+    <div
+      class="field"
+    >
+      <div
+        style="max-width: 600px;"
+        class="ui fluid input"
+      >
+        <input
+          type="text"
+          value="foo.gov.uk"
+        />
+      </div>
+    </div>
+    <div
+      class="field"
+    >
+      <button
+        class="ui blue button"
+        role="button"
+      >
+        Show results
+      </button>
+    </div>
+  </form>
+  <div
+    class="ui hidden divider"
+  />
+  <div
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui info message MailCheckMessage--container"
+  >
+    foo.gov.uk
+    is not currently monitored by Mail Check.
+    <a
+      href=""
+    >
+      Add 
+      foo.gov.uk
+      to Mail Check
+    </a>
+    .
+  </div>
+  <div
+    class="ui hidden divider"
+  />
+</div>
+`;

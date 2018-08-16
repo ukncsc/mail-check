@@ -98,7 +98,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
 
             IActionResult result = await _domainStatusController.GetAggregateReportSummary(request);
 
-            Assert.That(result, Is.TypeOf<NotFoundResult>());
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
         }
 
         [Test]
@@ -154,7 +154,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
 
             A.CallTo(() => _permissionDao.GetPermissions(A<int>._, A<int>._)).Returns(Task.FromResult(new DomainPermissions(1, true, true)));
 
-            A.CallTo(() => _domainStatusDao.GetAggregateReportSummary(A<int>._, A<DateTime>._, A<DateTime>._))
+            A.CallTo(() => _domainStatusDao.GetAggregateReportSummary(A<int>._, A<DateTime>._, A<DateTime>._, false))
                 .Returns(Task.FromResult(new SortedDictionary<DateTime, AggregateSummaryItem>
                 {
                     {dayOne, new AggregateSummaryItem(1, 1, 1, 1, 1)},
@@ -198,7 +198,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
 
             A.CallTo(() => _permissionDao.GetPermissions(A<int>._, A<int>._)).Returns(Task.FromResult(new DomainPermissions(1, true, true)));
 
-            A.CallTo(() => _domainStatusDao.GetAggregateReportSummary(A<int>._, A<DateTime>._, A<DateTime>._))
+            A.CallTo(() => _domainStatusDao.GetAggregateReportSummary(A<int>._, A<DateTime>._, A<DateTime>._, false))
                 .Returns(Task.FromResult(new SortedDictionary<DateTime, AggregateSummaryItem>
                 {
                     {dayOne, new AggregateSummaryItem(1, 1, 1, 1, 1)},
@@ -255,7 +255,7 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
 
             IActionResult result = await _domainStatusController.GetAggregateReportExport(1, DateTime.Now);
 
-            Assert.That(result, Is.TypeOf<NotFoundResult>());
+            Assert.That(result, Is.TypeOf<NotFoundObjectResult>());
         }
 
         [Test]

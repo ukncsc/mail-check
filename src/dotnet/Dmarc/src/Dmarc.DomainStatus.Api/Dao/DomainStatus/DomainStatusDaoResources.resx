@@ -143,11 +143,30 @@ ad.untrusted_pass_count as 'untrusted',
 ad.untrusted_quarantine_count as 'quarantined',
 ad.untrusted_reject_count as  'rejected',
 ad.total_email_count as 'total'
+FROM derived_aggregate_daily ad
+WHERE ad.domain_id = @domainId
+AND ad.effective_date BETWEEN @startDate AND @endDate;</value>
+  </data>
+  <data name="SelectAggregateReportSummaryWithSubdomains" xml:space="preserve">
+    <value>SELECT
+ad.effective_date as 'effective_date',
+ad.full_compliance_count as 'fully_trusted',
+(ad.dkim_only_count + ad.spf_only_count) as 'partially_trusted',
+ad.untrusted_pass_count as 'untrusted',
+ad.untrusted_quarantine_count as 'quarantined',
+ad.untrusted_reject_count as  'rejected',
+ad.total_email_count as 'total'
 FROM derived_aggregate_daily_rollup ad
 WHERE ad.domain_id = @domainId
 AND ad.effective_date BETWEEN @startDate AND @endDate;</value>
   </data>
   <data name="SelectAggregateReportTotalEmailCount" xml:space="preserve">
+    <value>SELECT SUM(ad.total_email_count) as 'total_email'
+FROM derived_aggregate_daily ad
+WHERE ad.domain_id = @domainId
+AND ad.effective_date BETWEEN @startDate AND @endDate;</value>
+  </data>
+  <data name="SelectAggregateReportTotalEmailCountWithSubdomains" xml:space="preserve">
     <value>SELECT SUM(ad.total_email_count) as 'total_email'
 FROM derived_aggregate_daily_rollup ad
 WHERE ad.domain_id = @domainId

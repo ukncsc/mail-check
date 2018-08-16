@@ -64,6 +64,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao {
         ///(`request_id`,
         ///`original_uri`,
         ///`attachment_filename`,
+        ///`version`,
         ///`org_name`,
         ///`email`,
         ///`report_id`,
@@ -77,12 +78,14 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao {
         ///`p`,
         ///`sp`,
         ///`pct`,
+        ///`fo`,
         ///`created_date`)
         ///VALUES
         ///(
         ///@request_id,
         ///@original_uri,
         ///@attachment_filename,
+        ///@version,
         ///@org_name,
         ///@email,
         ///@report_id,
@@ -96,8 +99,8 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao {
         ///@p,
         ///@sp,
         ///@pct,
-        ///@created_date)
-        ///ON DUPLICATE KEY UPDATE [rest of string was truncated]&quot;;.
+        ///@fo,
+        ///@cr [rest of string was truncated]&quot;;.
         /// </summary>
         public static string InsertAggregateReport {
             get {
@@ -106,8 +109,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to INSERT INTO `dmarc`.`dkim_auth_result`(`record_id`,`domain`,`dkim_result`,`human_result`) VALUES 
-        ///.
+        ///    Looks up a localized string similar to INSERT INTO `dmarc`.`dkim_auth_result`(`record_id`,`domain`,`selector`,`dkim_result`,`human_result`) VALUES.
         /// </summary>
         public static string InsertDkimAuthResult {
             get {
@@ -116,7 +118,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to (@a{0},@b{0},@c{0},@d{0}).
+        ///    Looks up a localized string similar to (@a{0},@b{0},@c{0},@d{0},@e{0}).
         /// </summary>
         public static string InsertDkimAuthResultValueFormatString {
             get {
@@ -145,7 +147,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to INSERT INTO`record`(`aggregate_report_id`,`source_ip`,`count`,`disposition`,`dkim`,`spf`,`envelope_to`,`header_from`) VALUES.
+        ///    Looks up a localized string similar to INSERT INTO`record`(`aggregate_report_id`,`source_ip`,`count`,`disposition`,`dkim`,`spf`,`envelope_to`,`envelope_from`,`header_from`) VALUES.
         /// </summary>
         public static string InsertRecord {
             get {
@@ -154,7 +156,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to (@a{0},@b{0},@c{0},@d{0},@e{0},@f{0},@g{0},@h{0}).
+        ///    Looks up a localized string similar to (@a{0},@b{0},@c{0},@d{0},@e{0},@f{0},@g{0},@h{0},@i{0}).
         /// </summary>
         public static string InsertRecordValueFormatString {
             get {
@@ -163,7 +165,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to INSERT INTO `spf_auth_result`(`record_id`,`domain`,`spf_result`) VALUES 
+        ///    Looks up a localized string similar to INSERT INTO `spf_auth_result`(`record_id`,`domain`,`scope`,`spf_result`) VALUES 
         ///.
         /// </summary>
         public static string InsertSpfAuthResult {
@@ -173,7 +175,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to (@a{0},@b{0},@c{0}).
+        ///    Looks up a localized string similar to (@a{0},@b{0},@c{0},@d{0}).
         /// </summary>
         public static string InsertSpfAuthResultValueFormatString {
             get {

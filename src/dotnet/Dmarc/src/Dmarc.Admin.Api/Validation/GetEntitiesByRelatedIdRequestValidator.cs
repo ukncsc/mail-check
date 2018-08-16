@@ -7,13 +7,25 @@ namespace Dmarc.Admin.Api.Validation
     {
         public GetEntitiesByRelatedIdRequestValidator()
         {
-            RuleFor(r => r.Id).GreaterThanOrEqualTo(0);
+            CascadeMode = CascadeMode.StopOnFirstFailure;
 
-            RuleFor(dr => dr.Search).Matches(@"\A[^\r\n$<>%;/\\]{0,50}\z");
+            RuleFor(r => r.Id)
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("An ID must be greater than zero.");
 
-            RuleFor(r => r.Page).GreaterThanOrEqualTo(1);
+            RuleFor(dr => dr.Search)
+                .Matches(@"\A[^\r\n$<>%;/\\]{0,50}\z")
+                .WithMessage("A search must not contain special characters.");
 
-            RuleFor(r => r.PageSize).GreaterThanOrEqualTo(1).LessThanOrEqualTo(200);
+            RuleFor(r => r.Page)
+                .GreaterThanOrEqualTo(1)
+                .WithMessage("A page must be greater than zero.");
+
+            RuleFor(r => r.PageSize)
+                .GreaterThanOrEqualTo(1)
+                .WithMessage("A page size must be greater than 1.")
+                .LessThanOrEqualTo(200)
+                .WithMessage("A page size must be 200 or less.");
         }
     }
 }

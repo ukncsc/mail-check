@@ -1,6 +1,6 @@
 module "reverse-dns" {
-  source                 = "git@github.com:ukncsc/MailCheck.ReverseDns//infrastructure/modules/reverse-dns-microservice?ref=55536e1"
-  artefact-version       = "55536e1"
+  source                 = "git@github.com:ukncsc/MailCheck.ReverseDns//infrastructure/modules/reverse-dns-microservice?ref=14682ec"
+  artefact-version       = "14682ec"
   vpc-id                 = "${aws_vpc.dmarc-env.id}"
   aws-account-id         = "${var.aws-account-id}"
   aws-region             = "${var.aws-region}"
@@ -10,7 +10,7 @@ module "reverse-dns" {
   db-password            = "${var.db-password}"
   db-name                = "reversedns"
   db-replica-count       = "${var.db-replica-count}"
-  db-snapshot-to-restore = ""
+  db-snapshot-to-restore = "${var.db-microservice-reverse-dns-snapshot-to-restore}"
   db-master-size         = "db.t2.small"
   db-replica-size        = "db.t2.small"
   db-kms-key-id          = "${var.db-kms-key-id}"
@@ -25,10 +25,14 @@ module "reverse-dns" {
 
   # Assign to a load balancer
   target-group-arn = "${element(module.loadbalancer-internal.target-group-arns, index(module.loadbalancer-internal.target-group-paths, "reverse-dns"))}"
+  load-balancer-arn = "${module.loadbalancer-internal.lb-arn}"
 
   # Subscribe to topics
   input-queue-subscriptions      = "${module.aggregate-report-processor-small.sns-arn},${module.aggregate-report-processor-large.sns-arn}"
   input-queue-subscription-count = "2"
+
+  # SNS topic for monitoring alerts
+  alerts-topic-arn = "${aws_sns_topic.cloudwatch-alerts.arn}"
 }
 
 resource "aws_security_group_rule" "api-cluster-access-to-reverse-dns-db" {
@@ -54,6 +58,6 @@ resource "aws_security_group_rule" "build-access-to-reverse-dns-db" {
   from_port         = "3306"
   to_port           = "3306"
   protocol          = "tcp"
-  cidr_blocks       = ["${data.aws_vpc.build-vpc.cidr_block}"]
+  cidr_blocks       = ["${var.build-vpc-cidr-block}"]
   security_group_id = "${module.reverse-dns.db-security-group-id}"
 }

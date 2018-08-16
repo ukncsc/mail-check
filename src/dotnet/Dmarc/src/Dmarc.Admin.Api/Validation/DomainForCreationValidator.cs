@@ -8,7 +8,9 @@ namespace Dmarc.Admin.Api.Validation
     {
         public DomainForCreationValidator(IDomainValidator domainValidator)
         {
-            RuleFor(d => d.Name).Must(domainValidator.IsValidDomain);
+            RuleFor(d => d.Name)
+                .Must(domainValidator.IsValidDomain)
+                .WithMessage("A name must be a valid domain name.");
         }
     }
 }

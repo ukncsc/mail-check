@@ -1,54 +1,53 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import find from 'lodash/find';
-import toString from 'lodash/toString';
-import trimEnd from 'lodash/trimEnd';
-import { Divider, Message } from 'semantic-ui-react';
+import { DomainSecurityDetailsMx } from 'domain-security/components';
 import {
-  DomainSecurityDetailsMessages,
-  DomainSecurityTitle,
-} from 'domain-security/components';
-import { BackLink } from 'common/components';
-import { DomainSecurityContext } from 'domain-security/context';
+  getDomainSecurityTls,
+  fetchDomainSecurityTls,
+} from 'domain-security/store';
 
-const DomainSecurityDetailsTls = ({ tls = {}, match }) => {
-  const record = find(tls.records, r => toString(r.id) === match.params.id);
+class DomainSecurityDetailsTls extends Component {
+  state = {
+    tls: null,
+  };
 
-  return (
-    <React.Fragment>
-      <DomainSecurityContext.Consumer>
-        {value => <BackLink link={`/${value}/${match.params.domainId}`} />}
-      </DomainSecurityContext.Consumer>
-      {record && (
-        <DomainSecurityTitle
-          loading={tls.loading}
-          subtitle={trimEnd(record.hostname, '.')}
-          failures={record.failures}
-          warnings={record.warnings}
-          inconclusives={record.inconclusives}
-          pending={tls.hostname === null}
-          lastChecked={record.lastChecked}
-        >
-          TLS
-        </DomainSecurityTitle>
-      )}
-      <p>
-        <Link to="/domain-security/tls-advice">View NCSC advice on TLS</Link>
-      </p>
-      <Divider hidden />
-      {tls.error && <Message error>{tls.error.message}</Message>}
-      {!tls.error &&
-        !tls.loading &&
-        record && (
-          <DomainSecurityDetailsMessages
-            type="TLS"
-            failures={record.failures}
-            warnings={record.warnings}
-            inconclusives={record.inconclusives}
-          />
-        )}
-    </React.Fragment>
-  );
-};
+  static getDerivedStateFromProps = props => {
+    const { domainId } = props.match.params;
+    const tls = props.getDomainSecurityTls(domainId);
 
-export default DomainSecurityDetailsTls;
+    if (!tls) {
+      props.fetchDomainSecurityTls(domainId);
+      return null;
+    }
+
+    return { tls };
+  };
+
+  render() {
+    return (
+      <DomainSecurityDetailsMx
+        type="TLS"
+        {...this.props.match.params}
+        {...this.state.tls}
+      >
+        <p>
+          <Link to="/domain-security/tls-advice">View NCSC advice on TLS</Link>
+        </p>
+      </DomainSecurityDetailsMx>
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  getDomainSecurityTls: getDomainSecurityTls(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchDomainSecurityTls: id => dispatch(fetchDomainSecurityTls(id)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DomainSecurityDetailsTls);

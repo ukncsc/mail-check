@@ -24,7 +24,7 @@ namespace Dmarc.Common.Tls.BouncyCastle.KeyExchange
         {
             SecurityParameters securityParameters = mContext.SecurityParameters;
 
-            Org.BouncyCastle.Crypto.Tls.SignerInputBuffer buf = new Org.BouncyCastle.Crypto.Tls.SignerInputBuffer();
+            SignerInputBuffer buf = new SignerInputBuffer();
             Stream teeIn = new TeeInputStream(input, buf);
 
             ServerDHParams dhParams = ServerDHParams.Parse(teeIn);

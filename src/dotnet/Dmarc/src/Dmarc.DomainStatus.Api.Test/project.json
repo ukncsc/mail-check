@@ -7,7 +7,7 @@
     "dotnet-test-nunit": "3.4.0-beta-3",
     "Dmarc.DomainStatus.Api": "1.0.0-*",
     "Dmarc.Common.TestSupport": "1.0.0-*",
-    "RichardSzalay.MockHttp": "4.0.0"
+    "Flurl.Http": "2.3.1"
   },
 
   "testRunner": "nunit",

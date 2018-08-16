@@ -29,7 +29,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(Error.SESSION_INITIALIZATION_FAILED)]
         public void TcpErrorsShouldResultInInconclusive(Error error)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error, null, null);
             ConnectionResults connectionResults =
                 TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
                     tlsConnectionResult);
@@ -38,11 +38,26 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         }
 
         [Test]
+        [TestCase(Error.TCP_CONNECTION_FAILED,
+            "The server did not present a STARTTLS command with a response code (250)")]
+        [TestCase(Error.SESSION_INITIALIZATION_FAILED,
+            "The server did not present a STARTTLS command with a response code (250)")]
+        public void ErrorsShouldHaveErrorDescriptionInResult(Error error, string description)
+        {
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error, description, null);
+            ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList, tlsConnectionResult);
+
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
+            StringAssert.Contains($"Error description \"{description}\".", _sut.Test(connectionResults).Description);
+        }
+
+        [Test]
         public void AnErrorShouldResultInAWarning()
         {
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(
                 TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
-                new TlsConnectionResult(Error.BAD_CERTIFICATE));
+                new TlsConnectionResult(Error.BAD_CERTIFICATE, null, null));
 
             Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.WARNING);
         }
@@ -54,12 +69,12 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
             {
                 {
                     TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
-                    new TlsConnectionResult(null, null, null, null, null, null)
+                    new TlsConnectionResult(null, null, null, null, null, null, null, null)
                 },
                 {
                     TlsTestType.Tls12AvailableWithBestCipherSuiteSelected,
                     new TlsConnectionResult(null, CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA, null, null, null,
-                        null)
+                        null, null, null)
                 }
             };
 
@@ -75,12 +90,12 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
             {
                 {
                     TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
-                    new TlsConnectionResult(null, null, null, null, null, null)
+                    new TlsConnectionResult(null, null, null, null, null, null, null, null)
                 },
                 {
                     TlsTestType.Tls12AvailableWithBestCipherSuiteSelected,
                     new TlsConnectionResult(null, CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, null, null, null,
-                        null)
+                        null, null, null)
                 }
             };
 
@@ -93,7 +108,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         public void PreviousTestBeingInconclusiveShouldResultInPass()
         {
             TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null,
-                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, null, null, null, null);
+                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, null, null, null, null, null, null);
             ConnectionResults connectionResults =
                 TlsTestDataUtil.CreateConnectionResults(
                     TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
@@ -109,11 +124,11 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
             {
                 {
                     TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
-                    new TlsConnectionResult(null, CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, null, null, null, null)
+                    new TlsConnectionResult(null, CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, null, null, null, null, null, null)
                 },
                 {
                     TlsTestType.Tls12AvailableWithBestCipherSuiteSelected,
-                    new TlsConnectionResult(null, CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, null, null, null, null)
+                    new TlsConnectionResult(null, CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, null, null, null, null, null, null)
                 }
             };
 
@@ -140,11 +155,11 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
             {
                 {
                     TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
-                    new TlsConnectionResult(null, cipherSuite, null, null, null, null)
+                    new TlsConnectionResult(null, cipherSuite, null, null, null, null, null, null)
                 },
                 {
                     TlsTestType.Tls12AvailableWithBestCipherSuiteSelected,
-                    new TlsConnectionResult(null, CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA, null, null, null, null)
+                    new TlsConnectionResult(null, CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA, null, null, null, null, null, null)
                 }
             };
 
@@ -175,11 +190,11 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
             {
                 {
                     TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
-                    new TlsConnectionResult(null, cipherSuite, null, null, null, null)
+                    new TlsConnectionResult(null, cipherSuite, null, null, null, null, null, null)
                 },
                 {
                     TlsTestType.Tls12AvailableWithBestCipherSuiteSelected,
-                    new TlsConnectionResult(null, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, null, null, null, null)
+                    new TlsConnectionResult(null, CipherSuite.TLS_RSA_WITH_RC4_128_MD5, null, null, null, null, null, null)
                 }
             };
 
@@ -211,11 +226,11 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
             {
                 {
                     TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
-                    new TlsConnectionResult(null, cipherSuite, null, null, null, null)
+                    new TlsConnectionResult(null, cipherSuite, null, null, null, null, null, null)
                 },
                 {
                     TlsTestType.Tls12AvailableWithBestCipherSuiteSelected,
-                    new TlsConnectionResult(null, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, null, null, null, null)
+                    new TlsConnectionResult(null, CipherSuite.TLS_RSA_WITH_RC4_128_SHA, null, null, null, null, null, null)
                 }
             };
 

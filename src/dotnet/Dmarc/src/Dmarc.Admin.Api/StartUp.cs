@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Amazon.SimpleNotificationService;
 using Amazon.SimpleSystemsManagement;
+using Dmarc.Admin.Api.Config;
 using Dmarc.Admin.Api.Dao.Domain;
 using Dmarc.Admin.Api.Dao.Group;
 using Dmarc.Admin.Api.Dao.GroupDomain;
@@ -17,7 +19,10 @@ using Dmarc.Common.Api.Identity.Middleware;
 using Dmarc.Common.Api.Middleware;
 using Dmarc.Common.Data;
 using Dmarc.Common.Encryption;
+using Dmarc.Common.Environment;
+using Dmarc.Common.Interface.Messaging;
 using Dmarc.Common.Interface.PublicSuffix;
+using Dmarc.Common.Messaging.Sns.Publisher;
 using Dmarc.Common.Validation;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
@@ -46,51 +51,66 @@ namespace Dmarc.Admin.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services
-            .AddHealthChecks(checks =>
-            {
-                checks.AddValueTaskCheck("HTTP Endpoint", () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));
-            })
-            .AddTransient<IConnectionInfo>(p => new StringConnectionInfo(Environment.GetEnvironmentVariable("ConnectionString")))
-            .AddTransient<IParameterStoreRequest, ParameterStoreRequest>()
-            .AddTransient<IAmazonSimpleSystemsManagement>(p => new AmazonSimpleSystemsManagementClient())
-            .AddSingleton<IConnectionInfoAsync, ConnectionInfoAsync>()
-            .AddTransient<IUserDao, UserDao>()
-            .AddTransient<IGroupDao, GroupDao>()
-            .AddTransient<IDomainDao, DomainDao>()
-            .AddTransient<IGroupUserDao, GroupUserDao>()
-            .AddTransient<IGroupDomainDao, GroupDomainDao>()
-            .AddTransient<ISearchDao, SearchDao>()
-            .AddTransient<IValidator<GetEntitiesByRelatedIdRequest>, GetEntitiesByRelatedIdRequestValidator>()
-            .AddTransient<IValidator<ChangeMembershipRequest>, ChangeMembershipRequestValidator>()
-            .AddTransient<IValidator<DomainForCreation>, DomainForCreationValidator>()
-            .AddTransient<IDomainValidator, DomainValidator>()
-            .AddTransient<IValidator<GroupForCreation>, GroupForCreationValidator>()
-            .AddTransient<IValidator<UserForCreation>, UserForCreationValidator>()
-            .AddTransient<IValidator<EntitySearchRequest>, EntitySearchRequestValidator>()
-            .AddTransient<IValidator<AllEntitiesSearchRequest>, AllEntitiesSearchRequestValidator>()
-            .AddTransient<IIdentityDao, IdentityDao>()
-            .AddSingleton<IOrganisationalDomainProvider, OrganisationDomainProvider>()
-            .AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
-            })
-            .AddAuthorization(options =>
-            {
-                options.AddPolicy(PolicyType.Admin, policy => policy.RequireAssertion(context => context.User.Claims.Any(_ => _.Type == ClaimTypes.Role && _.Value == RoleType.Admin)));
-            })
-            .AddMvc();
+                .AddHealthChecks(checks =>
+                    checks.AddValueTaskCheck("HTTP Endpoint", () =>
+                        new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok"))))
+                .AddTransient<IConnectionInfo>(p => new StringConnectionInfo(Environment.GetEnvironmentVariable("ConnectionString")))
+                .AddTransient<IParameterStoreRequest, ParameterStoreRequest>()
+                .AddTransient<IAmazonSimpleSystemsManagement>(p => new AmazonSimpleSystemsManagementClient())
+                .AddSingleton<IConnectionInfoAsync, ConnectionInfoAsync>()
+                .AddTransient<IUserDao, UserDao>()
+                .AddTransient<IGroupDao, GroupDao>()
+                .AddTransient<IDomainDao, DomainDao>()
+                .AddTransient<IGroupUserDao, GroupUserDao>()
+                .AddTransient<IGroupDomainDao, GroupDomainDao>()
+                .AddTransient<ISearchDao, SearchDao>()
+                .AddTransient<IPublicDomainListValidator, PublicDomainListValidator>()
+                .AddTransient<IValidator<GetEntitiesByRelatedIdRequest>, GetEntitiesByRelatedIdRequestValidator>()
+                .AddTransient<IValidator<ChangeMembershipRequest>, ChangeMembershipRequestValidator>()
+                .AddTransient<IValidator<DomainForCreation>, DomainForCreationValidator>()
+                .AddTransient<IDomainValidator, DomainValidator>()
+                .AddTransient<IValidator<GroupForCreation>, GroupForCreationValidator>()
+                .AddTransient<IValidator<UserForCreation>, UserForCreationValidator>()
+                .AddTransient<IValidator<EntitySearchRequest>, EntitySearchRequestValidator>()
+                .AddTransient<IValidator<AllEntitiesSearchRequest>, AllEntitiesSearchRequestValidator>()
+                .AddTransient<IValidator<PublicDomainForCreation>, PublicDomainValidator>()
+                .AddTransient<IIdentityDao, IdentityDao>()
+                .AddSingleton<IOrganisationalDomainProvider, OrganisationDomainProvider>()
+                .AddTransient<IPublisher, SnsPublisher>()
+                .AddTransient<IPublisherConfig, AdminApiConfig>()
+                .AddTransient<IAmazonSimpleNotificationService, AmazonSimpleNotificationServiceClient>()
+                .AddTransient<IEnvironmentVariables, EnvironmentVariables>()
+                .AddTransient<IEnvironment, EnvironmentWrapper>()
+
+                .AddCors(options =>
+                    options.AddPolicy("CorsPolicy", builder =>
+                        builder
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials()))
+                .AddAuthorization(options =>
+                {
+                    options.AddPolicy(PolicyType.Standard, policy =>
+                        policy.RequireAssertion(context =>
+                            context.User.Claims.Any(_ =>
+                                _.Type == ClaimTypes.Role && _.Value == RoleType.Standard || _.Value == RoleType.Admin)));
+
+                    options.AddPolicy(PolicyType.Admin, policy =>
+                        policy.RequireAssertion(context =>
+                            context.User.Claims.Any(_ =>
+                                _.Type == ClaimTypes.Role && _.Value == RoleType.Admin)));
+                })
+                .AddMvc();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole((st, logLevel) => logLevel >= LogLevel.Debug);
 
-            app.UseMiddleware<IdentityMiddleware>()
-                .UseMiddleware<UnhandledExceptionLoggingMiddleware>()
+            app
+                .UseMiddleware<UnhandledExceptionMiddleware>()
+                .UseMiddleware<IdentityMiddleware>()
                 .UseCors("CorsPolicy")
                 .UseMvc();
         }

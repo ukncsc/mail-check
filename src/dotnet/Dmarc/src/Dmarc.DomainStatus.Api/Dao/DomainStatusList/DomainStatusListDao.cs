@@ -22,6 +22,10 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatusList
         Task<List<DomainSecurityInfo>> GetDomainsSecurityInfoByUserId(int userId, int page, int pageSize, string search);
 
         Task<List<DomainSecurityInfo>> GetDomainsSecurityInfoByDomainNames(List<string> domainNames);
+
+        Task<WelcomeSearchResult> GetWelcomeSearchResult(string searchTerm);
+
+        Task<List<DomainSecurityInfo>> GetSubdomains(string domain, int page, int pageSize);
     }
 
     public class DomainStatusListDao : IDomainStatusListDao
@@ -42,7 +46,7 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatusList
                 parameterCollection.AddWithValue("search", string.IsNullOrWhiteSpace(search) ? null : search);
             };
 
-            return Db.ExecuteScalarTimed<long>(_connectionInfo, DomainStatusListDaoResources.SelectCount, 
+            return Db.ExecuteScalarTimed<long>(_connectionInfo, DomainStatusListDaoResources.SelectCount,
                 addParameters, _ => _log.LogDebug(_), nameof(GetDomainsCount));
         }
 
@@ -54,7 +58,7 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatusList
                 parameterCollection.AddWithValue("search", string.IsNullOrWhiteSpace(search) ? null : search);
             };
 
-            return Db.ExecuteScalarTimed<long>(_connectionInfo, DomainStatusListDaoResources.SelectCountByUserId, 
+            return Db.ExecuteScalarTimed<long>(_connectionInfo, DomainStatusListDaoResources.SelectCountByUserId,
                 addParameters, _ => _log.LogDebug(_), nameof(GetDomainsCountByUserId));
         }
 
@@ -107,17 +111,30 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatusList
                 addParameters, CreateDomainSecurityInfo, _ => _log.LogDebug(_), nameof(GetDomainsSecurityInfoByDomainNames));
         }
 
-        private DomainSecurityInfo CreateDomainSecurityInfo(DbDataReader reader)
-        {
-            Domain.Domain domain = CreateDomain(reader);
+        public Task<WelcomeSearchResult> GetWelcomeSearchResult(string searchTerm) =>
+            Db.ExecuteReaderSingleResultTimed(_connectionInfo, DomainStatusListDaoResources.SelectWelcomeSearchResult,
+                _ => _.AddWithValue("@term", searchTerm), CreateWelcomeSearchResult, _ => _log.LogDebug(_), nameof(GetWelcomeSearchResult));
 
-            return new DomainSecurityInfo(
-                domain,
+        public Task<List<DomainSecurityInfo>> GetSubdomains(string domain, int page, int pageSize)
+        {
+            Action<MySqlParameterCollection> addParameters = _ =>
+            {
+                _.AddWithValue("@domain", domain);
+                _.AddWithValue("@offset", (page - 1) * pageSize);
+                _.AddWithValue("@pageSize", pageSize);
+            };
+
+            return Db.ExecuteReaderListResultTimed(_connectionInfo, DomainStatusListDaoResources.SelectSubdomains,
+                addParameters, CreateDomainSecurityInfo, _ => _log.LogDebug(_), nameof(GetSubdomains));
+        }
+
+        private DomainSecurityInfo CreateDomainSecurityInfo(DbDataReader reader) =>
+            new DomainSecurityInfo(
+                CreateDomain(reader),
                 reader.GetBoolean("has_dmarc"),
                 MapStatus((EvaluatorResult)reader.GetInt32("tls_status")), //need to map
                 (Status)Enum.Parse(typeof(Status), reader.GetString("dmarc_status"), true),
                 (Status)Enum.Parse(typeof(Status), reader.GetString("spf_status"), true));
-        }
 
         private Status MapStatus(EvaluatorResult result)
         {
@@ -125,14 +142,19 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatusList
             {
                 case EvaluatorResult.PASS:
                     return Status.Success;
+
                 case EvaluatorResult.WARNING:
                     return Status.Warning;
+
                 case EvaluatorResult.FAIL:
                     return Status.Error;
+
                 case EvaluatorResult.INCONCLUSIVE:
                     return Status.None;
+
                 case EvaluatorResult.PENDING:
                     return Status.Pending;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(result), result, null);
             }
@@ -144,5 +166,8 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatusList
                 reader.GetInt32("domain_id"),
                 reader.GetString("domain_name"));
         }
+
+        private WelcomeSearchResult CreateWelcomeSearchResult(DbDataReader reader) =>
+            new WelcomeSearchResult(reader.GetInt32("id"), reader.GetString("name"));
     }
 }

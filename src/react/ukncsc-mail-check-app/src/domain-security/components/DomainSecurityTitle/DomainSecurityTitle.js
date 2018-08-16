@@ -1,66 +1,62 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Header, Icon, Loader } from 'semantic-ui-react';
-import moment from 'moment';
 import { getTitleIconProps } from './DomainSecurityTitle.helpers';
 
 import './DomainSecurityTitle.css';
 
 const DomainSecurityTitle = ({
+  as,
+  title,
   loading,
   subtitle,
   failures,
   warnings,
   inconclusives,
-  pending,
-  lastChecked,
-  as,
   children,
 }) => {
-  const icon = getTitleIconProps(failures, warnings, inconclusives, pending);
+  const icon = getTitleIconProps(failures, warnings, inconclusives);
 
   return (
     <React.Fragment>
       <Header as={as} className="DomainSecurityTitle--header">
-        {children}
+        {title}
       </Header>
       <div className="DomainSecurityTitle--icon">
         {loading && <Loader active inline />}
-        {!loading &&
-          icon && (
-            <Icon
-              {...icon}
-              size="big"
-              style={{ lineHeight: as === 'h1' ? '0.3' : '0.4' }}
-            />
-          )}
+        {icon && (
+          <Icon
+            {...icon}
+            size="big"
+            style={{ lineHeight: as === 'h1' ? '0.3' : '0.4' }}
+          />
+        )}
       </div>
       {subtitle && <Header as="h2">{subtitle}</Header>}
-      {lastChecked && <p>Last checked {moment(lastChecked).fromNow()}</p>}
+      {children}
     </React.Fragment>
   );
 };
 
 DomainSecurityTitle.defaultProps = {
+  as: 'h1',
   loading: false,
   subtitle: null,
   failures: [],
   warnings: [],
   inconclusives: [],
   pending: false,
-  lastChecked: null,
-  as: 'h1',
 };
 
 DomainSecurityTitle.propTypes = {
+  as: PropTypes.oneOf(['h1', 'h2', 'h3']),
+  title: PropTypes.string.isRequired,
   loading: PropTypes.bool,
   subtitle: PropTypes.string,
   failures: PropTypes.arrayOf(PropTypes.string),
   warnings: PropTypes.arrayOf(PropTypes.string),
   inconclusives: PropTypes.arrayOf(PropTypes.string),
   pending: PropTypes.bool,
-  lastChecked: PropTypes.string,
-  as: PropTypes.oneOf(['h1', 'h2']),
 };
 
 export default DomainSecurityTitle;

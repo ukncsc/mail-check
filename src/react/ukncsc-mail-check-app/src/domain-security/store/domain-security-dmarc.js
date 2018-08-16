@@ -5,13 +5,13 @@ import { mailCheckApiFetch } from 'common/helpers';
 import { recordErrorsReducer, recordsReducer } from './helpers';
 
 const fetchRequestDomainSecurityDmarcAction =
-  'mailCheck/domainSecurity/FETCH_DMARC_REQUEST';
+  'mailCheck/domainSecurity/dmarc/FETCH_REQUEST';
 
 const fetchSuccessDomainSecurityDmarcAction =
-  'mailCheck/domainSecurity/FETCH_DMARC_SUCCESS';
+  'mailCheck/domainSecurity/dmarc/FETCH_SUCCESS';
 
 const fetchErrorDomainSecurityDmarcAction =
-  'mailCheck/domainSecurity/FETCH_DMARC_ERROR';
+  'mailCheck/domainSecurity/dmarc/FETCH_ERROR';
 
 export const fetchRequestDomainSecurityDmarc = createAction(
   fetchRequestDomainSecurityDmarcAction
@@ -41,12 +41,14 @@ const initialState = {};
 
 const transformResponse = ({
   id,
+  pending,
   records,
   errors,
   inheritedFrom,
   lastChecked,
 }) => ({
   id,
+  pending: pending || false,
   records:
     records && reduce(records, recordsReducer('tags', '', inheritedFrom), []),
   ...reduce(errors, recordErrorsReducer, {
@@ -79,4 +81,4 @@ export default handleActions(
 );
 
 export const getDomainSecurityDmarc = state => id =>
-  get(state, `domainSecurity.dmarc[${id}]`, {});
+  get(state, `domainSecurity.dmarc[${id}]`);

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Dmarc.AggregateReport.Parser.Lambda.Dao.Entities;
 using Dmarc.AggregateReport.Parser.Lambda.Domain;
+using Dmarc.AggregateReport.Parser.Lambda.Domain.Dmarc;
 using Dmarc.AggregateReport.Parser.Lambda.Utils.Conversion;
 using Dmarc.Common.Report.Conversion;
 using Alignment = Dmarc.AggregateReport.Parser.Lambda.Domain.Dmarc.Alignment;
@@ -25,6 +26,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Converters
                 RequestId = aggregateReport.EmailMetadata.RequestId,
                 OrginalUri = aggregateReport.EmailMetadata.OriginalUri,
                 AttachmentFilename = aggregateReport.AttachmentMetadata.Filename,
+                Version = aggregateReport.AggregateReport.Version,
                 OrgName = aggregateReport.AggregateReport.ReportMetadata?.OrgName,
                 ReportId = aggregateReport.AggregateReport.ReportMetadata.ReportId,
                 Email = aggregateReport.AggregateReport.ReportMetadata?.Email,
@@ -38,6 +40,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Converters
                 P = Convert(aggregateReport.AggregateReport.PolicyPublished.P),
                 Sp = Convert(aggregateReport.AggregateReport.PolicyPublished?.Sp),
                 Pct = aggregateReport.AggregateReport.PolicyPublished?.Pct,
+                Fo = aggregateReport.AggregateReport.PolicyPublished.Fo,
                 Records = aggregateReport.AggregateReport.Records?.Select(ConvertToEntity).ToList()
             };
         }
@@ -72,6 +75,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Converters
                 Spf = Convert(record.Row.PolicyEvaluated.Spf),
                 Reason = record.Row?.PolicyEvaluated?.Reasons?.Select(ConvertToEntity).ToList(),
                 EnvelopeTo = record.Identifiers?.EnvelopeTo,
+                EnvelopeFrom = record.Identifiers?.EnvelopeFrom,
                 HeaderFrom = record.Identifiers?.HeaderFrom,
                 DkimAuthResults = record.AuthResults?.Dkim?.Select(ConvertToEntity).ToList(),
                 SpfAuthResults = record.AuthResults?.Spf?.Select(ConvertToEntity).ToList()
@@ -83,11 +87,6 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Converters
             return dmarcResult.HasValue
                 ? (EntityDmarcResult?)dmarcResult.Value
                 : null;
-        }
-
-        private EntityDmarcResult Convert(DmarcResult dmarcResult)
-        {
-            return (EntityDmarcResult) dmarcResult;
         }
 
         private PolicyOverrideReasonEntity ConvertToEntity(PolicyOverrideReason policyOverrideReason)
@@ -111,6 +110,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Converters
             return new DkimAuthResultEntity
             { 
                 Domain = dkimAuthResult.Domain,
+                Selector = dkimAuthResult.Selector,
                 Result = Convert(dkimAuthResult.Result),
                 HumanResult = dkimAuthResult.HumanResult
             };
@@ -128,6 +128,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Converters
             return new SpfAuthResultEntity
             {
                 Domain = spfAuthResult.Domain,
+                Scope = Convert(spfAuthResult.Scope),
                 Result =  Convert(spfAuthResult.Result)
             };
         }
@@ -136,6 +137,13 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Converters
         {
             return spfResult.HasValue
                 ? (EntitySpfResult?)spfResult.Value
+                : null;
+        }
+
+        private EntitySpfDomainScope? Convert(SpfDomainScope? scope)
+        {
+            return scope.HasValue
+                ? (EntitySpfDomainScope?) scope.Value
                 : null;
         }
     }

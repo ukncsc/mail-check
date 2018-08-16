@@ -63,7 +63,7 @@ namespace Dmarc.MxSecurityEvaluator.Dao {
         ///    Looks up a localized string similar to SELECT drm.hostname, drmtp.* FROM domain d
         ///JOIN dns_record_mx drm 
         ///ON d.id = drm.domain_id 
-        ///JOIN dns_record_mx_tls_profile_2 drmtp 
+        ///JOIN dns_record_mx_tls_profile_results drmtp 
         ///ON drm.id = drmtp.mx_record_id 
         ///WHERE d.id = @domain_id
         ///AND drmtp.end_date IS NULL;.
@@ -75,21 +75,13 @@ namespace Dmarc.MxSecurityEvaluator.Dao {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to  INSERT INTO dns_record_mx_tls_evaluator_results 
+        ///    Looks up a localized string similar to INSERT INTO dns_record_mx_tls_evaluator_results 
         ///SET mx_record_id = @mx_record_id,
         ///last_checked = @last_checked,
-        ///test1_result = @test1_result,
-        ///test1_description = @test1_description,
-        ///test2_result = @test2_result,
-        ///test2_description = @test2_description,
-        ///test3_result = @test3_result,
-        ///test3_description = @test3_description,
-        ///test4_result = @test4_result,
-        ///test4_description = @test4_description,
-        ///test5_result = @test5_result,
-        ///test5_description = @test5_description,
-        ///test6_result = @test6_result,
-        ///test6 [rest of string was truncated]&quot;;.
+        ///data = @data
+        ///ON DUPLICATE KEY UPDATE
+        ///last_checked = @last_checked,
+        ///data = @data;.
         /// </summary>
         public static string InsertTlsEvaluatorResults {
             get {

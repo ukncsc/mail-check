@@ -33,19 +33,16 @@ namespace Dmarc.Metrics.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                  .AddHealthChecks(checks =>
-                  {
-                      checks.AddValueTaskCheck("HTTP Endpoint", () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));
-                  })
+                .AddHealthChecks(checks => checks.AddValueTaskCheck("HTTP Endpoint", () =>
+                         new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok"))))
                 .AddTransient<IConnectionInfoAsync, ConnectionInfoAsync>()
                 .AddTransient<IParameterStoreRequest, ParameterStoreRequest>()
                 .AddTransient<IConnectionInfo>(p => new StringConnectionInfo(Environment.GetEnvironmentVariable("ConnectionString")))
                 .AddTransient<IValidator<MetricsDateRange>, MetricsDateRangeValidator>()
                 .AddTransient<IMetricsDao, MetricsDao>()
                 .AddTransient<IAmazonSimpleSystemsManagement, AmazonSimpleSystemsManagementClient>()
-                .AddCors(CorsOptions())
+                .AddCors(CorsOptions)
                 .AddMvc();
-
         }
 
         public void Configure(IApplicationBuilder appBuilder, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -53,21 +50,18 @@ namespace Dmarc.Metrics.Api
             loggerFactory.AddConsole((st, logLevel) => logLevel >= LogLevel.Debug);
 
             appBuilder
-                .UseMiddleware<UnhandledExceptionLoggingMiddleware>()
+                .UseMiddleware<UnhandledExceptionMiddleware>()
                 .UseCors("CorsPolicy")
                 .UseMvc();
         }
 
-        private static Action<CorsOptions> CorsOptions()
-        {
-            return options =>
+        private static Action<CorsOptions> CorsOptions =>
+            options =>
                 options.AddPolicy("CorsPolicy", builder =>
                     builder
                         .AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .AllowCredentials()
-                );
-        }
+                        .AllowCredentials());
     }
 }

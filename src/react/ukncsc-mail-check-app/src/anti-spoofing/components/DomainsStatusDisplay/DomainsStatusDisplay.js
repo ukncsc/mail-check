@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Table, Header } from 'semantic-ui-react';
-import { DomainSecurityContext } from 'domain-security/context';
+import { DomainSecurityLocationContext } from 'domain-security/context';
 import RatingDisplay from '../RatingDisplay';
 
 export default ({ results }) => (
@@ -35,11 +35,13 @@ export default ({ results }) => (
                   /* eslint-disable jsx-a11y/anchor-is-valid */
                 }
 
-                <DomainSecurityContext.Consumer>
-                  {value => (
-                    <Link to={`/${value}/${domain.id}`}>View Information</Link>
+                <DomainSecurityLocationContext.Consumer>
+                  {location => (
+                    <Link to={`/${location}/${domain.id}`}>
+                      View Information
+                    </Link>
                   )}
-                </DomainSecurityContext.Consumer>
+                </DomainSecurityLocationContext.Consumer>
               </Table.Cell>
               <Table.Cell>
                 <RatingDisplay status={dmarcStatus} />

@@ -29,7 +29,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(Error.SESSION_INITIALIZATION_FAILED)]
         public void TcpErrorsShouldResultInInconclusive(Error error)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error, null, null);
            ConnectionResults connectionResults =
                 TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureEllipticCurveSelected, tlsConnectionResult);
 
@@ -37,10 +37,25 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         }
 
         [Test]
+        [TestCase(Error.TCP_CONNECTION_FAILED,
+            "The server did not present a STARTTLS command with a response code (250)")]
+        [TestCase(Error.SESSION_INITIALIZATION_FAILED,
+            "The server did not present a STARTTLS command with a response code (250)")]
+        public void ErrorsShouldHaveErrorDescriptionInResult(Error error, string description)
+        {
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error, description, null);
+            ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureEllipticCurveSelected, tlsConnectionResult);
+
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
+            StringAssert.Contains($"Error description \"{description}\".", _sut.Test(connectionResults).Description);
+        }
+
+        [Test]
         public void AnErrorShouldResultInInconslusive()
         {
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureEllipticCurveSelected,
-                new TlsConnectionResult(Error.CERTIFICATE_UNOBTAINABLE));
+                new TlsConnectionResult(Error.CERTIFICATE_UNOBTAINABLE, null, null));
 
             Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
         }
@@ -48,7 +63,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [Test]
         public void UnaccountedForCurveShouldResultInInconclusive()
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, null, null, null, null, null, null);
            ConnectionResults connectionResults =
                 TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureEllipticCurveSelected, tlsConnectionResult);
 
@@ -74,7 +89,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CurveGroup.Sect239k1)]
         public void CurvesWithCurveNumberLessThan256ShouldResultInAFail(CurveGroup curveGroup)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null, null, null);
            ConnectionResults connectionResults =
                 TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureEllipticCurveSelected, tlsConnectionResult);
 
@@ -94,7 +109,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CurveGroup.Sect571r1)]
         public void CurvesWithCurveNumberGreaterThan256ShouldResultInAPass(CurveGroup curveGroup)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, null, curveGroup, null, null, null, null, null);
            ConnectionResults connectionResults =
                 TlsTestDataUtil.CreateConnectionResults(TlsTestType.TlsSecureEllipticCurveSelected, tlsConnectionResult);
 

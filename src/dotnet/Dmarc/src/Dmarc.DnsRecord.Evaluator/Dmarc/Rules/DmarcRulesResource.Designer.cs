@@ -204,6 +204,15 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules {
         }
         
         /// <summary>
+        ///    Looks up a localized string similar to The specified sub-domain policy (sp) is ineffective because {0} is not an organisational domain. Only sub-domain policies on organisational domains are valid..
+        /// </summary>
+        public static string SubDomainIneffectualErrorMessage {
+            get {
+                return ResourceManager.GetString("SubDomainIneffectualErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    Looks up a localized string similar to Only a sub domain policy (sp) of Quarantine or Reject will protect recipients from spoofed email. Consider changing sub domain policy from {0} to Quarantine or Reject..
         /// </summary>
         public static string SubdomainPolicyMustBeQuarantineOrRejectErrorMessage {

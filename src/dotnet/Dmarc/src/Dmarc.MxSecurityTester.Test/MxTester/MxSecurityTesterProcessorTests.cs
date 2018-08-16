@@ -55,29 +55,34 @@ namespace Dmarc.MxSecurityTester.Test.MxTester
 
         private DomainTlsSecurityProfile CreateDomainTlsSecurityProfile()
         {
-            TlsTestResult tlsTestResult = new TlsTestResult(TlsVersion.TlsV12, CipherSuite.TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA, CurveGroup.Ffdhe2048, SignatureHashAlgorithm.SHA1_DSA, null);
+            TlsTestResult tlsTestResult = new TlsTestResult(TlsVersion.TlsV12,
+                CipherSuite.TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA, CurveGroup.Ffdhe2048,
+                SignatureHashAlgorithm.SHA1_DSA, null, null, null);
 
             TlsSecurityProfile tlsSecurityProfile = new TlsSecurityProfile(
                 1,
                 null,
                 new TlsTestResults(0,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                tlsTestResult,
-                new List<X509Certificate2>()
-            ));
+                    new TlsTestResultsWithoutCertificate(tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult,
+                        tlsTestResult),
+                    new List<X509Certificate2>()
+                ));
 
             return new DomainTlsSecurityProfile(new Domain(1, "domain"),
-                new List<MxRecordTlsSecurityProfile> { new MxRecordTlsSecurityProfile(new MxRecord(1, "host"), tlsSecurityProfile) });
+                new List<MxRecordTlsSecurityProfile>
+                {
+                    new MxRecordTlsSecurityProfile(new MxRecord(1, "host"), tlsSecurityProfile)
+                });
         }
     }
 }

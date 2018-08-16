@@ -1,29 +1,14 @@
 variable "internal-sources" {
   type = "map"
 
-  default = {}
+  default = {
+   
+  }
 }
 
-variable "government-sources" {
+variable "external-sources" {
   type = "map"
 
-  default = {}
-}
-
-variable "localgov-sources" {
-  type = "map"
-
-  default = {}
-}
-
-variable "police-sources" {
-  type = "map"
-
-  default = {}
-}
-
-variable "nhs-sources" {
-  type = "map"
-
-  default = {}
+  default = {
+  }
 }

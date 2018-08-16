@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainSecuritySummaryTxt when no records are provided it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui stackable grid"
+  >
+    <div
+      class="row"
+    >
+      <div
+        class="four wide column"
+      >
+        <h2
+          class="ui header DomainSecurityTitle--header"
+        >
+          SPF
+        </h2>
+        <div
+          class="DomainSecurityTitle--icon"
+        />
+      </div>
+      <div
+        class="eight wide column"
+      >
+        <p />
+      </div>
+    </div>
+  </div>
+</div>
+`;

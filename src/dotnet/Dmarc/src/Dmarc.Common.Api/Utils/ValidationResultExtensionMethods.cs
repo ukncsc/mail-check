@@ -7,7 +7,7 @@ namespace Dmarc.Common.Api.Utils
     {
         public static string GetErrorString(this ValidationResult validationResult)
         {
-            return string.Join(",", validationResult.Errors.Select(_ => $"{_.AttemptedValue ?? "<null>"} is not valid for property {_.PropertyName} : {_.ErrorMessage}"));
+            return string.Join(" ", validationResult.Errors.Select(_ => _.ErrorMessage));
         }
     }
 }

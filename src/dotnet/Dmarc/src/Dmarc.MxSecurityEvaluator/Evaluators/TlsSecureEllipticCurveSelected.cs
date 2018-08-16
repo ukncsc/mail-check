@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Dao;
 using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Util;
 
@@ -7,7 +8,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 {
     public class TlsSecureEllipticCurveSelected : ITlsEvaluator
     {
-        private readonly string intro = "When testing TLS with a range of elliptic curves";
+        private readonly string intro = "When testing TLS with a range of elliptic curves {0}";
 
         public TlsEvaluatorResult Test(ConnectionResults tlsConnectionResults)
         {
@@ -22,14 +23,21 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 
                 case Error.TCP_CONNECTION_FAILED:
                 case Error.SESSION_INITIALIZATION_FAILED:
-                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} we were unable to create a connection to the mail server. We will keep trying, so please check back later.");
+                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE,
+                        string.Format(intro,
+                            $"we were unable to create a connection to the mail server. We will keep trying, so please check back later. Error description \"{tlsConnectionResult.ErrorDescription}\"."));
 
                 case null:
                     break;
 
                 default:
-                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} the server responded with an error.");
+                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE,
+                        string.Format(intro,
+                            $"the server responded with an error. Error description \"{tlsConnectionResult.ErrorDescription}\"."));
             }
+
+            string introWithCurveGroup = string.Format(intro,
+                $"the server selected {tlsConnectionResult.CurveGroup.GetGroupName()}");
 
             switch (tlsConnectionResult.CurveGroup)
             {
@@ -49,7 +57,8 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
                 case CurveGroup.Sect233k1:
                 case CurveGroup.Sect233r1:
                 case CurveGroup.Sect239k1:
-                    return new TlsEvaluatorResult(EvaluatorResult.FAIL, $"{intro} the server selected an elliptic curve with a curve length that is less than 256 bits.");
+                    return new TlsEvaluatorResult(EvaluatorResult.FAIL,
+                        string.Format(intro, $"the server selected {tlsConnectionResult.CurveGroup.GetGroupName()} which has a curve length of less than 256 bits."));
 
                 case CurveGroup.Secp256k1:
                 case CurveGroup.Secp256r1:
@@ -64,7 +73,8 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
                     return new TlsEvaluatorResult(EvaluatorResult.PASS);
             }
 
-            return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} there was a problem and we are unable to provide additional information.");
+            return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE,
+                string.Format(intro, "there was a problem and we are unable to provide additional information."));
         }
 
         public TlsTestType Type => TlsTestType.TlsSecureEllipticCurveSelected;

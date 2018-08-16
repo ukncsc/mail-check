@@ -122,6 +122,7 @@
 (`request_id`,
 `original_uri`,
 `attachment_filename`,
+`version`,
 `org_name`,
 `email`,
 `report_id`,
@@ -135,12 +136,14 @@
 `p`,
 `sp`,
 `pct`,
+`fo`,
 `created_date`)
 VALUES
 (
 @request_id,
 @original_uri,
 @attachment_filename,
+@version,
 @org_name,
 @email,
 @report_id,
@@ -154,15 +157,15 @@ VALUES
 @p,
 @sp,
 @pct,
+@fo,
 @created_date)
 ON DUPLICATE KEY UPDATE id = id;</value>
   </data>
   <data name="InsertDkimAuthResult" xml:space="preserve">
-    <value>INSERT INTO `dmarc`.`dkim_auth_result`(`record_id`,`domain`,`dkim_result`,`human_result`) VALUES 
-</value>
+    <value>INSERT INTO `dmarc`.`dkim_auth_result`(`record_id`,`domain`,`selector`,`dkim_result`,`human_result`) VALUES</value>
   </data>
   <data name="InsertDkimAuthResultValueFormatString" xml:space="preserve">
-    <value>(@a{0},@b{0},@c{0},@d{0})</value>
+    <value>(@a{0},@b{0},@c{0},@d{0},@e{0})</value>
   </data>
   <data name="InsertPolicyOverrideReason" xml:space="preserve">
     <value>INSERT INTO `policy_override_reason` (`record_id`,`policy_override`,`comment`) VALUES 
@@ -173,16 +176,16 @@ ON DUPLICATE KEY UPDATE id = id;</value>
     <value>(@a{0},@b{0},@c{0})</value>
   </data>
   <data name="InsertRecord" xml:space="preserve">
-    <value>INSERT INTO`record`(`aggregate_report_id`,`source_ip`,`count`,`disposition`,`dkim`,`spf`,`envelope_to`,`header_from`) VALUES</value>
+    <value>INSERT INTO`record`(`aggregate_report_id`,`source_ip`,`count`,`disposition`,`dkim`,`spf`,`envelope_to`,`envelope_from`,`header_from`) VALUES</value>
   </data>
   <data name="InsertRecordValueFormatString" xml:space="preserve">
-    <value>(@a{0},@b{0},@c{0},@d{0},@e{0},@f{0},@g{0},@h{0})</value>
+    <value>(@a{0},@b{0},@c{0},@d{0},@e{0},@f{0},@g{0},@h{0},@i{0})</value>
   </data>
   <data name="InsertSpfAuthResult" xml:space="preserve">
-    <value>INSERT INTO `spf_auth_result`(`record_id`,`domain`,`spf_result`) VALUES 
+    <value>INSERT INTO `spf_auth_result`(`record_id`,`domain`,`scope`,`spf_result`) VALUES 
 </value>
   </data>
   <data name="InsertSpfAuthResultValueFormatString" xml:space="preserve">
-    <value>(@a{0},@b{0},@c{0})</value>
+    <value>(@a{0},@b{0},@c{0},@d{0})</value>
   </data>
 </root>

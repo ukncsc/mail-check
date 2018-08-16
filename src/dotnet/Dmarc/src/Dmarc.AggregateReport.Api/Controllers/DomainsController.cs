@@ -8,6 +8,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Dmarc.Common.Api.Domain;
 
 namespace Dmarc.AggregateReport.Api.Controllers
 {
@@ -35,7 +36,7 @@ namespace Dmarc.AggregateReport.Api.Controllers
             if (!validationResult.IsValid)
             {
                 _log.LogWarning($"Bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             Claim roleClaim = User.FindFirst(_ => _.Type == ClaimTypes.Role);
@@ -45,10 +46,9 @@ namespace Dmarc.AggregateReport.Api.Controllers
             }
 
             int userId = GetUserId(User);
-
             MatchingDomains result = await _domainsDao.GetMatchingDomains(userId, domainSearch.SearchPattern);
-            ObjectResult objectResult = new ObjectResult(result);
-            return objectResult;
+
+            return new ObjectResult(result);
         }
 
         private int GetUserId(ClaimsPrincipal claimsPrincipal)

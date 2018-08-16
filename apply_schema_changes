@@ -17,7 +17,7 @@ dbuser="${envname}_${dbusers[$unum]}"
 dbtoken="!db-${dbtokens[$unum]}-uname"
 dbuserhost="'${dbuser}'@'10.%'"
 echo "retrieving password for ${dbuser} from parameter store"
-dbpasswd=`$4 ssm get-parameters --names "${dbuser}" --region=$5 --with-decryption | jq -r '.Parameters[0].Value'`
+dbpasswd=`$4 ssm get-parameters $6 $7 --names "${dbuser}" --region=$5 --with-decryption | jq -r '.Parameters[0].Value'`
 if [ "${dbpasswd}" == "null" ]; then
 	echo "No password in parameter store for user ${dbuser}"
 	exit 1
@@ -37,7 +37,7 @@ eval $sqlcmd || true
 
 echo "Updating password for user $dbuserhost"
 SQL="SET PASSWORD FOR ${dbuserhost} = PASSWORD('${dbpasswd}')"
-echo "Running $SQL"
+echo "Setting password for ${dbuserhost}"
 sqlcmd="\"$3\" -ss -r --user=$uname --password=$pw -h $dbhost -e \"${SQL}\" "
 eval $sqlcmd || true
 

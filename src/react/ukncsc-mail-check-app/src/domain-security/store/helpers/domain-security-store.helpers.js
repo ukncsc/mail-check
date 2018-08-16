@@ -31,6 +31,11 @@ export const recordErrorsReducer = (accumulator, error) => {
         ...accumulator,
         failures: [...accumulator.failures, error.message],
       };
+    case 'Inconclusive':
+      return {
+        ...accumulator,
+        inconclusives: [...accumulator.inconclusives, error.message],
+      };
     default:
       return accumulator;
   }

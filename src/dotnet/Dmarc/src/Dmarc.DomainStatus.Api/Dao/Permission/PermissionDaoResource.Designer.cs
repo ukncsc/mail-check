@@ -68,15 +68,12 @@ namespace Dmarc.DomainStatus.Api.Dao.Permission {
         ///        EXISTS( SELECT 
         ///                    1
         ///                FROM
-        ///                    derived_user_domain_permissions
+        ///                    derived_user_domain_permissions perms
+        ///                JOIN 
+        ///                    derived_domain_tree dt ON dt.parent_id = perms.domain_id
         ///                WHERE
-        ///                    user_id = @userId
-        ///                        AND domain_id = @domainId) can_view_aggregate,
-        ///            EXISTS( SELECT 
-        ///                    1
-        ///                FROM
-        ///                    domain
-        ///          [rest of string was truncated]&quot;;.
+        ///                    perms.user_id = @userId
+        ///                        AND dt.child_id = @domainId) can_view_aggregat [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SelectPermissionByDomain {
             get {

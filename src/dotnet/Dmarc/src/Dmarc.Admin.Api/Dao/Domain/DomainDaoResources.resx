@@ -119,9 +119,9 @@
   </resheader>
   <data name="InsertDomain" xml:space="preserve">
     <value>INSERT INTO domain
-(name,publish)
+(name,publish, created_by)
 VALUES
-(@name,b'1') ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), publish=b'1';</value>
+(@name,b'1', @createdBy) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), publish=b'1';</value>
   </data>
   <data name="SelectDomainById" xml:space="preserve">
     <value>SELECT id, name 

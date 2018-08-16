@@ -1,6 +1,6 @@
-using System;
 using Dmarc.DnsRecord.Evaluator.Dmarc.Domain;
 using Dmarc.DnsRecord.Evaluator.Rules;
+using Dmarc.Common.Util;
 
 namespace Dmarc.DnsRecord.Evaluator.Dmarc.Parsers
 {
@@ -9,10 +9,11 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Parsers
         public Tag Parse(string tag, string value)
         {
             AlignmentType alignmentType;
-            if (!Enum.TryParse(value, true, out alignmentType))
+            if (!value.TryParseExactEnum(out alignmentType))
             {
                 alignmentType = AlignmentType.Unknown;
             }
+
             Aspf aspf = new Aspf(tag, alignmentType);
 
             if (alignmentType == AlignmentType.Unknown)

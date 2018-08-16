@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dmarc.Common.Interface.Tls.Domain;
+using Newtonsoft.Json;
 
 namespace Dmarc.MxSecurityEvaluator.Domain
 {
     public class EvaluatorResults
     {
+        [JsonIgnore]
         public static EvaluatorResults EmptyResults => new EvaluatorResults(new TlsEvaluatorResult(),
             new TlsEvaluatorResult(),
             new TlsEvaluatorResult(),
@@ -21,28 +23,32 @@ namespace Dmarc.MxSecurityEvaluator.Domain
             new TlsEvaluatorResult(),
             new TlsEvaluatorResult());
 
-        public static EvaluatorResults ConnectionFailedResults
+        public static EvaluatorResults GetConnectionFailedResults(string errorDescription)
         {
-            get
-            {
-                var tlsEvaluatorResult =  new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE,
-                    "We were unable to create a TLS connection with this server. This could be because the server does not support " +
-                    "TLS or because Mail Check servers have been blocked. We will keep trying to test TLS with this server, " +
-                    "so please check back later or get in touch if you think there's a problem.");
+            string errorMessage =
+                "We were unable to create a TLS connection with this server. This could be because the server does not support " +
+                "TLS or because Mail Check servers have been blocked. We will keep trying to test TLS with this server, " +
+                $"so please check back later or get in touch if you think there's a problem.";
 
-                return new EvaluatorResults(tlsEvaluatorResult, 
-                    new TlsEvaluatorResult(EvaluatorResult.PASS),
-                    new TlsEvaluatorResult(EvaluatorResult.PASS),
-                    new TlsEvaluatorResult(EvaluatorResult.PASS),
-                    new TlsEvaluatorResult(EvaluatorResult.PASS),
-                    new TlsEvaluatorResult(EvaluatorResult.PASS),
-                    new TlsEvaluatorResult(EvaluatorResult.PASS),
-                    new TlsEvaluatorResult(EvaluatorResult.PASS),
-                    new TlsEvaluatorResult(EvaluatorResult.PASS),
-                    new TlsEvaluatorResult(EvaluatorResult.PASS),
-                    new TlsEvaluatorResult(EvaluatorResult.PASS),
-                    new TlsEvaluatorResult(EvaluatorResult.PASS));
+            if (!string.IsNullOrWhiteSpace(errorDescription))
+            {
+                errorMessage += $" Error description \"{errorDescription}\".";
             }
+
+            TlsEvaluatorResult tlsEvaluatorResult = new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, errorMessage);
+
+            return new EvaluatorResults(tlsEvaluatorResult,
+                new TlsEvaluatorResult(EvaluatorResult.PASS),
+                new TlsEvaluatorResult(EvaluatorResult.PASS),
+                new TlsEvaluatorResult(EvaluatorResult.PASS),
+                new TlsEvaluatorResult(EvaluatorResult.PASS),
+                new TlsEvaluatorResult(EvaluatorResult.PASS),
+                new TlsEvaluatorResult(EvaluatorResult.PASS),
+                new TlsEvaluatorResult(EvaluatorResult.PASS),
+                new TlsEvaluatorResult(EvaluatorResult.PASS),
+                new TlsEvaluatorResult(EvaluatorResult.PASS),
+                new TlsEvaluatorResult(EvaluatorResult.PASS),
+                new TlsEvaluatorResult(EvaluatorResult.PASS));
         }
 
         public EvaluatorResults(TlsEvaluatorResult tls12AvailableWithBestCipherSuiteSelected,
@@ -85,5 +91,6 @@ namespace Dmarc.MxSecurityEvaluator.Domain
         public TlsEvaluatorResult TlsSecureEllipticCurveSelected { get; }
         public TlsEvaluatorResult TlsSecureDiffieHellmanGroupSelected { get; }
         public TlsEvaluatorResult TlsWeakCipherSuitesRejected { get; }
+
     }
 }

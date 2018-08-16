@@ -14,7 +14,7 @@ namespace Dmarc.Admin.Api.Dao.Domain
         Task<List<Api.Domain.Domain>> GetDomainsByUserId(int userId, string search, int page, int pageSize);
         Task<List<Api.Domain.Domain>> GetDomainsByGroupId(int groupId, string search, int page, int pageSize);
         Task<List<Api.Domain.Domain>> GetDomainsByName(string search, int limit, List<int> includedIds);
-        Task<Api.Domain.Domain> CreateDomain(string name);
+        Task<Api.Domain.Domain> CreateDomain(string name, int createdBy);
     }
 
     public class DomainDao : IDomainDao
@@ -149,14 +149,14 @@ namespace Dmarc.Admin.Api.Dao.Domain
             }
         }
 
-        public async Task<Api.Domain.Domain> CreateDomain(string name)
+        public async Task<Api.Domain.Domain> CreateDomain(string name, int createdBy)
         {
             using (MySqlConnection connection = new MySqlConnection(await _connectionInfo.GetConnectionStringAsync()))
             {
                 await connection.OpenAsync().ConfigureAwait(false);
                 MySqlCommand command = new MySqlCommand(DomainDaoResources.InsertDomain, connection);
                 command.Parameters.AddWithValue("name", name);
-
+                command.Parameters.AddWithValue("createdBy", createdBy);
                 command.Prepare();
 
                 await command.ExecuteNonQueryAsync();

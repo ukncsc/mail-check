@@ -165,6 +165,9 @@
   <data name="RufTagShouldNotHaveMoreThanTwoUrisErrorMessage" xml:space="preserve">
     <value>Only 2 forensic report URIs (ruf) are guaranteed to have reports delivered. This record has {0}.</value>
   </data>
+  <data name="SubDomainIneffectualErrorMessage" xml:space="preserve">
+    <value>The specified sub-domain policy (sp) is ineffective because {0} is not an organisational domain. Only sub-domain policies on organisational domains are valid.</value>
+  </data>
   <data name="SubdomainPolicyMustBeQuarantineOrRejectErrorMessage" xml:space="preserve">
     <value>Only a sub domain policy (sp) of Quarantine or Reject will protect recipients from spoofed email. Consider changing sub domain policy from {0} to Quarantine or Reject.</value>
   </data>

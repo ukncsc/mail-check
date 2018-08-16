@@ -35,7 +35,7 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules.Record
         public bool IsValid(SubDomainPolicy subDomainPolicy, OrganisationalDomain orgDomain)
         {
             // Don't error on unknown because there will already be a parser error for this
-            return subDomainPolicy == null || subDomainPolicy.PolicyType != PolicyType.None || !orgDomain.IsOrgDomain;
+            return !orgDomain.IsOrgDomain || subDomainPolicy == null || subDomainPolicy.PolicyType != PolicyType.None;
         }
     }
 }

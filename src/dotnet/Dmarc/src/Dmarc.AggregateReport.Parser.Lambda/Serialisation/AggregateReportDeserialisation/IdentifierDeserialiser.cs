@@ -20,9 +20,10 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Serialisation.AggregateReportDeser
             }
 
             string envelopeTo = identifiers.SingleOrDefault("envelope_to")?.Value;
+            string envelopeFrom = identifiers.SingleOrDefault("envelope_from")?.Value;
             string headerFrom = identifiers.Single("header_from").Value;
 
-            return new Identifier(envelopeTo, headerFrom);
+            return new Identifier(envelopeTo, envelopeFrom, headerFrom);
         }
     }
 }

@@ -6,12 +6,15 @@
         {
         }
 
-        public AggregateReport(ReportMetadata reportMetadata, PolicyPublished policyPublished, Record[] records)
+        public AggregateReport(double? version, ReportMetadata reportMetadata, PolicyPublished policyPublished, Record[] records)
         {
+            Version = version;
             ReportMetadata = reportMetadata;
             PolicyPublished = policyPublished;
             Records = records;
         }
+
+        public double? Version { get; set; }
 
         public ReportMetadata ReportMetadata { get; set; }
 

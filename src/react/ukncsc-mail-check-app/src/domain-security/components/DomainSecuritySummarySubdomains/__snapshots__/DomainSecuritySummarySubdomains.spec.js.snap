@@ -1,0 +1,133 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainSecuritySubdomains when there are no subdomains it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui stackable grid"
+  >
+    <div
+      class="row"
+    >
+      <div
+        class="four wide column"
+      >
+        <h2
+          class="ui header DomainSecurityTitle--header"
+        >
+          Subdomains
+        </h2>
+        <div
+          class="DomainSecurityTitle--icon"
+        />
+      </div>
+      <div
+        class="eight wide column"
+      >
+        <div
+          style="margin: 0.2em 0em; max-width: 600px;"
+          class="ui info message MailCheckMessage--container"
+        >
+          We're currently not checking any subdomains for ncsc.gov.uk.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DomainSecuritySubdomains when there are subdomains with more results it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui stackable grid"
+  >
+    <div
+      class="row"
+    >
+      <div
+        class="four wide column"
+      >
+        <h2
+          class="ui header DomainSecurityTitle--header"
+        >
+          Subdomains
+        </h2>
+        <div
+          class="DomainSecurityTitle--icon"
+        />
+      </div>
+      <div
+        class="eight wide column"
+      >
+        <h4
+          style="display: inline-block; margin-top: 0px;"
+          class="ui header"
+        >
+          ncsc.gov.uk
+        </h4>
+        <p>
+          <a
+            href="/my-domains/123"
+          >
+            View information
+          </a>
+        </p>
+        <div
+          class="ui divider"
+        />
+        <p>
+          <a
+            href=""
+          >
+            Show more
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DomainSecuritySubdomains when there are subdomains with no more results it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui stackable grid"
+  >
+    <div
+      class="row"
+    >
+      <div
+        class="four wide column"
+      >
+        <h2
+          class="ui header DomainSecurityTitle--header"
+        >
+          Subdomains
+        </h2>
+        <div
+          class="DomainSecurityTitle--icon"
+        />
+      </div>
+      <div
+        class="eight wide column"
+      >
+        <h4
+          style="display: inline-block; margin-top: 0px;"
+          class="ui header"
+        >
+          ncsc.gov.uk
+        </h4>
+        <p>
+          <a
+            href="/my-domains/123"
+          >
+            View information
+          </a>
+        </p>
+        <div
+          class="ui divider"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;

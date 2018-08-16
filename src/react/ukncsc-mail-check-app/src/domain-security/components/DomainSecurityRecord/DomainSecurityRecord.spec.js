@@ -20,7 +20,7 @@ describe('DomainSecurityRecord', () => {
   describe('when the record is inherited', () => {
     beforeEach(() => {
       ({ container } = render(
-        <DomainSecurityRecord inheritedFrom={{ name: 'foo.com' }}>
+        <DomainSecurityRecord type="DMARC" inheritedFrom={{ name: 'foo.com' }}>
           record2
         </DomainSecurityRecord>
       ));

@@ -110,4 +110,22 @@ describe('DomainSecurityDetailsMessages', () => {
         1
       ));
   });
+
+  describe('when provided with a markdown flag', () => {
+    beforeEach(() => {
+      ({ container } = render(
+        <DomainSecurityDetailsMessages
+          markdown
+          type="DMARC"
+          failures={['[link](https://ncsc.gov.uk)']}
+        />
+      ));
+    });
+
+    test('it should match the snapshot', () =>
+      expect(container).toMatchSnapshot());
+
+    test('it should render the text as markdown', () =>
+      expect(container.getElementsByTagName('a')).toHaveLength(1));
+  });
 });

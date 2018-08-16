@@ -3,10 +3,10 @@ node {
     stage('Checkout') {
 
 //---------------- Variables/Definitions
-  env.WORKSPACE = pwd()
+    env.WORKSPACE = pwd()
 	env.DOTNETPATH = "/mnt/jenkins-home/dotnet-${BRANCH_NAME}"
 	env.DOTNET = "${env.DOTNETPATH}/dotnet"
-	env.DOTNETVERSION = "1.0.5"
+	env.DOTNETVERSION = "1.0.0-preview2-003131"
 	env.TERRAFORMPATH = "/mnt/jenkins-home/terraform-${BRANCH_NAME}"
 	env.TERRAFORM ="${env.TERRAFORMPATH}/terraform"
 	env.TERRAFORMVERSION = "0.11.7"
@@ -19,14 +19,13 @@ node {
 	env.TF_PLAN_FILE = "TF-${BRANCH_NAME}-plan.out"
 	env.TF_COMMON_PLAN_FILE = "TF-common-plan.out"
 	env.NODEVERSION = "v8.11.2"
-  env.NODE = "${env.NODEPATH}/node-${env.NODEVERSION}-linux-x64/bin/node"
+    env.NODE = "${env.NODEPATH}/node-${env.NODEVERSION}-linux-x64/bin/node"
 	env.NPM  = "${env.NODEPATH}/node-${env.NODEVERSION}-linux-x64/bin/npm"
-  env.NGPATH = "/mnt/jenkins-home/ng-${BRANCH_NAME}"
+    env.NGPATH = "/mnt/jenkins-home/ng-${BRANCH_NAME}"
 	env.NG = "${env.NGPATH}/lib/node_modules/@angular/cli/bin/ng"
 	env.NGVERSION = "@angular/cli: 1.0.0"
 	env.AWSPATH = "/mnt/jenkins-home/aws-${BRANCH_NAME}"
 	env.AWS = "${env.AWSPATH}/bin/aws"
-  env.AWSACCOUNT = readFile("/mnt/jenkins-home/aws-account-number").trim()
 	env.AWSREGION = "eu-west-2"
 	env.AWSVERSION = "11529"
 	env.AWSURL = "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip"
@@ -36,19 +35,19 @@ node {
 	env.PATH = "${env.NODEPATH}/node-${env.NODEVERSION}-linux-x64/bin/:${env.DOTNETPATH}:${env.PATH}" 
 	env.FRONTENDHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-frontend-hash"
 	env.DOTNETHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-code-hash"
-  env.DOTNET_CONTAINER_GITHASH_FILE = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-container-githash"
+    env.DOTNET_CONTAINER_GITHASH_FILE = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-container-githash"
 	env.FRONTEND_CONTAINER_GITHASH_FILE = "/mnt/jenkins-home/${BRANCH_NAME}-frontend-container-githash"
-  env.DOTNETBINARYSTASH = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-binary-stash/"
-  env.DOTNETPUBLISHSTASH = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-publish-stash/"
+    env.DOTNETBINARYSTASH = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-binary-stash/"
+    env.DOTNETPUBLISHSTASH = "/mnt/jenkins-home/${BRANCH_NAME}-dotnet-publish-stash/"
 	env.ANGULARAPPSTASH = "/mnt/jenkins-home/${BRANCH_NAME}-angular-app-stash/"
-  env.ANGULARAPPHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-angular-app-code-hash"
+    env.ANGULARAPPHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-angular-app-code-hash"
 	env.ANGULARPUBLICHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-angular-public-code-hash"
 	env.REACTAPPSTASH = "/mnt/jenkins-home/${BRANCH_NAME}-react-app-stash/"
-  env.REACTAPPHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-react-app-code-hash"
+    env.REACTAPPHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-react-app-code-hash"
 	env.REACTPUBLICHASHFILE = "/mnt/jenkins-home/${BRANCH_NAME}-react-public-code-hash"
-  env.PUBLIC_SSH_DEPLOY_KEY_ID = readFile('/mnt/jenkins-home/public-repo-ssh-deploy-key-id').trim()
+    env.PUBLIC_SSH_DEPLOY_KEY_ID = readFile('/mnt/jenkins-home/public-repo-ssh-deploy-key-id').trim()
 	env.PRIVATE_SSH_DEPLOY_KEY_ID = readFile('/mnt/jenkins-home/private-repo-ssh-deploy-key-id').trim()
-  env.STATE_S3_BUCKET_FILE = "/mnt/jenkins-home/state-s3-bucket"
+    env.STATE_S3_BUCKET_FILE = "/mnt/jenkins-home/state-s3-bucket"
 	env.STATE_S3_BUCKET = readFile(env.STATE_S3_BUCKET_FILE).trim()
 
 
@@ -66,17 +65,6 @@ node {
 	env.GITSHORTHASH = readFile('shorthash').trim()
 	echo "Checkout complete... extracting environment name from tfvars"
 
-	 if ("${BRANCH_NAME}" == "master") {  
-	    env.TFVARS_FILE = "prod.tfvars"
-		env.STATE_KEY = "prod"
-		} else {
-        env.TFVARS_FILE = "${BRANCH_NAME}.tfvars"
-		env.STATE_KEY = "${BRANCH_NAME}"
-		}
-		sh "cat Terraform/prod-env/${env.TFVARS_FILE} | grep -E '^env-name' | tr -d ' ' | awk '{print \$2 }' FS='=' | awk '{print \$2 }' FS='\"' |tr -dc ' \$0-9a-z-'   > env-name"
-		env.ENV_NAME = readFile("env-name").trim()
-	echo "Environment name: ${env.ENV_NAME}"
-
    }
    stage('Tools') {
    // Output build container environment
@@ -91,10 +79,36 @@ node {
    install_yarn()
    install_terraform()
    install_dotnet()
+   }
+   
+   stage('Environment') {
+	 
 
+	 if ("${BRANCH_NAME}" == "master") {  
+	    env.TFVARS_FILE = "prod.tfvars"
+		env.STATE_KEY = "prod"
+		} else {
+        env.TFVARS_FILE = "${BRANCH_NAME}.tfvars"
+		env.STATE_KEY = "${BRANCH_NAME}"
+		}
+
+		sh "cat Terraform/prod-env/${env.TFVARS_FILE} | grep -E '^env-name' | tr -d ' ' | awk '{print \$2 }' FS='=' | awk '{print \$2 }' FS='\"' |tr -dc ' \$0-9a-z-'   > env-name"
+		env.ENV_NAME = readFile("env-name").trim()
+		echo "Environment name: ${env.ENV_NAME}"
+	
+ 		sh "cat Terraform/prod-env/${env.TFVARS_FILE} | grep -E '^role-to-assume' | tr -d ' ' | awk '{print \$2 }' FS='=' | awk '{print \$2 }' FS='\"' >role-to-assume"
+		env.ROLE_TO_ASSUME = readFile("role-to-assume").trim()
+		echo "Role to assume: ${env.ROLE_TO_ASSUME}"
+// Get AWS account numbers from parameter store
+
+		env.AWSACCOUNT = sh(returnStdout : true, script: "${env.AWS} ssm get-parameters --names ${env.ENV_NAME}-account --region=${env.AWSREGION} | jq -r '.Parameters[0].Value'").trim()
+		env.buildAwsAccount = sh(returnStdout : true, script: "${env.AWS} ssm get-parameters --names build-account --region=${env.AWSREGION} | jq -r '.Parameters[0].Value'").trim()
+		env.ecrAwsAccount = sh(returnStdout : true, script: "${env.AWS} ssm get-parameters --names ecr-account --region=${env.AWSREGION} | jq -r '.Parameters[0].Value'").trim()
+		if (env.ROLE_TO_ASSUME != "") {
+			write_aws_config("/tmp/${env.BUILD_NUMBER}-aws.conf")
+		}
 
    }
-
 
 
 //  Terraform the common components which can't exist per environment (SES etc)
@@ -361,7 +375,7 @@ node {
 
     stage('Angular App Build') {
 	    if (env.ANGULARAPPCOMPILE == "true") {
-			sh "cd src/angular/dmarc-service;export YARN_CACHE_FOLDER=/mnt/jenkins-home/yarn/${BRANCH_NAME}; ${env.YARN};${env.YARN} build"
+			sh "cd src/angular/dmarc-service;export YARN_CACHE_FOLDER=/mnt/jenkins-home/yarn/${BRANCH_NAME}; ${env.YARN} --frozen-lockfile;${env.YARN} build"
 //            sh "cd src/angular/dmarc-service; ${env.NPM} install"
 //		    sh "${env.NPM} --version"
 //		    sh "cd src/angular/dmarc-service; ${env.NPM} run build"
@@ -401,7 +415,7 @@ node {
 		if (env.REACTAPPCOMPILE == "true") {
 
 			env.NODE_PATH= "src/"
-		    sh "cd src/react/ukncsc-mail-check-app;export CI=true;${env.YARN};${env.YARN} test"
+		    sh "cd src/react/ukncsc-mail-check-app;export CI=true;${env.YARN} --frozen-lockfile;${env.YARN} test"
 		}
 	}
 
@@ -416,7 +430,7 @@ node {
 			sh "cd src/react/ukncsc-semantic-ui-theme;${env.YARN};${env.YARN} build;${env.YARN} link" 
 			env.NODE_PATH= "src/"
 			sh "cd src/react/ukncsc-mail-check-app;${env.YARN} unlink \"ukncsc-semantic-ui-theme\" || exit 0"
-		    sh "cd src/react/ukncsc-mail-check-app;${env.YARN} link \"ukncsc-semantic-ui-theme\";${env.YARN};${env.YARN} build"
+		    sh "cd src/react/ukncsc-mail-check-app;${env.YARN} link \"ukncsc-semantic-ui-theme\";${env.YARN} --frozen-lockfile;${env.YARN} build"
 			if (fileExists("${env.REACTAPPSTASH}")) {
 				sh "rm -r ${env.REACTAPPSTASH};"
 			}
@@ -480,8 +494,7 @@ node {
             if (fileExists("${env.TF_PLAN_FILE}")) {
 			  sh "rm ${env.TF_PLAN_FILE}"
 			}
-		    sh "echo dotnet-container-githash=\\\"${env.DOTNET_CONTAINER_GITHASH}\\\" | tee /tmp/${env.BUILD_NUMBER}.tfvars"
-			sh "echo frontend-container-githash=\\\"${env.FRONTEND_CONTAINER_GITHASH}\\\" | tee -a /tmp/${env.BUILD_NUMBER}.tfvars"
+		    write_dynamic_tfvars("/tmp/${env.BUILD_NUMBER}.tfvars")
             sh "cd Terraform/prod-env/prod-env; set +e; ${env.TERRAFORM} plan -detailed-exitcode -refresh=true -out=${env.TF_PLAN_FILE} -var-file ../${env.TFVARS_FILE} -var-file /tmp/${env.BUILD_NUMBER}.tfvars   .; echo \$? > /tmp/status" 
             sh "rm /tmp/${env.BUILD_NUMBER}.tfvars"
 		    def exitCode = readFile('/tmp/status').trim()
@@ -555,7 +568,17 @@ node {
             }
     }
 
+	stage('Database Schema') {
+		def awsprofile = ""
+		if (env.ROLE_TO_ASSUME != "") {
+			awsprofile = "--profile assumerole"	
+		}
+        sh "/bin/bash ./apply_schema_changes  Terraform/prod-env/${env.TFVARS_FILE} src/sql ${env.MySQL} ${env.AWS} ${env.AWSREGION} ${awsprofile}"
+	}
+	
     stage('TF Apply (Common)') {
+		def bucketName = sh(returnStdout : true, script: 'cat Terraform/common/common.tfvars | grep staging-report-bucket | awk \'{print $3}\' FS=\'[=\"]\'').trim()
+		echo "Staging report bucket: ${bucketName}"
 	    if ("${BRANCH_NAME}" == "master") {
 	        echo "Checking to see if plan was approved, or there are no changes to make...${env.apply}"
 		if (env.APPLY == "true") {
@@ -565,7 +588,9 @@ node {
                 }
                 sh "set +e; cd Terraform/common/common; ${env.TERRAFORM} apply ${env.TF_COMMON_PLAN_FILE}; echo \$? > /tmp/status.apply"
                 def applyExitCode = readFile('/tmp/status.apply').trim()
+				
                 if (applyExitCode == "0") {
+					sh "${env.AWS}  s3api put-bucket-replication --bucket ${bucketName} --replication-configuration  file://Terraform/common/staging-bucket-replication-policy.json"
                     echo "Changes Applied ${env.JOB_NAME} - ${env.BUILD_NUMBER}"    
                 } else {
                     error "Apply Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER} "
@@ -577,9 +602,6 @@ node {
 		}
     }   
 	
-	stage('Database Schema') {
-        sh "/bin/bash ./apply_schema_changes  Terraform/prod-env/${env.TFVARS_FILE} src/sql ${env.MySQL} ${env.AWS} ${env.AWSREGION}"
-	}
 
 	stage('Code Release') {
         if ("${BRANCH_NAME}" == "master") { 
@@ -876,7 +898,23 @@ void install_dotnet() {
   }
 
   void docker_push(String serviceName,String tag) {
-	  sh "docker tag  ${env.ENV_NAME}-${serviceName} ${env.AWSACCOUNT}.dkr.ecr.${env.AWSREGION}.amazonaws.com/${env.ENV_NAME}/${serviceName}:${tag}" 	
-	  sh "docker push ${env.AWSACCOUNT}.dkr.ecr.${env.AWSREGION}.amazonaws.com/${env.ENV_NAME}/${serviceName}:${tag}" 
+	  sh "docker tag  ${env.ENV_NAME}-${serviceName} ${env.ecrAwsAccount}.dkr.ecr.${env.AWSREGION}.amazonaws.com/${env.ENV_NAME}/${serviceName}:${tag}" 	
+	  sh "docker push ${env.ecrAwsAccount}.dkr.ecr.${env.AWSREGION}.amazonaws.com/${env.ENV_NAME}/${serviceName}:${tag}" 
   }
 
+void write_dynamic_tfvars(String tfvarsFile) {
+	sh "echo dotnet-container-githash=\\\"${env.DOTNET_CONTAINER_GITHASH}\\\" | tee ${tfvarsFile}"
+	sh "echo frontend-container-githash=\\\"${env.FRONTEND_CONTAINER_GITHASH}\\\" | tee -a ${tfvarsFile}"
+	sh "echo allowed-account-ids=\\\"${env.AWSACCOUNT}\\\" | tee -a ${tfvarsFile}"
+	sh "echo build-account-id=\\\"${env.buildAwsAccount}\\\" | tee -a ${tfvarsFile}"
+	sh "echo ecr-aws-account-id=\\\"${env.ecrAwsAccount}\\\" | tee -a ${tfvarsFile}"
+	sh "echo aws-account-id=\\\"${env.AWSACCOUNT}\\\" | tee -a ${tfvarsFile}"
+}
+
+void write_aws_config(String awsConfigFile) {
+	env.AWS_CONFIG_FILE=awsConfigFile
+//	sh "echo [default] | tee ${awsConfigFile}"
+	sh "echo [profile assumerole] | tee -a ${awsConfigFile}"
+	sh "echo role_arn=${env.ROLE_TO_ASSUME} | tee -a ${awsConfigFile}"
+	sh "echo credential_source = Ec2InstanceMetadata | tee -a ${awsConfigFile}"
+}

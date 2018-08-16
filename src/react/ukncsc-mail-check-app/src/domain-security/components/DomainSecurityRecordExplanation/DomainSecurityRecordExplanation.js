@@ -1,12 +1,12 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
+import { Header, Table } from 'semantic-ui-react';
 
 import './DomainSecurityRecordExplanation.css';
 
 const DomainSecurityRecordExplanation = ({ title, data }) =>
   !!data.length && (
     <React.Fragment>
-      <h3>{title}</h3>
+      <Header as="h3">{title}</Header>
       <Table className="DomainSecurityRecordExplanation--table">
         <Table.Header>
           <Table.Row>

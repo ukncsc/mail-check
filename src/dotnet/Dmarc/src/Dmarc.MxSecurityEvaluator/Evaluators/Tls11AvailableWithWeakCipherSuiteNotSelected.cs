@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Dmarc.Common.Interface.Tls.Domain;
+﻿using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Dao;
 using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Util;
 
@@ -7,11 +7,12 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 {
     public class Tls11AvailableWithWeakCipherSuiteNotSelected : ITlsEvaluator
     {
-        private readonly string intro = "When testing TLS 1.1 with a range of weak cipher suites";
+        private readonly string intro = "When testing TLS 1.1 with a range of weak cipher suites {0}";
 
         public TlsEvaluatorResult Test(ConnectionResults tlsConnectionResults)
         {
             TlsConnectionResult tlsConnectionResult = tlsConnectionResults.Tls11AvailableWithWeakCipherSuiteNotSelected;
+            TlsConnectionResult tls12AvailableWithBestCipherSuiteSelectedResult = tlsConnectionResults.Tls12AvailableWithBestCipherSuiteSelected;
 
             switch (tlsConnectionResult.Error)
             {
@@ -22,13 +23,21 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 
                 case Error.TCP_CONNECTION_FAILED:
                 case Error.SESSION_INITIALIZATION_FAILED:
-                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} we were unable to create a connection to the mail server. We will keep trying, so please check back later.");
+                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE,
+                        string.Format(intro,
+                            $"we were unable to create a connection to the mail server. We will keep trying, so please check back later. Error description \"{tlsConnectionResult.ErrorDescription}\"."));
 
                 case null:
                     break;
 
                 default:
-                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} the server responded with an error.");
+                    return tls12AvailableWithBestCipherSuiteSelectedResult.Error == null
+                        ? new TlsEvaluatorResult(EvaluatorResult.WARNING,
+                            string.Format(intro,
+                                $"the server responded with an error. This may be because you do not support TLS 1.0. Error description \"{tlsConnectionResult.ErrorDescription}\"."))
+                        : new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE,
+                            string.Format(intro,
+                                $"the server responded with an error. Error description \"{tlsConnectionResult.ErrorDescription}\"."));
             }
 
             switch (tlsConnectionResult.CipherSuite)
@@ -54,10 +63,10 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
                 case CipherSuite.TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA:
                 case CipherSuite.TLS_DHE_DSS_WITH_DES_CBC_SHA:
                 case CipherSuite.TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA:
-                    return new TlsEvaluatorResult(EvaluatorResult.FAIL, $"{intro} the server selected an insecure cipher suite.");
+                    return new TlsEvaluatorResult(EvaluatorResult.FAIL, string.Format(intro, $"the server selected {tlsConnectionResult.CipherSuite.GetName()} which is insecure"));
             }
 
-            return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} there was a problem and we are unable to provide additional information.");
+            return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, string.Format(intro, "there was a problem and we are unable to provide additional information."));
         }
 
         public TlsTestType Type => TlsTestType.Tls11AvailableWithWeakCipherSuiteNotSelected;

@@ -7,13 +7,16 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Domain.Dmarc
         {
         }
 
-        public Identifier(string envelopeTo, string headerFrom)
+        public Identifier(string envelopeTo, string envelopeFrom, string headerFrom)
         {
             EnvelopeTo = envelopeTo;
+            EnvelopeFrom = envelopeFrom;
             HeaderFrom = headerFrom;
         }
 
         public string EnvelopeTo { get; set; }
+
+        public string EnvelopeFrom { get; set; }
 
         public string HeaderFrom { get; set; }
     }

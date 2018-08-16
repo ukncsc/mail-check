@@ -48,7 +48,7 @@ namespace Dmarc.Common.Report.Email
                     }
                     else
                     {
-                        _log.Info($"Did not persisted email message for message Id: {messageInfo.EmailMetadata.MessageId}, request Id: {messageInfo.EmailMetadata.RequestId} as it was a duplicate.");
+                        _log.Info($"Did not persist email message for message Id: {messageInfo.EmailMetadata.MessageId}, request Id: {messageInfo.EmailMetadata.RequestId} as it was a duplicate.");
                     }
 
                     return new Result<TDomain>(result.Report, result.Success, !added);

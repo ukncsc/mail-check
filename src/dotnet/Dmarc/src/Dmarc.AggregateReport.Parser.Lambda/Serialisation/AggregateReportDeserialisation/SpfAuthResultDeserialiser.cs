@@ -32,7 +32,12 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Serialisation.AggregateReportDeser
             //Single as expecting to get the element, nullable as the result from the element might not be in the enum from the spec.
             SpfResult? spfResult = Enum.TryParse(element.Single("result").Value, true, out candidateResult) ? candidateResult : (SpfResult?)null;
 
-            return new SpfAuthResult(domain, spfResult);
+            SpfDomainScope candidateSpfDomainScope;
+            SpfDomainScope? spfDomainScope = Enum.TryParse(element.SingleOrDefault("scope")?.Value, true, out candidateSpfDomainScope)
+                    ? candidateSpfDomainScope 
+                    : (SpfDomainScope?) null;
+
+            return new SpfAuthResult(domain, spfDomainScope, spfResult);
         }
     }
 }

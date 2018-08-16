@@ -58,7 +58,7 @@ data "aws_iam_policy_document" "sns-policy" {
   statement {
     actions = ["sns:Publish"]
 
-    resources = ["${aws_sns_topic.lambdaprocessor-output.arn}"]
+    resources = [ "${concat(list(aws_sns_topic.lambdaprocessor-output.arn),var.sns-arns)}" ]
   }
 }
 

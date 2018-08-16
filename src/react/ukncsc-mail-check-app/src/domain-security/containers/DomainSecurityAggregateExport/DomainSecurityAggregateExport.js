@@ -1,27 +1,43 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { SingleDatePicker } from 'react-dates';
-import map from 'lodash/map';
 import replace from 'lodash/replace';
 import moment from 'moment';
 import { Button, Divider, Header, Message, Table } from 'semantic-ui-react';
 import { BackLink, ShowMoreDropdown } from 'common/components';
 import { mailCheckApiDownload } from 'common/helpers';
+import {
+  fetchDomainSecurityDomain,
+  getDomainSecurityDomain,
+} from 'domain-security/store';
 
 import { aggregateReportExportFields as fields } from 'domain-security/data';
 
-export default class DomainSecurityAggregateExport extends Component {
+class DomainSecurityAggregateExport extends Component {
   state = {
+    domain: {},
     focused: null,
     date: moment().subtract(1, 'day'),
     loading: false,
     error: null,
   };
 
+  static getDerivedStateFromProps = (props, state) => ({
+    ...state,
+    domain: props.getDomainSecurityDomain(props.match.params.domainId) || {},
+  });
+
+  componentDidMount() {
+    if (!this.props.getDomainSecurityDomain(this.props.match.params.domainId)) {
+      this.props.fetchDomainSecurityDomain(this.props.match.params.domainId);
+    }
+  }
+
   onDownloadCsv = async () => {
     this.setState({ loading: true, error: null });
 
     const formattedDate = this.state.date.format('YYYY-MM-DD');
-    const { id, name } = this.props.domain;
+    const { id, name } = this.state.domain;
 
     try {
       await mailCheckApiDownload(
@@ -45,17 +61,17 @@ export default class DomainSecurityAggregateExport extends Component {
     return (
       <React.Fragment>
         <BackLink />
-        <Header as="h1">Export aggregate report data</Header>
-        <Header as="h2">{this.props.domain.name}</Header>    
+        <Header as="h1">Download aggregate report data as CSV</Header>
+        <Header as="h2">{this.state.domain.name || null}</Header>
         <ShowMoreDropdown title="Explain report information">
           <Table>
             <Table.Body>
-              {map(fields, _ => (
-                <Table.Row key={_.title}>
+              {fields.map(({ title, description }) => (
+                <Table.Row key={title}>
                   <Table.Cell>
-                    <strong>{_.title}</strong>
+                    <strong>{title}</strong>
                   </Table.Cell>
-                  <Table.Cell>{_.description}</Table.Cell>
+                  <Table.Cell>{description}</Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
@@ -100,3 +116,16 @@ export default class DomainSecurityAggregateExport extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  getDomainSecurityDomain: getDomainSecurityDomain(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchDomainSecurityDomain: id => dispatch(fetchDomainSecurityDomain(id)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DomainSecurityAggregateExport);

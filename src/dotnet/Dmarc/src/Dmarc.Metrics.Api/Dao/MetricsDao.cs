@@ -30,7 +30,6 @@ namespace Dmarc.Metrics.Api.Dao
 
                 using (var command = new MySqlCommand(MetricsDaoResources.MetricsQuery, connection))
                 {
-
                     command.Parameters.AddWithValue("start", start.ToString("yyyy-MM-dd"));
                     command.Parameters.AddWithValue("end", end.ToString("yyyy-MM-dd"));
 
@@ -66,10 +65,7 @@ namespace Dmarc.Metrics.Api.Dao
                 DomainsAggregateReporting = reader.GetInt64("domains_aggregate_reporting"),
                 AggregateReportsReceived = reader.GetInt64("aggregate_report_count"),
                 EmailsBlocked = reader.GetInt64("emails_blocked"),
-                DomainsForensicReporting = reader.GetInt64("domains_forensic_reporting"),
-                ForensicReportsReceived = reader.GetInt64("forensic_report_count"),
-                RuaConfiguredForMailCheck = reader.GetInt64("rua_mc"),
-                RufConfiguredForMailCheck = reader.GetInt64("ruf_mc")
+                RuaConfiguredForMailCheck = reader.GetInt64("rua_mc")
             };
         }
     }

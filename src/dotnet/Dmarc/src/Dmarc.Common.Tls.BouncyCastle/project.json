@@ -4,7 +4,8 @@
   "dependencies": {
     "Dmarc.Common": "1.0.0-*",
     "Dmarc.Common.Interface": "1.0.0-*",
-    "NETStandard.Library": "1.6.0"
+    "NETStandard.Library": "1.6.0",
+    "Portable.BouncyCastle": "1.8.2"
   },
 
   "frameworks": {

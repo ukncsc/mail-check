@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Dao;
 using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Util;
 
@@ -7,7 +9,8 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 {
     public class TlsSecureDiffieHellmanGroupSelected : ITlsEvaluator
     {
-        private readonly string intro = "When testing TLS with a range of Diffie Hellman groups";
+        private readonly string advice = "Only groups of 2048 bits or more should be used.";
+        private readonly string intro = "When testing TLS with a range of Diffie Hellman groups {0}";
 
         public TlsEvaluatorResult Test(ConnectionResults tlsConnectionResults)
         {
@@ -22,13 +25,17 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 
                 case Error.TCP_CONNECTION_FAILED:
                 case Error.SESSION_INITIALIZATION_FAILED:
-                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} we were unable to create a connection to the mail server. We will keep trying, so please check back later.");
+                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE,
+                        string.Format(intro,
+                            $"we were unable to create a connection to the mail server. We will keep trying, so please check back later. Error description \"{tlsConnectionResult.ErrorDescription}\"."));
 
                 case null:
                     break;
 
                 default:
-                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} the server responded with an error.");
+                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE,
+                        string.Format(intro,
+                            $"the server responded with an error. Error description \"{tlsConnectionResult.ErrorDescription}\"."));
             }
 
             switch (tlsConnectionResult.CurveGroup)
@@ -46,16 +53,21 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
                     return new TlsEvaluatorResult(EvaluatorResult.PASS);
 
                 case CurveGroup.UnknownGroup1024:
-                    return new TlsEvaluatorResult(EvaluatorResult.WARNING, $"{intro} the server selected a 1024 bit group.");
+                    return new TlsEvaluatorResult(EvaluatorResult.WARNING,
+                        $"{intro} the server selected an unknown 1024 bit group. {advice}");
 
                 case CurveGroup.Java1024:
                 case CurveGroup.Rfc2409_1024:
                 case CurveGroup.Rfc5114_1024:
+                    return new TlsEvaluatorResult(EvaluatorResult.FAIL,
+                        string.Format(intro, $"the server selected {tlsConnectionResult.CurveGroup.GetGroupName()} which is an insecure 1024 bit (or less) group. {advice}"));
+
                 case CurveGroup.Unknown:
-                    return new TlsEvaluatorResult(EvaluatorResult.FAIL, $"{intro} the server selected an insecure 1024 bit or less group.");
+                    return new TlsEvaluatorResult(EvaluatorResult.FAIL, $"{intro} the server selected an unknown group which is potentially insecure. {advice}");
             }
 
-            return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} there was a problem and we are unable to provide additional information.");
+            return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE,
+                string.Format(intro, "there was a problem and we are unable to provide additional information."));
         }
 
         public TlsTestType Type => TlsTestType.TlsSecureDiffieHellmanGroupSelected;

@@ -9,18 +9,17 @@ resource "aws_lambda_function" "scheduled-lambda-function" {
   timeout          = "${var.lambda-timeout}"
 
   environment {
-    variables = {
-      ConnectionString              = "${var.connection-string}"
-      RemainingTimeThresholdSeconds = "${var.RemainingTimeThresholdSeconds}"
-      QueueUrl                      = "${var.QueueUrl}"
-      TimeoutSqsSeconds             = "${var.TimeoutSqsSeconds}"
-      TimeoutS3Seconds              = "${var.TimeoutS3Seconds}"
-      MaxS3ObjectSizeKilobytes      = "${var.MaxS3ObjectSizeKilobytes}"
-      RefreshIntervalSeconds        = "${var.RefreshIntervalSeconds}"
-      FailureRefreshIntervalSeconds = "${var.FailureRefreshIntervalSeconds}"
-      DnsRecordLimit                = "${var.DnsRecordLimit}"
-      SnsTopicArn                   = "${aws_sns_topic.lambdaprocessor-output.arn}"
-    }
+    variables = "${merge(map("ConnectionString", "${var.connection-string}",
+      "RemainingTimeThresholdSeconds" , "${var.RemainingTimeThresholdSeconds}",
+      "QueueUrl"                      , "${var.QueueUrl}",
+      "TimeoutSqsSeconds"             , "${var.TimeoutSqsSeconds}",
+      "TimeoutS3Seconds"              , "${var.TimeoutS3Seconds}",
+      "MaxS3ObjectSizeKilobytes"      , "${var.MaxS3ObjectSizeKilobytes}",
+      "RefreshIntervalSeconds"        , "${var.RefreshIntervalSeconds}",
+      "FailureRefreshIntervalSeconds" , "${var.FailureRefreshIntervalSeconds}",
+      "DnsRecordLimit"                , "${var.DnsRecordLimit}",
+      "SnsTopicArn"                   , "${aws_sns_topic.lambdaprocessor-output.arn}"
+    ),var.environment)}"
   }
 
   vpc_config {

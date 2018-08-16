@@ -59,4 +59,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(updateIdamEntitySuggestionType(type)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EntityDisplay);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EntityDisplay);

@@ -29,7 +29,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(Error.SESSION_INITIALIZATION_FAILED)]
         public void TcpErrorsShouldResultInInconclusive(Error error)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error, null, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
                 tlsConnectionResult);
 
@@ -37,9 +37,24 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         }
 
         [Test]
+        [TestCase(Error.TCP_CONNECTION_FAILED,
+            "The server did not present a STARTTLS command with a response code (250)")]
+        [TestCase(Error.SESSION_INITIALIZATION_FAILED,
+            "The server did not present a STARTTLS command with a response code (250)")]
+        public void ErrorsShouldHaveErrorDescriptionInResult(Error error, string description)
+        {
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(error, description, null);
+            ConnectionResults connectionResults =
+                TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected, tlsConnectionResult);
+
+            Assert.AreEqual(_sut.Test(connectionResults).Result, EvaluatorResult.INCONCLUSIVE);
+            StringAssert.Contains($"Error description \"{description}\".", _sut.Test(connectionResults).Description);
+        }
+
+        [Test]
         public void AnErrorShouldResultInAFail()
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(Error.INSUFFICIENT_SECURITY);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(Error.INSUFFICIENT_SECURITY, null, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
                 tlsConnectionResult);
 
@@ -49,7 +64,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [Test]
         public void UnaccountedForCipherSuiteResponseShouldResultInInconclusive()
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA, null, null, null, null, null, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
                 tlsConnectionResult);
 
@@ -63,7 +78,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256)]
         public void GoodCiphersShouldResultInAPass(CipherSuite cipherSuite)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null, null, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
                 tlsConnectionResult);
 
@@ -75,7 +90,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA)]
         public void CipherSuitesThatUseSha1ShouldResultInAWarning(CipherSuite cipherSuite)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null, null, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
                 tlsConnectionResult);
 
@@ -87,7 +102,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA)]
         public void CipherSuitesThatUseSha1AndHaveNoPfsShouldResultInAWarning(CipherSuite cipherSuite)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null, null, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
                 tlsConnectionResult);
 
@@ -99,7 +114,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA)]
         public void CipherSuitesThatUse3DesShouldResultInAWarning(CipherSuite cipherSuite)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null, null, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
                 tlsConnectionResult);
 
@@ -110,7 +125,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_RSA_WITH_RC4_128_SHA)]
         public void CipherSuitesThatUseRc4ShouldResultInAWarning(CipherSuite cipherSuite)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null, null, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
                 tlsConnectionResult);
 
@@ -136,7 +151,7 @@ namespace Dmarc.MxSecurityEvaluator.Test.Evaluators
         [TestCase(CipherSuite.TLS_DHE_RSA_WITH_DES_CBC_SHA)]
         public void InsecureCipherSuitesShouldResultInAFail(CipherSuite cipherSuite)
         {
-            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null);
+            TlsConnectionResult tlsConnectionResult = new TlsConnectionResult(null, cipherSuite, null, null, null, null, null, null);
             ConnectionResults connectionResults = TlsTestDataUtil.CreateConnectionResults(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected,
                 tlsConnectionResult);
 

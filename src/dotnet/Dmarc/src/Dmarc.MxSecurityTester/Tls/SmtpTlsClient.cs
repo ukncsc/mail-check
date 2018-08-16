@@ -22,18 +22,9 @@ namespace Dmarc.MxSecurityTester.Tls
             _log = log;
         }
 
-        public override Task<bool> TryInitializeSession(NetworkStream stream)
+        public override Task<StartTlsResult> TryInitializeSession(NetworkStream stream)
         {
-            try
-            {
-                return _smtpClient.TryStartTls(stream);
-            }
-            catch (Exception e)
-            {
-                _log.Error($"SMTP session initalization failed with error: {e.Message} {Environment.NewLine} {e.StackTrace}");
-                return Task.FromResult(false);
-            }
-            
+            return _smtpClient.TryStartTls(stream);
         }
     }
 }

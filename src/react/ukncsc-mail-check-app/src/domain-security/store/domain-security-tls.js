@@ -1,15 +1,14 @@
 import { createAction, handleActions } from 'redux-actions';
-import get from 'lodash/get';
 import { mailCheckApiFetch } from 'common/helpers';
 
 const fetchRequestDomainSecurityTlsAction =
-  'mailCheck/domainSecurity/FETCH_TLS_REQUEST';
+  'mailCheck/domainSecurity/tls/FETCH_REQUEST';
 
 const fetchSuccessDomainSecurityTlsAction =
-  'mailCheck/domainSecurity/FETCH_TLS_SUCCESS';
+  'mailCheck/domainSecurity/tls/FETCH_SUCCESS';
 
 const fetchErrorDomainSecurityTlsAction =
-  'mailCheck/domainSecurity/FETCH_TLS_ERROR';
+  'mailCheck/domainSecurity/tls/FETCH_ERROR';
 
 export const fetchRequestDomainSecurityTls = createAction(
   fetchRequestDomainSecurityTlsAction
@@ -60,5 +59,4 @@ export default handleActions(
   initialState
 );
 
-export const getDomainSecurityTls = state => id =>
-  get(state, `domainSecurity.tls[${id}]`, {});
+export const getDomainSecurityTls = state => id => state.domainSecurity.tls[id];

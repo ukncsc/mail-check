@@ -20,7 +20,7 @@ namespace Dmarc.MxSecurityTester.MxTester
         private readonly ICache _cache;
         private readonly IMxSecurityTesterConfig _config;
         private readonly ILogger _log;
-
+        
         public CachingTlsSecurityTesterAdapator(ITlsSecurityTesterAdapator tlsSecurityTesterAdaptor,
             ICache cache,
             IMxSecurityTesterConfig config,
@@ -50,9 +50,9 @@ namespace Dmarc.MxSecurityTester.MxTester
             MxRecordTlsSecurityProfile result = await _tlsSecurityTesterAdaptor.Test(mxRecordTlsSecurityProfile);
             _log.Debug($"Successfully retrieved TLSSecurityProfile from tls tester for host {mxRecordTlsSecurityProfile.MxRecord.Hostname}");
 
-            if (_config.CachingEnabled && (result.TlsSecurityProfile.Results.FailureCount == 0 || result.TlsSecurityProfile.Results.FailureCount >= FailureCountBeforeCaching))
+            if (_config.CachingEnabled && (result.TlsSecurityProfile.TlsResults.FailureCount == 0 || result.TlsSecurityProfile.TlsResults.FailureCount >= FailureCountBeforeCaching))
             {
-                string resultToCache = JsonConvert.SerializeObject(result.TlsSecurityProfile.Results);
+                string resultToCache = JsonConvert.SerializeObject(result.TlsSecurityProfile.TlsResults);
 
                 await _cache.SetString($"{KeyPrefix}-{mxRecordTlsSecurityProfile.MxRecord.Hostname}", resultToCache,
                     TimeSpan.FromSeconds(_config.RefreshIntervalSeconds * RefreshIntervalSecondsMultiplier));

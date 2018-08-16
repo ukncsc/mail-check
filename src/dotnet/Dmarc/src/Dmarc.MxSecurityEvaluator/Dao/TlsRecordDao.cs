@@ -9,6 +9,9 @@ using Dmarc.Common.Interface.Logging;
 using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Util;
 using System;
+using System.Reflection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Dmarc.MxSecurityEvaluator.Dao
 {
@@ -24,6 +27,11 @@ namespace Dmarc.MxSecurityEvaluator.Dao
         private readonly IConnectionInfoAsync _connectionInfoAsync;
         private readonly ILogger _log;
 
+        private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+
         public TlsRecordDao(IConnectionInfoAsync connectionInfoAsync, ILogger log)
         {
             _connectionInfoAsync = connectionInfoAsync;
@@ -38,7 +46,8 @@ namespace Dmarc.MxSecurityEvaluator.Dao
             {
                 await connection.OpenAsync().ConfigureAwait(false);
 
-                MySqlCommand command = new MySqlCommand(TlsRecordDaoResources.GetDomainTlsConnectionResults, connection);
+                MySqlCommand command =
+                    new MySqlCommand(TlsRecordDaoResources.GetDomainTlsConnectionResults, connection);
 
                 command.Parameters.AddWithValue("domain_id", domainId);
 
@@ -56,7 +65,7 @@ namespace Dmarc.MxSecurityEvaluator.Dao
                             mxRecordId,
                             mxHostname,
                             lastChecked,
-                            GetTlsConnectionResults(reader, GetCertificates(mxRecordId)));
+                            GetTlsConnectionResults(reader));
 
                         results.Add(tlsProfile);
                     }
@@ -89,86 +98,17 @@ namespace Dmarc.MxSecurityEvaluator.Dao
 
             command.Parameters.AddWithValue("mx_record_id", tlsProfile.MxRecordId);
             command.Parameters.AddWithValue("last_checked", tlsProfile.LastChecked);
-
-            AddEvaluatorResultToParameters((int)TlsTestType.Tls12AvailableWithBestCipherSuiteSelected, command,
-                tlsEvaluatorResults.Tls12AvailableWithBestCipherSuiteSelected);
-
-            AddEvaluatorResultToParameters((int)TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList, command,
-                tlsEvaluatorResults.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList);
-
-            AddEvaluatorResultToParameters((int)TlsTestType.Tls12AvailableWithSha2HashFunctionSelected, command,
-                tlsEvaluatorResults.Tls12AvailableWithSha2HashFunctionSelected);
-
-            AddEvaluatorResultToParameters((int)TlsTestType.Tls12AvailableWithWeakCipherSuiteNotSelected, command,
-                tlsEvaluatorResults.Tls12AvailableWithWeakCipherSuiteNotSelected);
-
-            AddEvaluatorResultToParameters((int)TlsTestType.Tls11AvailableWithBestCipherSuiteSelected, command,
-                tlsEvaluatorResults.Tls11AvailableWithBestCipherSuiteSelected);
-
-            AddEvaluatorResultToParameters((int)TlsTestType.Tls11AvailableWithWeakCipherSuiteNotSelected, command,
-                tlsEvaluatorResults.Tls11AvailableWithWeakCipherSuiteNotSelected);
-
-            AddEvaluatorResultToParameters((int)TlsTestType.Tls10AvailableWithBestCipherSuiteSelected, command,
-                tlsEvaluatorResults.Tls10AvailableWithBestCipherSuiteSelected);
-
-            AddEvaluatorResultToParameters((int)TlsTestType.Tls10AvailableWithWeakCipherSuiteNotSelected, command,
-                tlsEvaluatorResults.Tls10AvailableWithWeakCipherSuiteNotSelected);
-
-            AddEvaluatorResultToParameters((int)TlsTestType.Ssl3FailsWithBadCipherSuite, command,
-                tlsEvaluatorResults.Ssl3FailsWithBadCipherSuite);
-
-            AddEvaluatorResultToParameters((int)TlsTestType.TlsSecureEllipticCurveSelected, command,
-                tlsEvaluatorResults.TlsSecureEllipticCurveSelected);
-
-
-            AddEvaluatorResultToParameters((int)TlsTestType.TlsSecureDiffieHellmanGroupSelected, command,
-                tlsEvaluatorResults.TlsSecureDiffieHellmanGroupSelected);
-            
-            AddEvaluatorResultToParameters((int)TlsTestType.TlsWeakCipherSuitesRejected, command,
-                tlsEvaluatorResults.TlsWeakCipherSuitesRejected);
+            command.Parameters.AddWithValue("data",
+                JsonConvert.SerializeObject(tlsEvaluatorResults, _serializerSettings));
 
             return command;
         }
 
-        private void AddEvaluatorResultToParameters(int testNumber, MySqlCommand command, TlsEvaluatorResult evaluatorResult)
+        private ConnectionResults GetTlsConnectionResults(DbDataReader reader)
         {
-            command.Parameters.AddWithValue($"test{testNumber}_result", (int?)evaluatorResult.Result);
-            command.Parameters.AddWithValue($"test{testNumber}_description", evaluatorResult.Description);
-        }
-
-        private List<X509Certificate2> GetCertificates(int mxRecordId)
-        {
-            // TODO: fetch certs for given MX ID...
-            return new List<X509Certificate2>();
-        }
-
-        private ConnectionResults GetTlsConnectionResults(DbDataReader reader, List<X509Certificate2> certificates)
-        {
-            return new ConnectionResults(
-                CreateResult(reader, certificates, (int) TlsTestType.Tls12AvailableWithBestCipherSuiteSelected),
-                CreateResult(reader, certificates,
-                    (int) TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList),
-                CreateResult(reader, certificates, (int) TlsTestType.Tls12AvailableWithSha2HashFunctionSelected),
-                CreateResult(reader, certificates, (int) TlsTestType.Tls12AvailableWithWeakCipherSuiteNotSelected),
-                CreateResult(reader, certificates, (int) TlsTestType.Tls11AvailableWithBestCipherSuiteSelected),
-                CreateResult(reader, certificates, (int) TlsTestType.Tls11AvailableWithWeakCipherSuiteNotSelected),
-                CreateResult(reader, certificates, (int) TlsTestType.Tls10AvailableWithBestCipherSuiteSelected),
-                CreateResult(reader, certificates, (int) TlsTestType.Tls10AvailableWithWeakCipherSuiteNotSelected),
-                CreateResult(reader, certificates, (int) TlsTestType.Ssl3FailsWithBadCipherSuite),
-                CreateResult(reader, certificates, (int) TlsTestType.TlsSecureEllipticCurveSelected),
-                CreateResult(reader, certificates, (int) TlsTestType.TlsSecureDiffieHellmanGroupSelected),
-                CreateResult(reader, certificates, (int) TlsTestType.TlsWeakCipherSuitesRejected));
-        }
-
-        private TlsConnectionResult CreateResult(DbDataReader reader, List<X509Certificate2> certificates, int index)
-        {
-            return new TlsConnectionResult(
-                (TlsVersion?)reader.GetInt32Nullable($"test{index}_tls_version"),
-                (CipherSuite?)reader.GetInt32Nullable($"test{index}_cipher_suite"),
-                (CurveGroup?)reader.GetInt32Nullable($"test{index}_curve_group"),
-                (SignatureHashAlgorithm?)reader.GetInt32Nullable($"test{index}_signature_hash_alg"),
-                certificates,
-                (Error?)reader.GetInt32Nullable($"test{index}_error"));
+            return string.IsNullOrWhiteSpace(reader.GetString("data"))
+                ? null
+                : JsonConvert.DeserializeObject<ConnectionResults>(reader.GetString("data"));
         }
     }
 }

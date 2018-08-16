@@ -24,7 +24,8 @@
     "Microsoft.AspNetCore.Identity": "1.0.0",
     "Microsoft.AspNetCore.HealthChecks": "1.0.0",
     "Dmarc.Common": "1.0.0-*",
-    "Dmarc.Common.PublicSuffix": "1.0.0-*"
+    "Dmarc.Common.PublicSuffix": "1.0.0-*",
+    "Dmarc.Common.Messaging.Sns": "1.0.0-*"
   },
 
   "frameworks": {

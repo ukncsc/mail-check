@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dmarc.Common.Interface.Logging;
 using Dmarc.Common.Logging;
+using Dmarc.Common.Tls.BouncyCastle;
 using Dmarc.MxSecurityTester.Config;
 using Dmarc.MxSecurityTester.Util;
 
@@ -13,7 +15,7 @@ namespace Dmarc.MxSecurityTester.Smtp
 {
     internal interface ISmtpClient
     {
-        Task<bool> TryStartTls(Stream networkStream);
+        Task<StartTlsResult> TryStartTls(Stream networkStream);
     }
 
     internal class SmtpClient : ISmtpClient
@@ -38,37 +40,59 @@ namespace Dmarc.MxSecurityTester.Smtp
             _log = log;
         }
 
-        public async Task<bool> TryStartTls(Stream networkStream)
+        public async Task<StartTlsResult> TryStartTls(Stream networkStream)
         {
-            using (IStreamReader streamReader = new StreamReaderWrapper(networkStream, Encoding.ASCII, true, 1024, true))
+            try
             {
-                using (IStreamWriter streamWriter = new StreamWriterWrapper(networkStream, Encoding.ASCII, 1024, true) {AutoFlush = true, NewLine = LineEnding})
+                using (IStreamReader streamReader =
+                    new StreamReaderWrapper(networkStream, Encoding.ASCII, true, 1024, true))
                 {
-                    SmtpResponse response1 = await _smtpDeserializer.Deserialize(streamReader);
-                    _log.Debug($"<: {response1}");
-                    if (response1.Responses.FirstOrDefault()?.ResponseCode != ResponseCode.ServiceReady)
+                    using (IStreamWriter streamWriter =
+                        new StreamWriterWrapper(networkStream, Encoding.ASCII, 1024, true)
+                        {
+                            AutoFlush = true,
+                            NewLine = LineEnding
+                        })
                     {
-                        return false;
-                    }
-                    
-                    EhloCommand ehloCommand = new EhloCommand(_mxSecurityTesterConfig.SmtpHostName);
-                    _log.Debug($">: {ehloCommand.CommandString}");
-                    await _smtpSerializer.Serialize(ehloCommand, streamWriter);
-                    SmtpResponse response2 = await _smtpDeserializer.Deserialize(streamReader);
-                    _log.Debug($"<: {response2}");
-                    if (!response2.Responses.Any(_ => _.Value.ToLower() == Starttls && _.ResponseCode == ResponseCode.Ok))
-                    {
-                        return false;
-                    }
+                        SmtpResponse response1 = await _smtpDeserializer.Deserialize(streamReader);
+                        _log.Debug($"<: {response1}");
 
-                    StartTlsCommand startTlsCommand = new StartTlsCommand();
-                    _log.Debug($">: {startTlsCommand.CommandString}");
-                    await _smtpSerializer.Serialize(startTlsCommand, streamWriter);
-                    SmtpResponse response3 = await _smtpDeserializer.Deserialize(streamReader);
-                    _log.Debug($"<: {response3}");
+                        if (response1.Responses.FirstOrDefault()?.ResponseCode != ResponseCode.ServiceReady)
+                        {
+                            return new StartTlsResult(false, response1.Responses.Select(_ => _.ToString()).ToList(),
+                                "The server did not present a service ready response code (220).");
+                        }
 
-                    return response3.Responses.FirstOrDefault()?.ResponseCode == ResponseCode.ServiceReady;
+                        EhloCommand ehloCommand = new EhloCommand(_mxSecurityTesterConfig.SmtpHostName);
+                        _log.Debug($">: {ehloCommand.CommandString}");
+                        await _smtpSerializer.Serialize(ehloCommand, streamWriter);
+                        SmtpResponse response2 = await _smtpDeserializer.Deserialize(streamReader);
+                        _log.Debug($"<: {response2}");
+                        if (!response2.Responses.Any(_ =>
+                            _.Value.ToLower() == Starttls && _.ResponseCode == ResponseCode.Ok))
+                        {
+                            return new StartTlsResult(false, response2.Responses.Select(_ => _.ToString()).ToList(),
+                                "The server did not present a STARTTLS command with a response code (250).");
+                        }
+
+                        StartTlsCommand startTlsCommand = new StartTlsCommand();
+                        _log.Debug($">: {startTlsCommand.CommandString}");
+                        await _smtpSerializer.Serialize(startTlsCommand, streamWriter);
+                        SmtpResponse response3 = await _smtpDeserializer.Deserialize(streamReader);
+                        _log.Debug($"<: {response3}");
+
+                        return new StartTlsResult(
+                            response3.Responses.FirstOrDefault()?.ResponseCode == ResponseCode.ServiceReady,
+                            response3.Responses.Select(_ => _.Value).ToList(), string.Empty);
+
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                _log.Error(
+                    $"SMTP session initalization failed with error: {e.Message} {Environment.NewLine} {e.StackTrace}");
+                return new StartTlsResult(false, null, e.Message);
             }
         }
     }

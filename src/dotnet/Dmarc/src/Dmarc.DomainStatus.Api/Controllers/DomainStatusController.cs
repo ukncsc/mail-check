@@ -1,4 +1,5 @@
-﻿using Dmarc.Common.Api.Utils;
+﻿using Dmarc.Common.Api.Domain;
+using Dmarc.Common.Api.Utils;
 using Dmarc.Common.Interface.PublicSuffix;
 using Dmarc.Common.Interface.PublicSuffix.Domain;
 using Dmarc.Common.Serialisation;
@@ -6,7 +7,6 @@ using Dmarc.DomainStatus.Api.Dao.DomainStatus;
 using Dmarc.DomainStatus.Api.Dao.Permission;
 using Dmarc.DomainStatus.Api.Domain;
 using Dmarc.DomainStatus.Api.Services;
-using Dmarc.DomainStatus.Api.Util;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -59,14 +59,14 @@ namespace Dmarc.DomainStatus.Api.Controllers
             if (!validationResult.IsValid)
             {
                 _log.LogWarning($"Bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             Domain.Domain domain = await _domainStatusDao.GetDomain(domainRequest.Id);
             if (domain == null)
             {
                 _log.LogWarning($"Domain with id: { domainRequest.Id } not found");
-                return NotFound();
+                return NotFound(new ErrorResponse("Domain not found.", ErrorStatus.Information));
             }
 
             return new ObjectResult(domain);
@@ -81,7 +81,7 @@ namespace Dmarc.DomainStatus.Api.Controllers
             if (!validationResult.IsValid)
             {
                 _log.LogWarning($"Bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             DomainTlsEvaluatorResults domainTlsEvaluatorResults = await _domainStatusDao.GetDomainTlsEvaluatorResults(domainRequest.Id);
@@ -89,7 +89,7 @@ namespace Dmarc.DomainStatus.Api.Controllers
             if (domainTlsEvaluatorResults == null)
             {
                 _log.LogWarning($"Antispoofing for Domain with id: { domainRequest.Id } not found");
-                return NotFound();
+                return NotFound(new ErrorResponse($"No domain found for ID {domainRequest.Id}."));
             }
 
             return new ObjectResult(domainTlsEvaluatorResults);
@@ -103,10 +103,20 @@ namespace Dmarc.DomainStatus.Api.Controllers
             if (!validationResult.IsValid)
             {
                 _log.LogWarning($"Bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             string spf = await _domainStatusDao.GetSpfReadModel(domainRequest.Id);
+
+            if (spf == null)
+            {
+                Domain.Domain domain = await _domainStatusDao.GetDomain(domainRequest.Id);
+                if (domain == null)
+                {
+                    return NotFound(new ErrorResponse($"No domain found for ID {domainRequest.Id}."));
+                }
+                return new ObjectResult(new { records = (List<string>)null, pending = true });
+            }
 
             return new ObjectResult(spf);
         }
@@ -119,10 +129,20 @@ namespace Dmarc.DomainStatus.Api.Controllers
             if (!validationResult.IsValid)
             {
                 _log.LogWarning($"Bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             DmarcReadModel dmarc = await _domainStatusDao.GetDmarcReadModel(domainRequest.Id);
+
+            if (dmarc == null)
+            {
+                Domain.Domain domain = await _domainStatusDao.GetDomain(domainRequest.Id);
+                if (domain == null)
+                {
+                    return NotFound(new ErrorResponse($"No domain found for ID {domainRequest.Id}."));
+                }
+                return new ObjectResult(new { records = (List<string>)null, pending = true });
+            }
 
             if (dmarc.HasDmarc)
             {
@@ -160,7 +180,7 @@ namespace Dmarc.DomainStatus.Api.Controllers
             if (!validationResult.IsValid)
             {
                 _log.LogWarning($"Bad request: {validationResult.GetErrorString()}.");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             int? userId = User.GetId();
@@ -175,7 +195,7 @@ namespace Dmarc.DomainStatus.Api.Controllers
             if (!domainPermissions.DomainPermission)
             {
                 _log.LogWarning($"Domain {request.Id} not found for user {userId}.");
-                return NotFound();
+                return NotFound(new ErrorResponse($"No domain found for ID {request.Id}."));
             }
 
             if (!domainPermissions.AggregatePermission)
@@ -184,8 +204,11 @@ namespace Dmarc.DomainStatus.Api.Controllers
                 return Forbid();
             }
 
-            Task<SortedDictionary<DateTime, AggregateSummaryItem>> getInfos = _domainStatusDao.GetAggregateReportSummary(request.Id, request.StartDate, request.EndDate);
-            Task<int> getEmailCount = _domainStatusDao.GetAggregateReportTotalEmailCount(request.Id, request.StartDate, request.EndDate);
+            bool includeSubdomains = false;
+            bool.TryParse(HttpContext.Request.Query["includeSubdomains"].ToString(), out includeSubdomains);
+
+            Task<SortedDictionary<DateTime, AggregateSummaryItem>> getInfos = _domainStatusDao.GetAggregateReportSummary(request.Id, request.StartDate, request.EndDate, includeSubdomains);
+            Task<int> getEmailCount = _domainStatusDao.GetAggregateReportTotalEmailCount(request.Id, request.StartDate, request.EndDate, includeSubdomains);
 
             await Task.WhenAll(getInfos, getEmailCount);
 
@@ -232,7 +255,7 @@ namespace Dmarc.DomainStatus.Api.Controllers
             if (!domainPermissions.DomainPermission)
             {
                 _log.LogWarning($"Domain {id} not found for user {userId}.");
-                return NotFound();
+                return NotFound(new ErrorResponse($"No domain found for ID {id}."));
             }
 
             if (!domainPermissions.AggregatePermission)

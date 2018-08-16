@@ -15,6 +15,20 @@ using CipherSuite = Dmarc.Common.Interface.Tls.Domain.CipherSuite;
 
 namespace Dmarc.Common.Tls.BouncyCastle
 {
+    public class StartTlsResult
+    {
+        public StartTlsResult(bool success, List<string> smtpSession, string error)
+        {
+            Success = success;
+            SmtpSession = smtpSession ?? new List<string>();
+            Error = error;
+        }
+
+        public bool Success { get; }
+        public List<string> SmtpSession { get; }
+        public string Error { get; }
+    }
+
     public class TlsClient : ITlsClient
     {
         private readonly TimeSpan _timeOut;
@@ -41,9 +55,9 @@ namespace Dmarc.Common.Tls.BouncyCastle
 
             await _tcpClient.ConnectAsync(host, port).ConfigureAwait(false);
 
-            bool sessionInitialized = await TryInitializeSession(_tcpClient.GetStream()).ConfigureAwait(false);
+            StartTlsResult sessionInitialized = await TryInitializeSession(_tcpClient.GetStream()).ConfigureAwait(false);
 
-            if (!sessionInitialized)
+            if (!sessionInitialized.Success)
             {
                 throw new Exception("Failed to initialize session.");
             }
@@ -62,27 +76,27 @@ namespace Dmarc.Common.Tls.BouncyCastle
             catch (SocketException e)
             {
                 _log.Error($"An error occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
-                return new TlsConnectionResult(Error.TCP_CONNECTION_FAILED);
+                return new TlsConnectionResult(Error.TCP_CONNECTION_FAILED, e.Message, null);
             }
             catch (ArgumentNullException e)
             {
                 _log.Error($"An error occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
-                return new TlsConnectionResult(Error.TCP_CONNECTION_FAILED);
+                return new TlsConnectionResult(Error.TCP_CONNECTION_FAILED, e.Message, null);
             }
             catch (IOException e)
             {
                 _log.Error($"An error occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
-                return new TlsConnectionResult(Error.TCP_CONNECTION_FAILED);
+                return new TlsConnectionResult(Error.TCP_CONNECTION_FAILED, e.Message, null);
             }
             catch (TimeoutException e)
             {
                 _log.Error($"An error occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
-                return new TlsConnectionResult(Error.TCP_CONNECTION_FAILED);
+                return new TlsConnectionResult(Error.TCP_CONNECTION_FAILED, e.Message, null);
             }
             catch (Exception e)
             {
                 _log.Error($"An error occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
-                return new TlsConnectionResult(Error.INTERNAL_ERROR);
+                return new TlsConnectionResult( Error.INTERNAL_ERROR, e.Message, null);
             }
         }
 
@@ -96,18 +110,17 @@ namespace Dmarc.Common.Tls.BouncyCastle
             };
 
             _log.Debug($"Starting TCP connection to {host ?? "<null>"}:{port}");
-            _log.Debug($"Synchronization context: {SynchronizationContext.Current?.ToString() ?? "null"}");
             await _tcpClient.ConnectAsync(host, port).ConfigureAwait(false);
             _log.Debug($"Successfully started TCP connection to {host ?? "<null>"}:{port}");
 
             _log.Debug("Initializing session");
-            bool sessionInitialized = await TryInitializeSession(_tcpClient.GetStream()).ConfigureAwait(false);
+            StartTlsResult sessionInitialized = await TryInitializeSession(_tcpClient.GetStream()).ConfigureAwait(false);
             _log.Debug("Successfully initialized session");
 
-            if (!sessionInitialized)
+            if (!sessionInitialized.Success)
             {
                 _log.Debug("Failed to initialize session");
-                return new TlsConnectionResult(Error.SESSION_INITIALIZATION_FAILED);
+                return new TlsConnectionResult(Error.SESSION_INITIALIZATION_FAILED, sessionInitialized.Error, sessionInitialized.SmtpSession);
             }
 
             TestTlsClientProtocol clientProtocol = new TestTlsClientProtocol(_tcpClient.GetStream());
@@ -128,9 +141,9 @@ namespace Dmarc.Common.Tls.BouncyCastle
 
         //Override this if for example you are using SMTP and you need to STARTTLS
         //before beginning a TLS session.
-        public virtual Task<bool> TryInitializeSession(NetworkStream stream)
+        public virtual Task<StartTlsResult> TryInitializeSession(NetworkStream stream)
         {
-            return Task.FromResult(true);
+            return Task.FromResult(new StartTlsResult(false, null, string.Empty));
         }
 
         public void Disconnect()

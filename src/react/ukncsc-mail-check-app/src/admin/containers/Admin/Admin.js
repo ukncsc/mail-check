@@ -312,4 +312,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(addIdamEntities({ type, entities })),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Admin);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Admin);

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Dmarc.Common.Interface.Logging;
+using Dmarc.Common.Tls.BouncyCastle;
 using Dmarc.MxSecurityTester.Config;
 using Dmarc.MxSecurityTester.Smtp;
 using Dmarc.MxSecurityTester.Util;
@@ -36,8 +37,8 @@ namespace Dmarc.MxSecurityTester.Test.Smtp
             A.CallTo(() => _smtpDeserializer.Deserialize(A<IStreamReader>._)).Returns(
                 Task.FromResult(new SmtpResponse(new List<Response> { _unknownReponse })));
 
-            bool success = await _smtpClient.TryStartTls(Stream.Null);
-            Assert.That(success, Is.False);
+            StartTlsResult result = await _smtpClient.TryStartTls(Stream.Null);
+            Assert.That(result.Success, Is.False);
         }
 
         [Test]
@@ -47,8 +48,8 @@ namespace Dmarc.MxSecurityTester.Test.Smtp
                 Task.FromResult(new SmtpResponse(new List<Response> { _serviceReadyReponse })),
                 Task.FromResult(new SmtpResponse(new List<Response> { _unknownReponse })));
 
-            bool success = await _smtpClient.TryStartTls(Stream.Null);
-            Assert.That(success, Is.False);
+            StartTlsResult result = await _smtpClient.TryStartTls(Stream.Null);
+            Assert.That(result.Success, Is.False);
         }
 
         [Test]
@@ -59,8 +60,8 @@ namespace Dmarc.MxSecurityTester.Test.Smtp
                 Task.FromResult(new SmtpResponse(new List<Response> { _startTlsResponse })),
                 Task.FromResult(new SmtpResponse(new List<Response> { _unknownReponse })));
 
-            bool success = await _smtpClient.TryStartTls(Stream.Null);
-            Assert.That(success, Is.False);
+            StartTlsResult result = await _smtpClient.TryStartTls(Stream.Null);
+            Assert.That(result.Success, Is.False);
         }
 
         [Test]
@@ -71,8 +72,8 @@ namespace Dmarc.MxSecurityTester.Test.Smtp
                 Task.FromResult(new SmtpResponse(new List<Response> { _startTlsResponse })),
                 Task.FromResult(new SmtpResponse(new List<Response> { _serviceReadyReponse })));
 
-            bool success = await _smtpClient.TryStartTls(Stream.Null);
-            Assert.That(success, Is.True);
+            StartTlsResult result = await _smtpClient.TryStartTls(Stream.Null);
+            Assert.That(result.Success, Is.True);
         }
     }
 }

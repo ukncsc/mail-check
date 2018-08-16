@@ -61,9 +61,9 @@ namespace Dmarc.Admin.Api.Dao.Domain {
         
         /// <summary>
         ///    Looks up a localized string similar to INSERT INTO domain
-        ///(name,publish)
+        ///(name,publish, created_by)
         ///VALUES
-        ///(@name,b&apos;1&apos;) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), publish=b&apos;1&apos;;.
+        ///(@name,b&apos;1&apos;, @createdBy) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), publish=b&apos;1&apos;;.
         /// </summary>
         public static string InsertDomain {
             get {

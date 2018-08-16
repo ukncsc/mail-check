@@ -1,5 +1,48 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`DomainSecurityDetailsMessages when provided with a markdown flag it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui red large circular label"
+  >
+    <span
+      class="DomainSecurityPill"
+    >
+      1
+      Urgent
+    </span>
+  </div>
+  <p
+    class="DomainSecuritySummaryMessages--intro"
+  >
+    Your 
+    DMARC
+    configuration has
+    1 element
+    that
+    require
+    urgent attention.
+  </p>
+  <div
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui error message MailCheckMessage--container"
+  >
+    <div>
+      <p>
+        <a
+          href="https://ncsc.gov.uk"
+        >
+          link
+        </a>
+      </p>
+    </div>
+  </div>
+  <div
+    class="ui hidden divider"
+  />
+</div>
+`;
+
 exports[`DomainSecurityDetailsMessages when provided with failures it should match the snapshot 1`] = `
 <div>
   <div
@@ -17,21 +60,17 @@ exports[`DomainSecurityDetailsMessages when provided with failures it should mat
   >
     Your 
     DMARC
-    has 
+    configuration has
     1 element
     that
     require
     urgent attention.
   </p>
   <div
-    style="margin: 0.2em 0em;"
-    class="ui error message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui error message MailCheckMessage--container"
   >
-    <div>
-      <p>
-        oh noes
-      </p>
-    </div>
+    oh noes
   </div>
   <div
     class="ui hidden divider"
@@ -56,21 +95,17 @@ exports[`DomainSecurityDetailsMessages when provided with failures, warnings and
   >
     Your 
     DMARC
-    has 
+    configuration has
     1 element
     that
     require
     urgent attention.
   </p>
   <div
-    style="margin: 0.2em 0em;"
-    class="ui error message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui error message MailCheckMessage--container"
   >
-    <div>
-      <p>
-        oh noes
-      </p>
-    </div>
+    oh noes
   </div>
   <div
     class="ui hidden divider"
@@ -90,19 +125,15 @@ exports[`DomainSecurityDetailsMessages when provided with failures, warnings and
   >
     Your 
     DMARC
-    has 
+    configuration has
     1 element
     that can be improved.
   </p>
   <div
-    style="margin: 0.2em 0em;"
-    class="ui warning message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui warning message MailCheckMessage--container"
   >
-    <div>
-      <p>
-        oh woes
-      </p>
-    </div>
+    oh woes
   </div>
   <div
     class="ui hidden divider"
@@ -122,21 +153,17 @@ exports[`DomainSecurityDetailsMessages when provided with failures, warnings and
   >
     Your 
     DMARC
-    has 
+    configuration has 
     1
     inconclusive
     element
     .
   </p>
   <div
-    style="margin: 0.2em 0em;"
-    class="ui message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui message MailCheckMessage--container"
   >
-    <div>
-      <p>
-        who knows
-      </p>
-    </div>
+    who knows
   </div>
 </div>
 `;
@@ -158,21 +185,17 @@ exports[`DomainSecurityDetailsMessages when provided with inconclusives it shoul
   >
     Your 
     DMARC
-    has 
+    configuration has 
     1
     inconclusive
     element
     .
   </p>
   <div
-    style="margin: 0.2em 0em;"
-    class="ui message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui message MailCheckMessage--container"
   >
-    <div>
-      <p>
-        who knows
-      </p>
-    </div>
+    who knows
   </div>
 </div>
 `;
@@ -192,11 +215,11 @@ exports[`DomainSecurityDetailsMessages when provided with no failures, warnings 
     class="ui hidden divider"
   />
   <div
-    style="margin: 0.2em 0em;"
-    class="ui success message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui success message MailCheckMessage--container"
   >
     DMARC
-    is well configured.
+    well configured.
   </div>
 </div>
 `;
@@ -218,19 +241,15 @@ exports[`DomainSecurityDetailsMessages when provided with warnings it should mat
   >
     Your 
     DMARC
-    has 
+    configuration has
     1 element
     that can be improved.
   </p>
   <div
-    style="margin: 0.2em 0em;"
-    class="ui warning message DomainSecurityMessage--container"
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui warning message MailCheckMessage--container"
   >
-    <div>
-      <p>
-        oh woes
-      </p>
-    </div>
+    oh woes
   </div>
   <div
     class="ui hidden divider"

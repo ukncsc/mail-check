@@ -15,7 +15,7 @@ namespace Dmarc.MxSecurityEvaluator.Test
         {
             return data.ContainsKey(testType) 
                 ? data[testType]
-                : new TlsConnectionResult(Error.BAD_CERTIFICATE);
+                : new TlsConnectionResult(Error.BAD_CERTIFICATE, "Bad certificate found", null);
         }
 
         public static ConnectionResults CreateConnectionResults(IDictionary<TlsTestType, TlsConnectionResult> data)

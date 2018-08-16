@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainSecurityDetailsMx when no records are provided it should match the snapshot 1`] = `
+<div>
+  <p>
+    <span
+      class="BackLink"
+    >
+      <i
+        style="text-decoration: none;"
+        aria-hidden="true"
+        class="caret left icon"
+      />
+      Back
+    </span>
+  </p>
+  <h1
+    class="ui header DomainSecurityTitle--header"
+  >
+    SPF
+  </h1>
+  <div
+    class="DomainSecurityTitle--icon"
+  />
+  <div
+    class="ui hidden divider"
+  />
+  <p>
+    bleh
+  </p>
+</div>
+`;

@@ -22,7 +22,7 @@ module "processor-cluster" {
   aws-region                         = "${var.aws-region}"
   env-name                           = "${var.env-name}"
   aws-account-id                     = "${var.aws-account-id}"
-  admin-subnets                      = "${var.build-vpc == "" ? "" : data.aws_vpc.build-vpc.cidr_block}"
+  admin-subnets                      = "${var.build-vpc == "" ? "" : var.build-vpc-cidr-block}"
   cloudwatch-alerts-sns-arn          = "${aws_sns_topic.cloudwatch-alerts.arn}"
   egress-internet-custom-ports       = "25,2525,587,465"
   egress-internet-custom-ports-count = "4"

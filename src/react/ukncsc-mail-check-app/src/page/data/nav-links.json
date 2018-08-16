@@ -1,10 +1,17 @@
 {
   "left": [
-    { "name": "Domain Security", "link": "/domain-security"},
+    { "name": "Mail Check", "link": "/home" },
     { "name": "My Domains", "link": "/my-domains" },
-    { "name": "Email Abuse", "link": "/a/#/email-abuse", "external": true },
-    
-    { "name": "Metrics", "link": "/metrics", "roleTypes": ["Admin"] }
+    { "name": "Email Abuse", "link": "/a/#/email-abuse", "external": true }
   ],
-  "right": [{ "name": "Admin", "link": "/admin", "roleTypes": ["Admin"] }]
+
+  "right": [
+    {
+      "name": "Domain Security",
+      "link": "/domain-security",
+      "roleTypes": ["Admin"]
+    },
+    { "name": "Metrics", "link": "/metrics", "roleTypes": ["Admin"] },
+    { "name": "Admin", "link": "/admin", "roleTypes": ["Admin"] }
+  ]
 }

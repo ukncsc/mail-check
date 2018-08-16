@@ -1,0 +1,125 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DomainSecuritySummaryMx when an error is present it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui stackable grid"
+  >
+    <div
+      class="row"
+    >
+      <div
+        class="four wide column"
+      >
+        <h2
+          class="ui header DomainSecurityTitle--header"
+        >
+          TLS
+        </h2>
+        <div
+          class="DomainSecurityTitle--icon"
+        />
+      </div>
+      <div
+        class="eight wide column"
+      >
+        <p />
+        <div
+          style="margin: 0.2em 0em; max-width: 600px;"
+          class="ui error message MailCheckMessage--container"
+        >
+          There was a problem retrieving the 
+          TLS
+          summary for this domain: 
+          Oh noes!
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DomainSecuritySummaryMx when no failures, warnings or inconclusives are present it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui stackable grid"
+  >
+    <div
+      class="row"
+    >
+      <div
+        class="four wide column"
+      >
+        <h2
+          class="ui header DomainSecurityTitle--header"
+        >
+          TLS
+        </h2>
+        <div
+          class="DomainSecurityTitle--icon"
+        />
+      </div>
+      <div
+        class="eight wide column"
+      >
+        <p />
+        <h3
+          class="ui header"
+        >
+          1.com
+        </h3>
+        <p>
+          <a
+            href="/domain-security/123/tls/1"
+          >
+            View more information
+          </a>
+        </p>
+        <div
+          style="margin: 0.2em 0em; max-width: 600px;"
+          class="ui success message MailCheckMessage--container"
+        >
+          TLS
+          well configured.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`DomainSecuritySummaryMx when no records are provided it should match the snapshot 1`] = `
+<div>
+  <div
+    class="ui stackable grid"
+  >
+    <div
+      class="row"
+    >
+      <div
+        class="four wide column"
+      >
+        <h2
+          class="ui header DomainSecurityTitle--header"
+        >
+          TLS
+        </h2>
+        <div
+          class="DomainSecurityTitle--icon"
+        />
+      </div>
+      <div
+        class="eight wide column"
+      >
+        <p />
+        <div
+          style="margin: 0.2em 0em; max-width: 600px;"
+          class="ui success message MailCheckMessage--container"
+        >
+          No MX records found.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

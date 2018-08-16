@@ -1,17 +1,16 @@
 import { createAction, handleActions } from 'redux-actions';
-import get from 'lodash/get';
 import reduce from 'lodash/reduce';
 import { mailCheckApiFetch } from 'common/helpers';
 import { recordsReducer, recordErrorsReducer } from './helpers';
 
 const fetchRequestDomainSecuritySpfAction =
-  'mailCheck/domainSecurity/FETCH_SPF_REQUEST';
+  'mailCheck/domainSecurity/spf/FETCH_REQUEST';
 
 const fetchSuccessDomainSecuritySpfAction =
-  'mailCheck/domainSecurity/FETCH_SPF_SUCCESS';
+  'mailCheck/domainSecurity/spf/FETCH_SUCCESS';
 
 const fetchErrorDomainSecuritySpfAction =
-  'mailCheck/domainSecurity/FETCH_SPF_ERROR';
+  'mailCheck/domainSecurity/spf/FETCH_ERROR';
 
 export const fetchRequestDomainSecuritySpf = createAction(
   fetchRequestDomainSecuritySpfAction
@@ -36,8 +35,9 @@ export const fetchDomainSecuritySpf = id => async dispatch => {
 
 const initialState = {};
 
-const transformResponse = ({ id, records, errors, lastChecked }) => ({
+const transformResponse = ({ id, pending, records, errors, lastChecked }) => ({
   id,
+  pending: pending || false,
   records: records && reduce(records, recordsReducer('terms'), []),
   ...reduce(errors, recordErrorsReducer, {
     warnings: [],
@@ -67,5 +67,4 @@ export default handleActions(
   initialState
 );
 
-export const getDomainSecuritySpf = state => id =>
-  get(state, `domainSecurity.spf[${id}]`, {});
+export const getDomainSecuritySpf = state => id => state.domainSecurity.spf[id];

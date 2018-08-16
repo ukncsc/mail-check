@@ -24,7 +24,7 @@ module "frontend-cluster" {
   aws-region                = "${var.aws-region}"
   env-name                  = "${var.env-name}"
   aws-account-id            = "${var.aws-account-id}"
-  admin-subnets             = "${var.build-vpc == "" ? "" : data.aws_vpc.build-vpc.cidr_block}"
+  admin-subnets             = "${var.build-vpc == "" ? "" : var.build-vpc-cidr-block}"
   cloudwatch-alerts-sns-arn = "${aws_sns_topic.cloudwatch-alerts.arn}"
 }
 

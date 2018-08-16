@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Dao;
 using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Util;
 
@@ -22,18 +23,20 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 
                 case Error.TCP_CONNECTION_FAILED:
                 case Error.SESSION_INITIALIZATION_FAILED:
-                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} we were unable to create a connection to the mail server. We will keep trying, so please check back later.");
+                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE,
+                        $"{intro} we were unable to create a connection to the mail server. We will keep trying, so please check back later. Error description \"{tlsConnectionResult.ErrorDescription}\".");
 
                 case null:
                     break;
 
                 default:
-                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} the server responded with an error.");
+                    return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE,
+                        $"{intro} the server responded with an error. Error description \"{tlsConnectionResult.ErrorDescription}\".");
             }
 
             if (tlsConnectionResult.CipherSuite != null)
             {
-                return new TlsEvaluatorResult(EvaluatorResult.FAIL, $"{intro} the server accepted the connection.");
+                return new TlsEvaluatorResult(EvaluatorResult.FAIL, $"{intro} the server accepted the connection and selected {tlsConnectionResult.CipherSuite.GetName()}.");
             }
 
             return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} there was a problem and we are unable to provide additional information.");

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Dmarc.Common.Interface.Logging;
 using Dmarc.Common.Interface.Messaging;
 using Dmarc.MxSecurityTester.Config;
 using Dmarc.MxSecurityTester.Contract.Messages;
 using Dmarc.MxSecurityTester.Dao.Entities;
-using Newtonsoft.Json;
+using Dmarc.MxSecurityTester.Tls.Tests;
+using Dmarc.MxSecurityTester.Util;
 
 namespace Dmarc.MxSecurityTester.MxTester
 {
@@ -40,27 +40,42 @@ namespace Dmarc.MxSecurityTester.MxTester
 
             foreach (DomainTlsSecurityProfile domainTlsSecurityProfile in domainTlsSecurityProfiles)
             {
-                Dictionary<ulong, HostInfo> hosts = new Dictionary<ulong, HostInfo>();
+                List<MxRecordTlsSecurityProfile> currentProfiles = domainTlsSecurityProfile.Profiles
+                    .Where(_ => !_.TlsSecurityProfile.EndDate.HasValue).ToList();
 
-                foreach (MxRecordTlsSecurityProfile profile in domainTlsSecurityProfile.Profiles)
-                {
-                    if (!hosts.ContainsKey(profile.MxRecord.Id))
-                    {
-                        hosts.Add(profile.MxRecord.Id, new HostInfo(profile.MxRecord.Hostname));
-                    }
+                CertificateResultMessage certificateResultMessage = new CertificateResultMessage(
+                    domainTlsSecurityProfile.Domain.Name,
+                    currentProfiles
+                        .Select(_ =>
+                            new HostInfo(
+                                _.MxRecord.Hostname,
+                                _.TlsSecurityProfile.TlsResults.Certificates.Select(c => Convert.ToBase64String(c.RawData)).ToList(),
+                                GetTlsCipherSuitesFromResults(_.TlsSecurityProfile.TlsResults.Results)))
+                        .ToList());
 
-                    hosts[profile.MxRecord.Id].Certificates.AddRange(
-                        profile.TlsSecurityProfile.Results.Certificates.Select(x =>
-                            Convert.ToBase64String(x.RawData)).Distinct());
-                }
+                await _publisher.Publish(certificateResultMessage, _config.PublisherConnectionString);
 
-                await _publisher.Publish(new CertificateResultMessage(domainTlsSecurityProfile.Domain.Name, hosts.Values.ToList()),
-                    _config.PublisherConnectionString);
-                _log.Debug(
-                    $"Published DomainTlsProfileChangedMessage for domain: ({domainTlsSecurityProfile.Domain.Id}:{domainTlsSecurityProfile.Domain.Name})");
+                _log.Debug($"Published DomainTlsProfileChangedMessage for domain: ({domainTlsSecurityProfile.Domain.Id}:{domainTlsSecurityProfile.Domain.Name})");
             }
 
             return domainTlsSecurityProfiles;
         }
+
+        private List<SelectedCipherSuite> GetTlsCipherSuitesFromResults(TlsTestResultsWithoutCertificate tlsResults) =>
+            new List<SelectedCipherSuite>()
+            {
+                new SelectedCipherSuite(TlsTestType.Tls12AvailableWithBestCipherSuiteSelected.ToString(), tlsResults.Tls12AvailableWithBestCipherSuiteSelected?.CipherSuite?.ToString()),
+                new SelectedCipherSuite(TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList.ToString(), tlsResults.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList?.CipherSuite?.ToString()),
+                new SelectedCipherSuite(TlsTestType.Tls12AvailableWithSha2HashFunctionSelected.ToString(), tlsResults.Tls12AvailableWithSha2HashFunctionSelected?.CipherSuite?.ToString()),
+                new SelectedCipherSuite(TlsTestType.Tls12AvailableWithWeakCipherSuiteNotSelected.ToString(), tlsResults.Tls12AvailableWithWeakCipherSuiteNotSelected?.CipherSuite?.ToString()),
+                new SelectedCipherSuite(TlsTestType.Tls11AvailableWithBestCipherSuiteSelected.ToString(), tlsResults.Tls11AvailableWithBestCipherSuiteSelected?.CipherSuite?.ToString()),
+                new SelectedCipherSuite(TlsTestType.Tls11AvailableWithWeakCipherSuiteNotSelected.ToString(), tlsResults.Tls11AvailableWithWeakCipherSuiteNotSelected?.CipherSuite?.ToString()),
+                new SelectedCipherSuite(TlsTestType.Tls10AvailableWithBestCipherSuiteSelected.ToString(), tlsResults.Tls10AvailableWithBestCipherSuiteSelected?.CipherSuite?.ToString()),
+                new SelectedCipherSuite(TlsTestType.Tls10AvailableWithWeakCipherSuiteNotSelected.ToString(), tlsResults.Tls10AvailableWithWeakCipherSuiteNotSelected?.CipherSuite?.ToString()),
+                new SelectedCipherSuite(TlsTestType.Ssl3FailsWithBadCipherSuite.ToString(), tlsResults.Ssl3FailsWithBadCipherSuite?.CipherSuite?.ToString()),
+                new SelectedCipherSuite(TlsTestType.TlsSecureEllipticCurveSelected.ToString(), tlsResults.TlsSecureEllipticCurveSelected?.CipherSuite?.ToString()),
+                new SelectedCipherSuite(TlsTestType.TlsSecureDiffieHellmanGroupSelected.ToString(), tlsResults.TlsSecureDiffieHellmanGroupSelected?.CipherSuite?.ToString()),
+                new SelectedCipherSuite(TlsTestType.TlsWeakCipherSuitesRejected.ToString(), tlsResults.TlsWeakCipherSuitesRejected?.CipherSuite?.ToString())
+            };
     }
 }

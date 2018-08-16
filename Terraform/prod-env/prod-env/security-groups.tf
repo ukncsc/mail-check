@@ -124,6 +124,6 @@ resource "aws_security_group_rule" "build-to-rds" {
   from_port         = 3306
   to_port           = 3306
   protocol          = "tcp"
-  cidr_blocks       = ["${data.aws_vpc.build-vpc.cidr_block}"]
+  cidr_blocks       = ["${var.build-vpc-cidr-block}"]
   security_group_id = "${aws_security_group.rds.id}"
 }

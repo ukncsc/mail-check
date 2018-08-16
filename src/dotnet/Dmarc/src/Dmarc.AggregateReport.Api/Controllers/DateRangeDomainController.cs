@@ -9,6 +9,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Dmarc.Common.Api.Domain;
 
 namespace Dmarc.AggregateReport.Api.Controllers
 {
@@ -19,7 +20,7 @@ namespace Dmarc.AggregateReport.Api.Controllers
         private readonly ILogger _log;
 
         protected DateRangeDomainController(IDomainsDao domainsDao,
-            IValidator<DateRangeDomainRequest> dateRangeDomainValidator, 
+            IValidator<DateRangeDomainRequest> dateRangeDomainValidator,
             ILogger log)
         {
             _domainsDao = domainsDao;
@@ -27,14 +28,14 @@ namespace Dmarc.AggregateReport.Api.Controllers
             _log = log;
         }
 
-        public async Task<IActionResult> GetDateRangeDomainResult<T>(DateRangeDomainRequest dateRangeDomainRequest, 
+        public async Task<IActionResult> GetDateRangeDomainResult<T>(DateRangeDomainRequest dateRangeDomainRequest,
             Func<int, DateTime, DateTime, int?, Task<T>> resultGetter)
         {
             ValidationResult validationResult = await _dateRangeDomainValidator.ValidateAsync(dateRangeDomainRequest);
             if (!validationResult.IsValid)
             {
                 _log.LogWarning($"Bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             Claim roleClaim = User.FindFirst(_ => _.Type == ClaimTypes.Role);
@@ -51,20 +52,20 @@ namespace Dmarc.AggregateReport.Api.Controllers
                 if (!domainExists)
                 {
                     _log.LogWarning($"No domain exists with id for user {userId}: {dateRangeDomainRequest.DomainId.Value}");
-                    return NotFound();
+                    return NotFound(new ErrorResponse("Domain not found.", ErrorStatus.Information));
                 }
             }
 
             T result = await resultGetter(userId, dateRangeDomainRequest.BeginDateUtc.Value,
                 dateRangeDomainRequest.EndDateUtc.Value, dateRangeDomainRequest.DomainId);
 
-            ObjectResult dateRangeDomainResult = new ObjectResult(result);
-            return dateRangeDomainResult;
+            return new ObjectResult(result);
         }
 
         private int GetUserId(ClaimsPrincipal claimsPrincipal)
         {
             Claim idClaim = claimsPrincipal.FindFirst(_ => _.Type == ClaimTypes.Sid);
+
             return int.Parse(idClaim.Value);
         }
     }

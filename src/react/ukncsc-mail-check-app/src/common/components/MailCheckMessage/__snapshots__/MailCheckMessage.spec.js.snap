@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MailCheckMessage when provided with no props it should match the snapshot 1`] = `
+<div>
+  <div
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui message MailCheckMessage--container"
+  >
+    <p>
+      security rulez
+    </p>
+  </div>
+</div>
+`;
+
+exports[`MailCheckMessage when provided with the markdown flag and a link it should match the snapshot 1`] = `
+<div>
+  <div
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui message MailCheckMessage--container"
+  >
+    <div>
+      <p>
+        <a
+          href="https://ncsc.gov.uk"
+        >
+          https://ncsc.gov.uk
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MailCheckMessage when provided with the markdown flag and a mailto address it should match the snapshot 1`] = `
+<div>
+  <div
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui message MailCheckMessage--container"
+  >
+    <div>
+      <p>
+        mailto:me@ncsc.gov.uk
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MailCheckMessage when provided with the markdown flag it should match the snapshot 1`] = `
+<div>
+  <div
+    style="margin: 0.2em 0em; max-width: 600px;"
+    class="ui message MailCheckMessage--container"
+  >
+    <div>
+      <ul>
+        <li>
+          list item
+        </li>
+        <li>
+          another list item
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+`;

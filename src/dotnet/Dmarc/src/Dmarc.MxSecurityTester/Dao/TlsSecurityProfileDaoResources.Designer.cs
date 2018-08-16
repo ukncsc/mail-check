@@ -93,7 +93,7 @@ namespace Dmarc.MxSecurityTester.Dao {
         /// <summary>
         ///    Looks up a localized string similar to INSERT INTO `certificate_mapping`
         ///(`sequence`,
-        ///`dns_record_mx_tls_profile_2_id`,
+        ///`dns_record_mx_tls_profile_id`,
         ///`certificate_thumb_print`)
         ///VALUES.
         /// </summary>
@@ -125,29 +125,12 @@ namespace Dmarc.MxSecurityTester.Dao {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to  INSERT INTO `dns_record_mx_tls_profile_2`
+        ///    Looks up a localized string similar to INSERT INTO `dns_record_mx_tls_profile_results`
         ///(`id`,`mx_record_id`,
-        ///`end_date`,
+        ///`end_date`, 
         ///`failure_count`,
-        ///`test1_tls_version`,
-        ///`test1_cipher_suite`,
-        ///`test1_curve_group`,
-        ///`test1_signature_hash_alg`,
-        ///`test1_error`,
-        ///`test2_tls_version`,
-        ///`test2_cipher_suite`,
-        ///`test2_curve_group`,
-        ///`test2_signature_hash_alg`,
-        ///`test2_error`,
-        ///`test3_tls_version`,
-        ///`test3_cipher_suite`,
-        ///`test3_curve_group`,
-        ///`test3_signature_hash_alg`,
-        ///`test3_error`,
-        ///`test4_tls_version`,
-        ///`test4_cipher_suite`,
-        ///`test4_curve_group`,
-        ///`test4_signa [rest of string was truncated]&quot;;.
+        ///`data`)
+        ///VALUES.
         /// </summary>
         public static string InsertRecord {
             get {
@@ -168,66 +151,11 @@ namespace Dmarc.MxSecurityTester.Dao {
         }
         
         /// <summary>
-        ///    Looks up a localized string similar to  (@a{0},
+        ///    Looks up a localized string similar to (@a{0},
         ///@b{0},
         ///@c{0},
         ///@d{0},
-        ///@e{0},
-        ///@f{0},
-        ///@g{0},
-        ///@h{0},
-        ///@i{0},
-        ///@j{0},
-        ///@k{0},
-        ///@l{0},
-        ///@m{0},
-        ///@n{0},
-        ///@o{0},
-        ///@p{0},
-        ///@q{0},
-        ///@r{0},
-        ///@s{0},
-        ///@t{0},
-        ///@u{0},
-        ///@v{0},
-        ///@w{0},
-        ///@x{0},
-        ///@y{0},
-        ///@z{0},
-        ///@aa{0},
-        ///@ab{0},
-        ///@ac{0},
-        ///@ad{0},
-        ///@ae{0},
-        ///@af{0},
-        ///@ag{0},
-        ///@ah{0},
-        ///@ai{0},
-        ///@aj{0},
-        ///@ak{0},
-        ///@al{0},
-        ///@am{0},
-        ///@an{0},
-        ///@ao{0},
-        ///@ap{0},
-        ///@aq{0},
-        ///@ar{0},
-        ///@as{0},
-        ///@at{0},
-        ///@au{0},
-        ///@av{0},
-        ///@aw{0},
-        ///@ax{0},
-        ///@ay{0},
-        ///@az{0},
-        ///@ba{0},
-        ///@bb{0},
-        ///@bc{0},
-        ///@bd{0},
-        ///@be{0},
-        ///@bf{0},
-        ///@bg{0},
-        ///@bh{0} [rest of string was truncated]&quot;;.
+        ///@e{0}).
         /// </summary>
         public static string InsertRecordValueFormatString {
             get {
@@ -242,14 +170,17 @@ namespace Dmarc.MxSecurityTester.Dao {
         ///    mx.id AS &apos;mx_record_id&apos;,
         ///    mx.hostname AS &apos;mx_record_hostname&apos;,
         ///    tls.id AS &apos;tls_security_profile_id&apos;,
-        ///    tls.failure_count as &apos;failure_count&apos;,
-        ///	tls.test1_tls_version as &apos;test1_tls_version&apos;,
-        ///	tls.test1_cipher_suite as &apos;test1_cipher_suite&apos;,
-        ///	tls.test1_curve_group as &apos;test1_curve_group&apos;,
-        ///	tls.test1_signature_hash_alg as &apos;test1_signature_hash_alg&apos;,
-        ///	tls.test1_error as &apos;test1_error&apos;,
-        ///	tls.test2_tls_version as &apos;test2_tls_version&apos;,
-        ///	tls.test2 [rest of string was truncated]&quot;;.
+        ///	tls.failure_count as &apos;failure_count&apos;,
+        ///	tls.data as &apos;data&apos;,	 
+        ///    temp.lst_checked AS &apos;last_checked&apos;,
+        ///    c.thumb_print AS &apos;certificate_thumb_print&apos;,
+        ///    c.raw_data AS &apos;certificate_raw_data&apos;
+        ///FROM (
+        ///	SELECT d1.id as domain_id,
+        ///	d1.name as domain_name,
+        ///	MAX(COALESCE(tls1.last_checked, &apos;1900-01-01&apos;)) as lst_checked
+        ///	FROM domain d1
+        ///	JOIN [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SelectSecurityProfilesToUpdate {
             get {

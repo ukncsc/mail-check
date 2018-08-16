@@ -50,7 +50,7 @@ namespace Dmarc.MxSecurityTester.MxTester
         {
             MxRecordTlsSecurityProfile updatedSecurityProfile = await _tlsSecurityTester.Test(mxRecordTlsSecurityProfile);
 
-            bool recordUnchanged = mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Equals(updatedSecurityProfile.TlsSecurityProfile.Results);
+            bool recordUnchanged = mxRecordTlsSecurityProfile.TlsSecurityProfile.TlsResults.Equals(updatedSecurityProfile.TlsSecurityProfile.TlsResults);
             bool newRecord = !mxRecordTlsSecurityProfile.TlsSecurityProfile.Id.HasValue;
 
             _log.Debug($"Updated tls profile (mx record id:{mxRecordTlsSecurityProfile.MxRecord.Id}, " +
@@ -67,23 +67,9 @@ namespace Dmarc.MxSecurityTester.MxTester
             return new MxRecordTlsSecurityProfile(
                 oldMxRecordTlsSecurityProfile.MxRecord,
                 new TlsSecurityProfile(
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Id,
-                DateTime.UtcNow,
-                new TlsTestResults(
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.FailureCount,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test1Result,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test2Result,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test3Result,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test4Result,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test5Result,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test6Result,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test7Result,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test8Result,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test9Result,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test10Result,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test11Result,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test12Result,
-                oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Certificates)));
+                    oldMxRecordTlsSecurityProfile.TlsSecurityProfile.Id,
+                    DateTime.UtcNow,
+                    oldMxRecordTlsSecurityProfile.TlsSecurityProfile.TlsResults.Clone()));
         }
 
         private MxRecordTlsSecurityProfile CreateNewRecord(MxRecordTlsSecurityProfile mxRecordTlsSecurityProfile)
@@ -91,23 +77,8 @@ namespace Dmarc.MxSecurityTester.MxTester
             return new MxRecordTlsSecurityProfile(
                 mxRecordTlsSecurityProfile.MxRecord,
                 new TlsSecurityProfile(
-                null,
-                null,
-                new TlsTestResults(
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.FailureCount,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test1Result,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test2Result,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test3Result,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test4Result,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test5Result,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test6Result,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test7Result,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test8Result,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test9Result,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test10Result,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test11Result,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Test12Result,
-                mxRecordTlsSecurityProfile.TlsSecurityProfile.Results.Certificates)));
+                    null,
+                    null, mxRecordTlsSecurityProfile.TlsSecurityProfile.TlsResults.Clone()));
         }
     }
 }

@@ -3,10 +3,6 @@
   line-height: 1em;
 }
 
-.active.title.ShowMoreDropdown--title {
-  border: 3px #fdbd47 solid;
-}
-
 .ShowMoreDropdown--icon {
   color: #2b88c8;
 }

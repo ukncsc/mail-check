@@ -1,5 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`DomainSecurityTitle when children are present it should match the snapshot 1`] = `
+<div>
+  <h1
+    class="ui header DomainSecurityTitle--header"
+  >
+    a
+  </h1>
+  <div
+    class="DomainSecurityTitle--icon"
+  />
+  <p>
+    Last checked one day ago
+  </p>
+</div>
+`;
+
 exports[`DomainSecurityTitle when failures are present it should match the snapshot 1`] = `
 <div>
   <h1
@@ -35,23 +51,6 @@ exports[`DomainSecurityTitle when inconclusives are present it should match the 
       class="grey question circle big icon"
     />
   </div>
-</div>
-`;
-
-exports[`DomainSecurityTitle when last checked is present it should match the snapshot 1`] = `
-<div>
-  <h1
-    class="ui header DomainSecurityTitle--header"
-  >
-    a
-  </h1>
-  <div
-    class="DomainSecurityTitle--icon"
-  />
-  <p>
-    Last checked 
-    one day ago
-  </p>
 </div>
 `;
 

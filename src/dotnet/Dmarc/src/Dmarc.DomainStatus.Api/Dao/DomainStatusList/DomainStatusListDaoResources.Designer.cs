@@ -87,12 +87,16 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatusList {
         ///    Looks up a localized string similar to  SELECT 
         ///d.id as domain_id,
         ///d.name as domain_name,
-        ///MAX(IF(tls.mx_record_id IS NULL, 4, COALESCE(GREATEST(test1_result,test2_result,test3_result, test4_result, test5_result, test6_result, test7_result, test8_result, test9_result, test10_result, test11_result, test12_result), 0))) as tls_status,
+        ///MAX(IF(tls.mx_record_id IS NULL, 4, tls.tls_status)) as tls_status,
         ///dmarc.record IS NOT NULL as has_dmarc,
         ///COALESCE(dmarc_rm.max_error_severity, 
         ///IF(COUNT(DISTINCT(dmarc.id)) = 0, &apos;none&apos;,
         ///IF(dmarc_rm.domain_id IS NULL,&apos;pending&apos;,&apos;success&apos;))) as dmarc_status,
-        ///COALESCE(spf_rm.max_ [rest of string was truncated]&quot;;.
+        ///COALESCE(spf_rm.max_error_severity, 
+        ///IF(COUNT(DISTINCT(spf.id)) = 0, &apos;none&apos;,
+        ///IF(spf_rm.domain_id IS NULL,&apos;pending&apos;,&apos;success&apos;))) as spf_status
+        ///FROM domain d 
+        ///LEFT JOIN dns_record_mx mx ON mx.do [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SelectDomainSecurityInfoByDomainNames {
             get {
@@ -104,12 +108,16 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatusList {
         ///    Looks up a localized string similar to  SELECT 
         ///d.id as domain_id,
         ///d.name as domain_name,
-        ///MAX(IF(tls.mx_record_id IS NULL, 4, COALESCE(GREATEST(test1_result,test2_result,test3_result, test4_result, test5_result, test6_result, test7_result, test8_result, test9_result, test10_result, test11_result, test12_result), 0))) as tls_status,
+        ///MAX(IF(tls.mx_record_id IS NULL, 4, tls.tls_status)) as tls_status,
         ///dmarc.record IS NOT NULL as has_dmarc,
         ///COALESCE(dmarc_rm.max_error_severity, 
         ///	IF(COUNT(DISTINCT(dmarc.id)) = 0, &apos;none&apos;,
         ///		IF(dmarc_rm.domain_id IS NULL,&apos;pending&apos;,&apos;success&apos;))) as dmarc_status,
-        ///COALESCE(spf_rm.m [rest of string was truncated]&quot;;.
+        ///COALESCE(spf_rm.max_error_severity, 
+        ///	IF(COUNT(DISTINCT(spf.id)) = 0, &apos;none&apos;,
+        ///		IF(spf_rm.domain_id IS NULL,&apos;pending&apos;,&apos;success&apos;))) as spf_status
+        ///FROM domain d
+        ///LEFT JOIN dns_record_mx mx ON  [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SelectDomainsSecurityInfo {
             get {
@@ -121,16 +129,50 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatusList {
         ///    Looks up a localized string similar to  SELECT 
         ///d.id as domain_id,
         ///d.name as domain_name,
-        ///MAX(IF(tls.mx_record_id IS NULL, 4, COALESCE(GREATEST(test1_result,test2_result,test3_result, test4_result, test5_result, test6_result, test7_result, test8_result, test9_result, test10_result, test11_result, test12_result), 0))) as tls_status,
+        ///MAX(IF(tls.mx_record_id IS NULL, 4, tls.tls_status)) as tls_status,
         ///dmarc.record IS NOT NULL as has_dmarc,
         ///COALESCE(dmarc_rm.max_error_severity, 
         ///IF(COUNT(DISTINCT(dmarc.id)) = 0, &apos;none&apos;,
         ///IF(dmarc_rm.domain_id IS NULL,&apos;pending&apos;,&apos;success&apos;))) as dmarc_status,
-        ///COALESCE(spf_rm.max_ [rest of string was truncated]&quot;;.
+        ///COALESCE(spf_rm.max_error_severity, 
+        ///IF(COUNT(DISTINCT(spf.id)) = 0, &apos;none&apos;,
+        ///IF(spf_rm.domain_id IS NULL,&apos;pending&apos;,&apos;success&apos;))) as spf_status
+        ///FROM group_user_mapping gum
+        ///JOIN `group` g ON g.id [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SelectDomainsSecurityInfoByUserId {
             get {
                 return ResourceManager.GetString("SelectDomainsSecurityInfoByUserId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to  SELECT d.id AS domain_id, d.name AS domain_name, dmarc.record IS NOT NULL as has_dmarc, COALESCE(dmarc_rm.max_error_severity, &quot;none&quot;) AS dmarc_status, COALESCE(spf_rm.max_error_severity, &quot;none&quot;) AS spf_status, COALESCE(MAX(tls.tls_status), 0) AS tls_status
+        ///FROM domain d
+        ///LEFT JOIN dns_record_mx mx 
+        ///ON mx.domain_id = d.id
+        ///LEFT JOIN dns_record_mx_tls_evaluator_results tls 
+        ///ON mx.id = tls.mx_record_id
+        ///LEFT JOIN dns_record_dmarc dmarc 
+        ///ON dmarc.domain_id = d.id
+        ///LEFT JOIN dns_record_dmarc_read_model dmarc_rm  
+        ///ON [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string SelectSubdomains {
+            get {
+                return ResourceManager.GetString("SelectSubdomains", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///    Looks up a localized string similar to SELECT id, name FROM domain
+        ///WHERE name = @term
+        ///AND (monitor = 1 || publish = 1)
+        ///LIMIT 1;.
+        /// </summary>
+        public static string SelectWelcomeSearchResult {
+            get {
+                return ResourceManager.GetString("SelectWelcomeSearchResult", resourceCulture);
             }
         }
     }

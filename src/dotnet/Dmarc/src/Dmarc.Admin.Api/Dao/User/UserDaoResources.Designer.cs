@@ -81,8 +81,9 @@ namespace Dmarc.Admin.Api.Dao.User {
         /// <summary>
         ///    Looks up a localized string similar to SELECT d.id as domain_id, d.name as domain_name 
         ///FROM derived_user_domain_rollup_permissions p
-        ///JOIN domain d on d.id = p.domain_id
-        ///WHERE p.user_id = @userId;.
+        ///JOIN derived_domain_tree dt ON dt.parent_id = p.domain_id
+        ///JOIN domain d on d.id = dt.child_id
+        ///WHERE (d.monitor = 1 OR d.publish = 1) AND p.user_id = @userId;.
         /// </summary>
         public static string SelectDomainPermissions {
             get {

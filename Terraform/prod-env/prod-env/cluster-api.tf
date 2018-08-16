@@ -11,8 +11,8 @@ module "api-cluster" {
   db-access                 = "true"
   health-check-grace-period = "300"
   parameter-store-access    = "true"
-
-  default-instance-type     = "t2.small"
+  sns-access = "true"
+  default-instance-type     = "t2.medium"
   default-instance-count    = "1"
   prod-stage-instance-type  = "t2.medium"
   prod-stage-instance-count = "3"
@@ -25,7 +25,7 @@ module "api-cluster" {
   aws-region                = "${var.aws-region}"
   env-name                  = "${var.env-name}"
   aws-account-id            = "${var.aws-account-id}"
-  admin-subnets             = "${var.build-vpc == "" ? "" : data.aws_vpc.build-vpc.cidr_block}"
+  admin-subnets             = "${var.build-vpc == "" ? "" : var.build-vpc-cidr-block}"
   cloudwatch-alerts-sns-arn = "${aws_sns_topic.cloudwatch-alerts.arn}"
 }
 

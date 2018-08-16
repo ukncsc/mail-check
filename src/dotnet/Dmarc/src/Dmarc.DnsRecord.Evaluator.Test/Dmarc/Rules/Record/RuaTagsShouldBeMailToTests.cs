@@ -19,10 +19,23 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
         }
 
         [TestCaseSource(nameof(CreateTestCaseData))]
-        public void Test(Uri uri, bool isErrorExpected)
+        public void Test(string value, bool isErrorExpected)
+
         {
+            Uri uri;
+
+            Uri.TryCreate(value, UriKind.Absolute, out uri);
+
             DmarcRecord dmarcRecord = new DmarcRecord("",
-                new List<Tag> { new ReportUriAggregate("", new List<UriTag> { new UriTag("", new DmarcUri(uri), new MaxReportSize(1000, Unit.K)) }) },
+                new List<Tag>
+                {
+                    new ReportUriAggregate("",
+                        new List<UriTag>
+                        {
+                            new UriTag(value ?? "", new DmarcUri(uri),
+                                new MaxReportSize(1000, Unit.K))
+                        })
+                },
                 string.Empty);
 
             Error error;
@@ -36,8 +49,9 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
         public static IEnumerable<TestCaseData> CreateTestCaseData()
         {
             yield return new TestCaseData(null, false).SetName("No error when uri is null.");
-            yield return new TestCaseData(new Uri("mailto:a@b.com"), false).SetName("No error when uri is mailto.");
-            yield return new TestCaseData(new Uri("http://a.c.com"), true).SetName("Error when uri is not mailto.");
+            yield return new TestCaseData("mailto:a@b.com", false).SetName("No error when uri is mailto.");
+            yield return new TestCaseData("http://a.c.com", true).SetName("Error when uri is not mailto.");
+            yield return new TestCaseData("a@c.com", true).SetName("Error when email provided without mailto.");
         }
 
         //[Test]

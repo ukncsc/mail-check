@@ -6,23 +6,23 @@ namespace Dmarc.MxSecurityTester.Dao.Entities
     {
         public TlsSecurityProfile(
             ulong? id, 
-            DateTime? endDate, 
-            TlsTestResults results)
+            DateTime? endDate,
+            TlsTestResults tlsResults)
         {
             Id = id;
             EndDate = endDate;
-            Results = results;
+            TlsResults = tlsResults;
         }
 
         public ulong? Id { get; set; }
         public DateTime? EndDate { get; }
-        public TlsTestResults Results { get; }
+        public TlsTestResults TlsResults { get; }
 
         protected bool Equals(TlsSecurityProfile other)
         {
             return Id == other.Id && 
                 EndDate.Equals(other.EndDate) && 
-                Equals(Results, other.Results);
+                Equals(TlsResults, other.TlsResults);
         }
 
         public override bool Equals(object obj)
@@ -39,7 +39,7 @@ namespace Dmarc.MxSecurityTester.Dao.Entities
             {
                 var hashCode = Id.GetHashCode();
                 hashCode = (hashCode * 397) ^ EndDate.GetHashCode();
-                hashCode = (hashCode * 397) ^ (Results?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (TlsResults?.GetHashCode() ?? 0);
                 return hashCode;
             }
         }

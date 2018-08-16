@@ -11,10 +11,10 @@ module "frontend" {
   subnet-ids         = "${join(",", aws_subnet.frontend-subnet.*.id)}"
   subnet-cidr        = "${join(",", values(var.frontend-zone-subnets))}"
   //route53-zone-id           = "${aws_route53_zone.service-zone.id}"
-  //admin-subnets             = "${data.aws_vpc.build-vpc.cidr_block}"
+  //admin-subnets             = "${var.build-vpc-cidr-block}"
   cloudwatch-alerts-sns-arn = "${aws_sns_topic.cloudwatch-alerts.arn}"
   # Docker container setttings
-  registry-url              = "727873987145.dkr.ecr.eu-west-2.amazonaws.com/${var.env-name}/frontend:${var.frontend-container-githash}"
+  registry-url              = "${var.ecr-aws-account-id}.dkr.ecr.${var.aws-region}.amazonaws.com/${var.env-name}/frontend:${var.frontend-container-githash}"
   service-name              = "frontend"
   server-name               = "${var.web-url}"
   container-memory          = "${var.default-container-memory}"

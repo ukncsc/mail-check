@@ -1,1 +1,3 @@
-export { default as DomainSecurityContext } from './DomainSecurityContext';
+export {
+  default as DomainSecurityLocationContext,
+} from './DomainSecurityLocationContext';

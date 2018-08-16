@@ -11,6 +11,8 @@ resource "aws_db_subnet_group" "db-subnets" {
 resource "aws_rds_cluster_instance" "cluster_master" {
   identifier              = "${var.env-name}-db"
   cluster_identifier      = "${aws_rds_cluster.rds-cluster.id}"
+  engine                  = "aurora-mysql"
+  engine_version          = "5.7.12"
   instance_class          = "${var.db-master-size}"
   db_subnet_group_name    = "${aws_db_subnet_group.db-subnets.name}"
   db_parameter_group_name = "${aws_db_parameter_group.dmarc-rds-pg.name}"
@@ -22,6 +24,8 @@ resource "aws_rds_cluster_instance" "cluster_replicas" {
   promotion_tier          = 2
   identifier              = "${var.env-name}-db-replica${count.index}"
   cluster_identifier      = "${aws_rds_cluster.rds-cluster.id}"
+  engine                  = "aurora-mysql"
+  engine_version          = "5.7.12"
   instance_class          = "${var.db-replica-size}"
   db_subnet_group_name    = "${aws_db_subnet_group.db-subnets.name}"
   db_parameter_group_name = "${aws_db_parameter_group.dmarc-rds-pg.name}"
@@ -30,7 +34,7 @@ resource "aws_rds_cluster_instance" "cluster_replicas" {
 
 resource "aws_db_parameter_group" "dmarc-rds-pg" {
   name   = "mailcheck-pg-${var.env-name}"
-  family = "aurora5.6"
+  family = "aurora-mysql5.7"
 
   parameter {
     name  = "event_scheduler"
@@ -44,7 +48,7 @@ resource "aws_db_parameter_group" "dmarc-rds-pg" {
 
 resource "aws_rds_cluster_parameter_group" "dmarc-rdscluster-pg" {
   name        = "mailcheck-cluster-pg-${var.env-name}"
-  family      = "aurora5.6"
+  family      = "aurora-mysql5.7"
   description = "Mailcheck Aurora cluster parameter group"
 
   parameter {
@@ -55,6 +59,8 @@ resource "aws_rds_cluster_parameter_group" "dmarc-rdscluster-pg" {
 
 resource "aws_rds_cluster" "rds-cluster" {
   cluster_identifier = "${var.env-name}-cluster"
+  engine             = "aurora-mysql"
+  engine_version     = "5.7.12"
 
   #availability_zones        = ["${values(var.zone-names)}"] removing due to bug #3754
   database_name                   = "${var.db-name}"

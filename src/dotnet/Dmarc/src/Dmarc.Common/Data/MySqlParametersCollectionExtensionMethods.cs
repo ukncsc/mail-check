@@ -149,5 +149,16 @@ namespace Dmarc.Common.Data
             };
             collection.Add(parameter);
         }
+
+        public static void AddWithValue(this MySqlParameterCollection collection, string parameterName, double? value)
+        {
+            MySqlParameter parameter = new MySqlParameter
+            {
+                Value = value,
+                ParameterName = parameterName,
+                DbType = DbType.Double
+            };
+            collection.Add(parameter);
+        }
     }
 }

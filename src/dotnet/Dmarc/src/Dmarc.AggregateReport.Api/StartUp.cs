@@ -42,9 +42,8 @@ namespace Dmarc.AggregateReport.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHealthChecks(checks =>
-            {
-                checks.AddValueTaskCheck("HTTP Endpoint", () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));
-            })
+                checks.AddValueTaskCheck("HTTP Endpoint", () =>
+                    new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok"))))
             .AddTransient<ISenderStatisticsDao, SenderStatisticsDao>()
             .AddTransient<IAggregatedStatisticsDao, AggregatedStatisticsDao>()
             .AddTransient<IDailyStatisticsDao, DailyStatisticDao>()
@@ -58,17 +57,17 @@ namespace Dmarc.AggregateReport.Api
             .AddTransient<IPersistanceConnectionTester, DatabaseConnectionTester>()
             .AddTransient<IIdentityDao, IdentityDao>()
             .AddCors(options =>
-            {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
-            })
+                    builder =>
+                        builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials()))
             .AddAuthorization(options =>
-            {
-                options.AddPolicy(PolicyType.Admin, policy => policy.RequireAssertion(context => context.User.Claims.Any(_ => _.Type == ClaimTypes.Role && _.Value == RoleType.Admin)));
-            })
+                options.AddPolicy(PolicyType.Admin, policy =>
+                    policy.RequireAssertion(context =>
+                        context.User.Claims.Any(_ =>
+                            _.Type == ClaimTypes.Role && _.Value == RoleType.Admin))))
             .AddMvc();
         }
 
@@ -76,8 +75,9 @@ namespace Dmarc.AggregateReport.Api
         {
             loggerFactory.AddConsole((st, logLevel) => logLevel >= LogLevel.Debug);
 
-            app.UseMiddleware<IdentityMiddleware>()
-                .UseMiddleware<UnhandledExceptionLoggingMiddleware>()
+            app
+                .UseMiddleware<UnhandledExceptionMiddleware>()
+                .UseMiddleware<IdentityMiddleware>()
                 .UseCors("CorsPolicy")
                 .UseMvc();
         }

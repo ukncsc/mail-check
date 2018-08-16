@@ -16,6 +16,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Dmarc.Common.Api.Domain;
 
 namespace Dmarc.Admin.Api.Controllers
 {
@@ -60,7 +61,9 @@ namespace Dmarc.Admin.Api.Controllers
         public async Task<IActionResult> GetGroup(int id)
         {
             Group group = await _groupDao.GetGroupById(id);
-            return group == null ? (IActionResult)NotFound() : new ObjectResult(group);
+            return group == null
+                ? NotFound(new ErrorResponse("Group not found.", ErrorStatus.Information))
+                : new ObjectResult(group);
         }
 
         [Route("{id}/user", Name = nameof(GetGroupUsers))]
@@ -71,7 +74,7 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             List<User> users = await _userDao.GetUsersByGroupId(request.Id, request.Search, request.Page, request.PageSize);
@@ -86,7 +89,7 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             List<Domain.Domain> domains = await _domainDao.GetDomainsByGroupId(request.Id, request.Search, request.Page, request.PageSize);
@@ -94,7 +97,7 @@ namespace Dmarc.Admin.Api.Controllers
         }
 
         [HttpPatch]
-        [Route("{id}/user", Name=nameof(AddUsersToGroup))]
+        [Route("{id}/user", Name = nameof(AddUsersToGroup))]
         public async Task<IActionResult> AddUsersToGroup(ChangeMembershipRequest request)
         {
             ValidationResult validationResult = _idEntityIdsRequestValidator.Validate(request);
@@ -102,7 +105,7 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             List<Tuple<int, int>> groupUsers = request.EntityIds.Select(_ => Tuple.Create(request.Id, _)).ToList();
@@ -120,7 +123,7 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             List<Tuple<int, int>> groupUsers = request.EntityIds.Select(_ => Tuple.Create(request.Id, _)).ToList();
@@ -130,7 +133,7 @@ namespace Dmarc.Admin.Api.Controllers
         }
 
         [HttpPatch]
-        [Route("{id}/domain", Name=nameof(AddDomainsToGroup))]
+        [Route("{id}/domain", Name = nameof(AddDomainsToGroup))]
         public async Task<IActionResult> AddDomainsToGroup(ChangeMembershipRequest request)
         {
             ValidationResult validationResult = _idEntityIdsRequestValidator.Validate(request);
@@ -138,7 +141,7 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             List<Tuple<int, int>> groupDomains = request.EntityIds.Select(_ => Tuple.Create(request.Id, _)).ToList();
@@ -156,7 +159,7 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             List<Tuple<int, int>> groupDomains = request.EntityIds.Select(_ => Tuple.Create(request.Id, _)).ToList();
@@ -174,12 +177,12 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             Group newGroup = await _groupDao.CreateGroup(group);
 
-            return CreatedAtRoute(nameof(GetGroup), new {id = newGroup.Id}, newGroup);
+            return CreatedAtRoute(nameof(GetGroup), new { id = newGroup.Id }, newGroup);
         }
 
         [Route("search/{search?}")]
@@ -190,7 +193,7 @@ namespace Dmarc.Admin.Api.Controllers
             {
                 string email = User.FindFirst(_ => _.Type == ClaimTypes.Email)?.Value;
                 _log.LogWarning($"User {email} made bad request: {validationResult.GetErrorString()}");
-                return BadRequest(validationResult.GetErrorString());
+                return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
             List<Group> groups = await _groupDao.GetGroupsByName(request.Search, request.Limit, request.IncludedIds);

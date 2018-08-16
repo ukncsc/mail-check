@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using Amazon.Runtime.Internal.Util;
+﻿using System.Collections.Generic;
+using System.Text;
 using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.MxSecurityEvaluator.Dao;
 
 namespace Dmarc.MxSecurityEvaluator.Domain
 {
@@ -67,9 +64,41 @@ namespace Dmarc.MxSecurityEvaluator.Domain
                    && TlsHasFailedConnection(TlsWeakCipherSuitesRejected);
         }
 
+        public string GetFailedConnectionErrors()
+        {
+            List<string> errors = new List<string>();
+
+            if (HasFailedConnection())
+            {
+                AddErrorToList(errors, Tls12AvailableWithBestCipherSuiteSelected);
+                AddErrorToList(errors, Tls12AvailableWithBestCipherSuiteSelectedFromReverseList);
+                AddErrorToList(errors, Tls12AvailableWithSha2HashFunctionSelected);
+                AddErrorToList(errors, Tls12AvailableWithWeakCipherSuiteNotSelected);
+                AddErrorToList(errors, Tls11AvailableWithBestCipherSuiteSelected);
+                AddErrorToList(errors, Tls11AvailableWithWeakCipherSuiteNotSelected);
+                AddErrorToList(errors, Tls10AvailableWithBestCipherSuiteSelected);
+                AddErrorToList(errors, Tls10AvailableWithWeakCipherSuiteNotSelected);
+                AddErrorToList(errors, Ssl3FailsWithBadCipherSuite);
+                AddErrorToList(errors, TlsSecureEllipticCurveSelected);
+                AddErrorToList(errors, TlsSecureDiffieHellmanGroupSelected);
+                AddErrorToList(errors, TlsWeakCipherSuitesRejected);
+            }
+
+            return string.Join(", ", errors);
+
+        }
+
         private bool TlsHasFailedConnection(TlsConnectionResult result)
         {
             return result.Error == Error.SESSION_INITIALIZATION_FAILED || result.Error == Error.TCP_CONNECTION_FAILED;
+        }
+
+        private void AddErrorToList(List<string> errors, TlsConnectionResult result)
+        {
+            if (!errors.Contains(result.ErrorDescription))
+            {
+                errors.Add(result.ErrorDescription);
+            }
         }
     }
 }

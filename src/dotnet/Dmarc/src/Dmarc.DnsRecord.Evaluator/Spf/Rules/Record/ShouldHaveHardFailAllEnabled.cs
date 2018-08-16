@@ -26,7 +26,7 @@ namespace Dmarc.DnsRecord.Evaluator.Spf.Rules.Record
 
             string errorMessage = string.Format(SpfRulesResource.ShouldHaveHardFailAllEnabledErrorMessage,
                 _qualifierExplainer.Explain(Qualifier.Fail, true), _qualifierExplainer.Explain(Qualifier.SoftFail, true),
-                all.Value, _qualifierExplainer.Explain(Qualifier.Fail, true));
+                all.Value, _qualifierExplainer.Explain(all.Qualifier, true));
 
             error = new Error(ErrorType.Warning, errorMessage);
             return true;

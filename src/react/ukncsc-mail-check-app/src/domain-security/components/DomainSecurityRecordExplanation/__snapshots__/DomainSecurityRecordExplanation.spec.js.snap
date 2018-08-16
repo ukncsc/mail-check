@@ -2,7 +2,9 @@
 
 exports[`DomainSecurityRecordExplanation it should match the snapshot 1`] = `
 <div>
-  <h3>
+  <h3
+    class="ui header"
+  >
     Test
   </h3>
   <table

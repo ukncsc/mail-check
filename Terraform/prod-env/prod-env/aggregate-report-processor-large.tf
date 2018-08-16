@@ -18,4 +18,6 @@ module "aggregate-report-processor-large" {
   sqs-queue-count               = 1
   sqs-queue-arns                = "${aws_sqs_queue.aggregate-report-queue2.arn}"
   s3-bucket-arns                = "arn:aws:s3:::${var.aggregate-report-bucket}/*"
+  environment = {DkimSelectorsTopicArn = "${aws_sns_topic.selector-seen-in-aggregate-report.arn}"}
+  sns-arns = [ "${aws_sns_topic.selector-seen-in-aggregate-report.arn}" ]
 }

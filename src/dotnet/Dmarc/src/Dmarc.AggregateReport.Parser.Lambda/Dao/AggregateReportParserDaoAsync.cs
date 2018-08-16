@@ -41,6 +41,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao
                     command.Parameters.AddWithValue("request_id", aggregateReportEntity.RequestId);
                     command.Parameters.AddWithValue("original_uri", aggregateReportEntity.OrginalUri);
                     command.Parameters.AddWithValue("attachment_filename", aggregateReportEntity.AttachmentFilename);
+                    command.Parameters.AddWithValue("version", aggregateReportEntity.Version);
                     command.Parameters.AddWithValue("org_name", aggregateReportEntity.OrgName);
                     command.Parameters.AddWithValue("email", aggregateReportEntity.Email);
                     command.Parameters.AddWithValue("report_id", aggregateReportEntity.ReportId);
@@ -54,6 +55,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao
                     command.Parameters.AddWithValue("p", aggregateReportEntity.P.ToString());
                     command.Parameters.AddWithValue("sp", aggregateReportEntity.Sp?.ToString());
                     command.Parameters.AddWithValue("pct", aggregateReportEntity.Pct);
+                    command.Parameters.AddWithValue("fo", aggregateReportEntity.Fo);
                     command.Parameters.AddWithValue("created_date", DateTime.UtcNow);
                     int numberOfUpdates = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
 
@@ -101,7 +103,8 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao
                     command.Parameters.AddWithValue($"e{i}", recordEntityBatch[i].Dkim?.ToString());
                     command.Parameters.AddWithValue($"f{i}", recordEntityBatch[i].Spf.ToString());
                     command.Parameters.AddWithValue($"g{i}", recordEntityBatch[i].EnvelopeTo);
-                    command.Parameters.AddWithValue($"h{i}", recordEntityBatch[i].HeaderFrom);
+                    command.Parameters.AddWithValue($"h{i}", recordEntityBatch[i].EnvelopeFrom);
+                    command.Parameters.AddWithValue($"i{i}", recordEntityBatch[i].HeaderFrom);
                 }
 
                 command.CommandText = stringBuilder.ToString();
@@ -187,8 +190,9 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao
 
                     command.Parameters.AddWithValue($"a{i}", dkimAuthResultEntityBatch[i].RecordId);
                     command.Parameters.AddWithValue($"b{i}", dkimAuthResultEntityBatch[i].Domain);
-                    command.Parameters.AddWithValue($"c{i}", dkimAuthResultEntityBatch[i].Result?.ToString());
-                    command.Parameters.AddWithValue($"d{i}", dkimAuthResultEntityBatch[i].HumanResult);
+                    command.Parameters.AddWithValue($"c{i}", dkimAuthResultEntityBatch[i].Selector);
+                    command.Parameters.AddWithValue($"d{i}", dkimAuthResultEntityBatch[i].Result?.ToString());
+                    command.Parameters.AddWithValue($"e{i}", dkimAuthResultEntityBatch[i].HumanResult);
                 }
 
                 command.CommandText = stringBuilder.ToString();
@@ -220,7 +224,8 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao
 
                     command.Parameters.AddWithValue($"a{i}", spfAuthResultEntityBatch[i].RecordId);
                     command.Parameters.AddWithValue($"b{i}", spfAuthResultEntityBatch[i].Domain);
-                    command.Parameters.AddWithValue($"c{i}", spfAuthResultEntityBatch[i].Result?.ToString());
+                    command.Parameters.AddWithValue($"c{i}", spfAuthResultEntityBatch[i].Scope?.ToString());
+                    command.Parameters.AddWithValue($"d{i}", spfAuthResultEntityBatch[i].Result?.ToString());
                 }
 
                 command.CommandText = stringBuilder.ToString();

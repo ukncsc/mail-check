@@ -51,7 +51,9 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Serialisation.AggregateReportDeser
             int pctCandidate;
             int? pct = int.TryParse(policyPublished.SingleOrDefault("pct")?.Value, out pctCandidate) ? pctCandidate : (int?)null;
 
-            return new PolicyPublished(domain, adkim, aspf, p, sp, pct);
+            string fo = policyPublished.SingleOrDefault("fo")?.Value;
+
+            return new PolicyPublished(domain, adkim, aspf, p, sp, pct, fo);
         }
     }
 }

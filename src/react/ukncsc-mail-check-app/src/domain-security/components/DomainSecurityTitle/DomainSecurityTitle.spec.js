@@ -1,6 +1,4 @@
 /* eslint-disable import/first */
-jest.mock('moment', () => () => ({ fromNow: () => 'one day ago' }));
-
 import React from 'react';
 import { render } from 'react-testing-library';
 import 'dom-testing-library/extend-expect';
@@ -12,7 +10,7 @@ describe('DomainSecurityTitle', () => {
   describe('when failures are present', () => {
     beforeEach(() => {
       ({ container } = render(
-        <DomainSecurityTitle failures={['err!']}>a</DomainSecurityTitle>
+        <DomainSecurityTitle title="a" failures={['err!']} />
       ));
     });
 
@@ -25,11 +23,11 @@ describe('DomainSecurityTitle', () => {
       ).toHaveLength(1));
   });
 
-  describe('when last checked is present', () => {
+  describe('when children are present', () => {
     beforeEach(() => {
       ({ container } = render(
-        <DomainSecurityTitle lastChecked="2018-01-01T12:00">
-          a
+        <DomainSecurityTitle title="a">
+          <p>Last checked one day ago</p>
         </DomainSecurityTitle>
       ));
     });
@@ -37,7 +35,7 @@ describe('DomainSecurityTitle', () => {
     test('it should match the snapshot', () =>
       expect(container).toMatchSnapshot());
 
-    test('it should display last checked', () =>
+    test('it should display render the children', () =>
       expect(container.getElementsByTagName('p')[0]).toHaveTextContent(
         'Last checked one day ago'
       ));
@@ -46,7 +44,7 @@ describe('DomainSecurityTitle', () => {
   describe('when warnings are present without failures', () => {
     beforeEach(() => {
       ({ container } = render(
-        <DomainSecurityTitle warnings={['warn!']}>a</DomainSecurityTitle>
+        <DomainSecurityTitle title="a" warnings={['warn!']} />
       ));
     });
 
@@ -62,9 +60,7 @@ describe('DomainSecurityTitle', () => {
   describe('when inconclusives are present', () => {
     beforeEach(() => {
       ({ container } = render(
-        <DomainSecurityTitle inconclusives={['inconclusive!']}>
-          a
-        </DomainSecurityTitle>
+        <DomainSecurityTitle title="a" inconclusives={['inconclusive!']} />
       ));
     });
 
@@ -79,7 +75,7 @@ describe('DomainSecurityTitle', () => {
 
   describe('when no warnings, failures or inconclusives are present', () => {
     beforeEach(() => {
-      ({ container } = render(<DomainSecurityTitle>a</DomainSecurityTitle>));
+      ({ container } = render(<DomainSecurityTitle title="a" />));
     });
 
     test('it should match the snapshot', () =>

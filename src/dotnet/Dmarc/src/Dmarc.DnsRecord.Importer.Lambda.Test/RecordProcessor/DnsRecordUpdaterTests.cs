@@ -66,28 +66,6 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.RecordProcessor
         }
 
         [Test]
-        public async Task ExistingRecordsRemainUntouchedSpaceInsensitive()
-        {
-            string domain = "a.b.com";
-            DomainEntity domainEntity = new DomainEntity(1, domain);
-            DmarcRecordInfo existingRecord = new DmarcRecordInfo("record with spaces");
-            DmarcRecordInfo incomingRecord = new DmarcRecordInfo("record  with  spaces");
-
-            Dictionary<DomainEntity, List<RecordEntity>> records = new Dictionary<DomainEntity, List<RecordEntity>>
-            {
-                { domainEntity, new List<RecordEntity>{new RecordEntity(1, domainEntity, incomingRecord, RCode.NoError, 0)}}
-            };
-
-            A.CallTo(() => _dnsRecordClient.GetRecord(domain)).Returns(Task.FromResult(new DnsResponse(new List<RecordInfo> { existingRecord }, RCode.NoError)));
-
-            List<RecordEntity> updatedRecords = await _dnsRecordsUpdater.UpdateRecord(records);
-
-            Assert.That(updatedRecords.Count, Is.EqualTo(1));
-            Assert.That(updatedRecords[0].EndDate, Is.Null);
-            Assert.That(updatedRecords[0].RecordInfo, Is.EqualTo(existingRecord));
-        }
-
-        [Test]
         public async Task NewRecordsCorrectlyCreated()
         {
             string domain = "a.b.com";

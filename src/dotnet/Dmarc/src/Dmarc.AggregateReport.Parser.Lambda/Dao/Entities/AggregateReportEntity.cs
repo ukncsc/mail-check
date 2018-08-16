@@ -9,6 +9,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao.Entities
         public string RequestId { get; set; }
         public string OrginalUri { get; set; }
         public string AttachmentFilename { get; set; }
+        public double? Version { get; set; }
         public string OrgName { get; set; }
         public string Email { get; set; }    
         public string ReportId { get; set; }
@@ -22,6 +23,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao.Entities
         public EntityDisposition P { get; set; }
         public EntityDisposition? Sp { get; set; }
         public int? Pct { get; set; }
+        public string Fo { get; set; }
         public List<RecordEntity> Records { get; set; } = new List<RecordEntity>();
     }
 }

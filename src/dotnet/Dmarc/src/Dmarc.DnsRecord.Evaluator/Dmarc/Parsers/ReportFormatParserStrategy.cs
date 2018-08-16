@@ -1,6 +1,6 @@
-using System;
 using Dmarc.DnsRecord.Evaluator.Dmarc.Domain;
 using Dmarc.DnsRecord.Evaluator.Rules;
+using Dmarc.Common.Util;
 
 namespace Dmarc.DnsRecord.Evaluator.Dmarc.Parsers
 {
@@ -9,7 +9,7 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Parsers
         public Tag Parse(string tag, string value)
         {
             ReportFormatType reportFormatType;
-            if (!Enum.TryParse(value, true, out reportFormatType))
+            if (!value.TryParseExactEnum(out reportFormatType))
             {
                 reportFormatType = ReportFormatType.Unknown;
             }

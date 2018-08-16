@@ -118,9 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MetricsQuery" xml:space="preserve">
-    <value>SELECT week_beginning, p_monitor + p_block p_any,p_monitor, p_block, rua_mc, ruf_mc, domains, users, dws.domains_reporting domains_aggregate_reporting, aggregate_report_count, emails_blocked, dwsf.domains_reporting domains_forensic_reporting, forensic_report_count 
+    <value>SELECT week_beginning, p_monitor + p_block p_any,p_monitor, p_block, rua_mc, ruf_mc, domains, users, dws.domains_reporting domains_aggregate_reporting, aggregate_report_count, emails_blocked
 FROM derived_weekly_stats dws 
-JOIN derived_weekly_stats_forensic dwsf USING (week_beginning)
 WHERE (week_beginning &gt; @start OR @start IS NULL) 
 AND (week_beginning &lt; @end  OR @end  IS NULL);</value>
   </data>

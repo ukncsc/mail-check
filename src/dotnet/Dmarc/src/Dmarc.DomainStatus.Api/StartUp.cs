@@ -25,7 +25,6 @@ using Microsoft.Extensions.HealthChecks;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -46,8 +45,6 @@ namespace Dmarc.DomainStatus.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            HttpClient httpClient = new HttpClient();
-
             services.AddHealthChecks(checks =>
                 {
                     checks.AddValueTaskCheck("HTTP Endpoint", () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));
@@ -64,11 +61,15 @@ namespace Dmarc.DomainStatus.Api
             .AddTransient<IConnectionInfoAsync, ConnectionInfoAsync>()
             .AddTransient<IDomainValidator, DomainValidator>()
             .AddTransient<IIdentityDao, IdentityDao>()
-            .AddTransient<IPermissionDao, PermissionDao>()
-            .AddTransient<IReverseDnsApi, ReverseDnsApi>()
-            .AddTransient<IReverseDnsApiConfig, ReverseDnsApiConfig>()
-            .AddSingleton<HttpClient>(httpClient)
             .AddSingleton<IOrganisationalDomainProvider, OrganisationDomainProvider>()
+            .AddTransient<IPermissionDao, PermissionDao>()
+            .AddTransient<IReverseDnsApi, ReverseDnsApiClient>()
+            .AddSingleton<IReverseDnsApiConfig, ReverseDnsApiConfig>()
+            .AddTransient<ICertificateEvaluatorApi, CertificateEvaluatorApiClient>()
+            .AddSingleton<ICertificateEvaluatorApiConfig, CertificateEvaluatorApiConfig>()
+            .AddSingleton<IDomainValidator, DomainValidator>()
+            .AddSingleton<IPublicDomainListValidator, PublicDomainListValidator>()
+            .AddSingleton(new ReverseDnsApiConfig())
             .AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
@@ -88,8 +89,9 @@ namespace Dmarc.DomainStatus.Api
         {
             loggerFactory.AddConsole((st, logLevel) => logLevel >= LogLevel.Debug);
 
-            app.UseMiddleware<IdentityMiddleware>()
-                .UseMiddleware<UnhandledExceptionLoggingMiddleware>()
+            app
+                .UseMiddleware<UnhandledExceptionMiddleware>()
+                .UseMiddleware<IdentityMiddleware>()
                 .UseCors("CorsPolicy")
                 .UseMvc();
         }

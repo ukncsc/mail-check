@@ -13,6 +13,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Dao.Entities
         public EntityDmarcResult? Spf { get; set; }
         public List<PolicyOverrideReasonEntity> Reason { get; set; } = new List<PolicyOverrideReasonEntity>();
         public string EnvelopeTo { get; set; }
+        public string EnvelopeFrom { get; set; }
         public string HeaderFrom { get; set; }
         public List<DkimAuthResultEntity> DkimAuthResults { get; set; } = new List<DkimAuthResultEntity>();
         public List<SpfAuthResultEntity> SpfAuthResults { get; set; } = new List<SpfAuthResultEntity>();

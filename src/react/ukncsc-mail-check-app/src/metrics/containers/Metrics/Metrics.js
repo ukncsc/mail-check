@@ -21,21 +21,25 @@ class Metrics extends React.Component {
     latest: {},
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.loadMetrics();
   }
 
-  componentWillReceiveProps(newProps) {
-    if (newProps.metrics && newProps.metrics.data) {
-      const { data } = newProps.metrics;
+  static getDerivedStateFromProps(props, state) {
+    if (props.metrics && props.metrics.data) {
+      const { data } = props.metrics;
       const dataPoints = Object.keys(data).sort((a, b) =>
         moment(a).diff(moment(b))
       );
-      this.setState({
+
+      return {
+        ...state,
         dataPoints,
         latest: data[dataPoints[dataPoints.length - 1]] || {},
-      });
+      };
     }
+
+    return null;
   }
 
   setDateRange = (startDate, endDate) =>
@@ -46,12 +50,15 @@ class Metrics extends React.Component {
   sumDataValues = property => {
     const sumDataValuesReducer = (accumulator, point) =>
       this.props.metrics.data[point][property] + accumulator;
+
     const sum = this.state.dataPoints.reduce(sumDataValuesReducer, 0);
+
     return numeral(sum).format('0.0a');
   };
 
   loadMetrics = () => {
     const { startDate, endDate } = this.state;
+
     if (startDate && endDate) {
       this.props.fetchMetrics(
         startDate.format('YYYY-MM-DD'),
@@ -119,15 +126,11 @@ class Metrics extends React.Component {
                 values={{
                   'Domains Reporting Aggregate':
                     latest.domainsAggregateReporting,
-                  'Domains Reporting Forensic': latest.domainsForensicReporting,
                 }}
               />
               <MetricsChart
                 data={data}
-                properties={[
-                  'domainsAggregateReporting',
-                  'domainsForensicReporting',
-                ]}
+                properties={['domainsAggregateReporting']}
                 dataPoints={dataPoints}
               />
               <h2>Reports Received</h2>
@@ -136,19 +139,13 @@ class Metrics extends React.Component {
                   'Aggregate Reports Received': this.sumDataValues(
                     'aggregateReportsReceived'
                   ),
-                  'Forensic Reports Received': this.sumDataValues(
-                    'forensicReportsReceived'
-                  ),
                 }}
                 size="large"
               />
               <MetricsChart
                 data={data}
                 dataPoints={dataPoints}
-                properties={[
-                  'aggregateReportsReceived',
-                  'forensicReportsReceived',
-                ]}
+                properties={['aggregateReportsReceived']}
               />
               <h2>Mail Check Usage</h2>
               <MetricsHeadlineStats
@@ -168,16 +165,11 @@ class Metrics extends React.Component {
                 values={{
                   'RUA Configured for Mail Check':
                     latest.ruaConfiguredForMailCheck,
-                  'RUF Configured for Mail Check':
-                    latest.rufConfiguredForMailCheck,
                 }}
               />
               <MetricsChart
                 data={data}
-                properties={[
-                  'ruaConfiguredForMailCheck',
-                  'rufConfiguredForMailCheck',
-                ]}
+                properties={['ruaConfiguredForMailCheck']}
                 dataPoints={this.state.dataPoints}
               />
               <h2>Mail Check Impact</h2>
@@ -203,4 +195,7 @@ const mapDispatchToProps = dispatch => ({
   fetchMetrics: (start, end) => dispatch(fetchMetrics(start, end)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Metrics);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Metrics);

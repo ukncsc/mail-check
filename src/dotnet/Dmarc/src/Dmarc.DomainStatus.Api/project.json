@@ -23,7 +23,9 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Microsoft.AspNetCore.HealthChecks": "1.0.0",
     "Dmarc.Common.Interface": "1.0.0-*",
-    "Dmarc.Common.PublicSuffix": "1.0.0-*"
+    "Dmarc.Common.PublicSuffix": "1.0.0-*",
+    "Flurl.Http": "2.3.1",
+    "Flurl": "2.7.1"
   },
 
   "tools": {

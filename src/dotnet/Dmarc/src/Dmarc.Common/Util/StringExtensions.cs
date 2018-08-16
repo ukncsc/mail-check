@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Dmarc.Common.Util
 {
@@ -17,5 +19,10 @@ namespace Dmarc.Common.Util
                 .Trim()
                 .ToLower();
         }
+
+        public static bool TryParseExactEnum<T>(this string value, out T t, bool caseInsensitive = true)
+            where T : struct =>
+                Enum.TryParse(value, caseInsensitive, out t) &&
+                Enum.GetNames(typeof(T)).Any(_ => _.Equals(value.Trim(), StringComparison.OrdinalIgnoreCase));
     }
 }

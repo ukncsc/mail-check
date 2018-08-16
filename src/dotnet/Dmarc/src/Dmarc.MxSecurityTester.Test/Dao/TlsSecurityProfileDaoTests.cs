@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Dmarc.Common.Data;
@@ -11,7 +12,10 @@ using Dmarc.MxSecurityTester.Config;
 using Dmarc.MxSecurityTester.Dao;
 using Dmarc.MxSecurityTester.Dao.Entities;
 using FakeItEasy;
+using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using NUnit.Framework;
+using MySqlHelper = Dmarc.Common.Data.MySqlHelper;
 
 namespace Dmarc.MxSecurityTester.Test.Dao
 {
@@ -37,7 +41,8 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             _connectionInfo = A.Fake<IConnectionInfoAsync>();
             _mxSecurityTesterConfig = A.Fake<IMxSecurityTesterConfig>();
-            _domainTlsSecurityProfileDao = new DomainTlsSecurityProfileDao(_connectionInfo, _mxSecurityTesterConfig, A.Fake<ILogger>());
+            _domainTlsSecurityProfileDao =
+                new DomainTlsSecurityProfileDao(_connectionInfo, _mxSecurityTesterConfig, A.Fake<ILogger>());
 
             A.CallTo(() => _connectionInfo.GetConnectionStringAsync()).Returns(Task.FromResult(ConnectionString));
         }
@@ -47,7 +52,9 @@ namespace Dmarc.MxSecurityTester.Test.Dao
         {
             SetConfig(_mxSecurityTesterConfig, 10, 1, 10);
 
-            List<DomainTlsSecurityProfile> tlsSecurityProfiles = await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
+            List<DomainTlsSecurityProfile> tlsSecurityProfiles =
+                await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
+
 
             Assert.That(tlsSecurityProfiles, Is.Empty);
         }
@@ -63,18 +70,29 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             SetConfig(_mxSecurityTesterConfig, 10, 1, 10);
 
-            List<DomainTlsSecurityProfile> tlsSecurityProfiles = await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
+            List<DomainTlsSecurityProfile> tlsSecurityProfiles =
+                await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
 
             Assert.That(tlsSecurityProfiles.Count, Is.EqualTo(1));
             Assert.That(tlsSecurityProfiles[0].Profiles.Count, Is.EqualTo(1));
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Certificates, Is.Empty);
+            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Certificates, Is.Empty);
             Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Id, Is.Null);
             Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.EndDate, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.Version, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.CipherSuite, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.CurveGroup, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.SignatureHashAlgorithm, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.Error, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.Version, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.CipherSuite, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.CurveGroup, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.SignatureHashAlgorithm, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.Error, Is.Null);
         }
 
         [Test]
@@ -85,29 +103,43 @@ namespace Dmarc.MxSecurityTester.Test.Dao
             DateTime earlier = DateTime.UtcNow.AddSeconds(-(successInterval + 1));
 
             MxRecord mxRecord = InsertMxRecord(1, Host1, DomainName1, earlier);
-            
+
             TlsSecurityProfile profile = InsertTlsSecurityProfile(mxRecord.Id, earlier, null, earlier, 0);
             InsertCertificate(1, profile.Id.Value, CertThumbPrint1);
             InsertCertificate(2, profile.Id.Value, CertThumbPrint2);
 
             SetConfig(_mxSecurityTesterConfig, successInterval, 1, 10);
 
-            List<DomainTlsSecurityProfile> tlsSecurityProfiles = await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
+            List<DomainTlsSecurityProfile> tlsSecurityProfiles =
+                await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
 
             Assert.That(tlsSecurityProfiles.Count, Is.EqualTo(1));
             Assert.That(tlsSecurityProfiles[0].Profiles.Count, Is.EqualTo(1));
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Certificates, Is.Not.Null);
+            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Certificates, Is.Not.Null);
             Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Id, Is.Not.Null);
             Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.EndDate, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.Version, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.CipherSuite, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.CurveGroup, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.SignatureHashAlgorithm, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.Error, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.Version, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.CipherSuite, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.CurveGroup, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.SignatureHashAlgorithm, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.Error, Is.Null);
 
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Certificates.Count, Is.EqualTo(2));
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Certificates[0].Thumbprint, Is.EqualTo(CertThumbPrint1));
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Certificates[1].Thumbprint, Is.EqualTo(CertThumbPrint2));
+            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Certificates.Count,
+                Is.EqualTo(2));
+            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Certificates[0].Thumbprint,
+                Is.EqualTo(CertThumbPrint1));
+            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Certificates[1].Thumbprint,
+                Is.EqualTo(CertThumbPrint2));
         }
 
         [Test]
@@ -123,7 +155,8 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             SetConfig(_mxSecurityTesterConfig, successInterval, 1, 10);
 
-            List<DomainTlsSecurityProfile> tlsSecurityProfiles = await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
+            List<DomainTlsSecurityProfile> tlsSecurityProfiles =
+                await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
 
             Assert.That(tlsSecurityProfiles, Is.Empty);
         }
@@ -141,21 +174,33 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             SetConfig(_mxSecurityTesterConfig, successInterval, failureInterval, 10);
 
-            List<DomainTlsSecurityProfile> tlsSecurityProfiles = await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
+            List<DomainTlsSecurityProfile> tlsSecurityProfiles =
+                await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
 
             Assert.That(tlsSecurityProfiles.Count, Is.EqualTo(1));
             Assert.That(tlsSecurityProfiles[0].Profiles.Count, Is.EqualTo(1));
             Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Id, Is.Not.Null);
             Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.EndDate, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.Version, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.CipherSuite, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.CurveGroup, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.SignatureHashAlgorithm, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.Error, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.Version, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.CipherSuite, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.CurveGroup, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.SignatureHashAlgorithm, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.Error, Is.Null);
         }
 
         [Test]
-        public async Task RetrievesNoSecurityProfilesWhenSuccessfulSecurityPrfilesDontNeedUpdatingAt4FailuresRevertsToSucessInterval()
+        public async Task
+            RetrievesNoSecurityProfilesWhenSuccessfulSecurityPrfilesDontNeedUpdatingAt4FailuresRevertsToSucessInterval()
         {
             int successInterval = 10;
             int failureInterval = 5;
@@ -167,13 +212,15 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             SetConfig(_mxSecurityTesterConfig, successInterval, failureInterval, 10);
 
-            List<DomainTlsSecurityProfile> tlsSecurityProfiles = await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
+            List<DomainTlsSecurityProfile> tlsSecurityProfiles =
+                await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
 
             Assert.That(tlsSecurityProfiles.Count, Is.EqualTo(0));
         }
 
         [Test]
-        public async Task RetrievesSecurityProfilesWhenSuccessfulSecurityPrfilesDontNeedUpdatingAt4FailuresRevertsToSucessInterval()
+        public async Task
+            RetrievesSecurityProfilesWhenSuccessfulSecurityPrfilesDontNeedUpdatingAt4FailuresRevertsToSucessInterval()
         {
             int successInterval = 10;
             int failureInterval = 5;
@@ -185,17 +232,28 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             SetConfig(_mxSecurityTesterConfig, successInterval, failureInterval, 10);
 
-            List<DomainTlsSecurityProfile> tlsSecurityProfiles = await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
+            List<DomainTlsSecurityProfile> tlsSecurityProfiles =
+                await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
 
             Assert.That(tlsSecurityProfiles.Count, Is.EqualTo(1));
             Assert.That(tlsSecurityProfiles[0].Profiles.Count, Is.EqualTo(1));
             Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Id, Is.Not.Null);
             Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.EndDate, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.Version, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.CipherSuite, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.CurveGroup, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.SignatureHashAlgorithm, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.Error, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.Version, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.CipherSuite, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.CurveGroup, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.SignatureHashAlgorithm, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.Error, Is.Null);
         }
 
         [Test]
@@ -211,7 +269,8 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             SetConfig(_mxSecurityTesterConfig, successInterval, failureInterval, 10);
 
-            List<DomainTlsSecurityProfile> tlsSecurityProfiles = await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
+            List<DomainTlsSecurityProfile> tlsSecurityProfiles =
+                await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
 
             Assert.That(tlsSecurityProfiles, Is.Empty);
         }
@@ -223,7 +282,8 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             SetConfig(_mxSecurityTesterConfig, 10, 1, 10);
 
-            List<DomainTlsSecurityProfile> tlsSecurityProfiles = await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
+            List<DomainTlsSecurityProfile> tlsSecurityProfiles =
+                await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
 
             Assert.That(tlsSecurityProfiles, Is.Empty);
         }
@@ -241,17 +301,28 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             SetConfig(_mxSecurityTesterConfig, successInterval, failureInterval, 10);
 
-            List<DomainTlsSecurityProfile> tlsSecurityProfiles = await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
+            List<DomainTlsSecurityProfile> tlsSecurityProfiles =
+                await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
 
             Assert.That(tlsSecurityProfiles.Count, Is.EqualTo(1));
             Assert.That(tlsSecurityProfiles[0].Profiles.Count, Is.EqualTo(1));
             Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Id, Is.Null);
             Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.EndDate, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.Version, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.CipherSuite, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.CurveGroup, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.SignatureHashAlgorithm, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.Error, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.Version, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.CipherSuite, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.CurveGroup, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.SignatureHashAlgorithm, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.Error, Is.Null);
         }
 
         [Test]
@@ -269,17 +340,28 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             SetConfig(_mxSecurityTesterConfig, successInterval, failureInterval, 10);
 
-            List<DomainTlsSecurityProfile> tlsSecurityProfiles = await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
+            List<DomainTlsSecurityProfile> tlsSecurityProfiles =
+                await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
 
             Assert.That(tlsSecurityProfiles.Count, Is.EqualTo(1));
             Assert.That(tlsSecurityProfiles[0].Profiles.Count, Is.EqualTo(1));
             Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Id, Is.Not.Null);
             Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.EndDate, Is.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.Version, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.CipherSuite, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.CurveGroup, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.SignatureHashAlgorithm, Is.Not.Null);
-            Assert.That(tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result.Error, Is.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.Version, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.CipherSuite, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.CurveGroup, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.SignatureHashAlgorithm, Is.Not.Null);
+            Assert.That(
+                tlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected.Error, Is.Null);
         }
 
         [Test]
@@ -295,7 +377,8 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             SetConfig(_mxSecurityTesterConfig, 10, 10, 2);
 
-            List<DomainTlsSecurityProfile> tlsSecurityProfiles = await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
+            List<DomainTlsSecurityProfile> tlsSecurityProfiles =
+                await _domainTlsSecurityProfileDao.GetSecurityProfilesForUpdate();
 
             Assert.That(tlsSecurityProfiles.Count, Is.EqualTo(2));
         }
@@ -304,7 +387,7 @@ namespace Dmarc.MxSecurityTester.Test.Dao
         public async Task InsertsNewRecords()
         {
             MxRecord mxRecord1 = InsertMxRecord(1, Host1, DomainName1, DateTime.Now);
-            
+
             List<DomainTlsSecurityProfile> domainTlsSecurityProfiles = new List<DomainTlsSecurityProfile>
             {
                 new DomainTlsSecurityProfile(new Domain(1, "domain"), new List<MxRecordTlsSecurityProfile>
@@ -330,41 +413,135 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             Assert.That(domainTlsSecurityProfiles[0].Profiles.Count, Is.EqualTo(retrievedSecurityProfiles.Count));
 
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.FailureCount, Is.EqualTo(retrievedSecurityProfiles[0].Results.FailureCount));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.EndDate, Is.EqualTo(retrievedSecurityProfiles[0].EndDate));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test1Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test1Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test2Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test2Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test3Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test3Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test4Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test4Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test5Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test5Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test6Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test6Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test7Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test7Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test8Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test8Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test9Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test9Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test10Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test10Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test11Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test11Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Test12Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test12Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Certificates.Count, Is.EqualTo(2));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Certificates[0].Thumbprint, Is.EqualTo(CertThumbPrint1));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.Certificates[1].Thumbprint, Is.EqualTo(CertThumbPrint2));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.FailureCount,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.FailureCount));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.EndDate,
+                Is.EqualTo(retrievedSecurityProfiles[0].EndDate));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.Tls12AvailableWithBestCipherSuiteSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelectedFromReverseList));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithSha2HashFunctionSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.Tls12AvailableWithSha2HashFunctionSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithWeakCipherSuiteNotSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results
+                    .Tls12AvailableWithWeakCipherSuiteNotSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls11AvailableWithBestCipherSuiteSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.Tls11AvailableWithBestCipherSuiteSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls11AvailableWithWeakCipherSuiteNotSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results
+                    .Tls11AvailableWithWeakCipherSuiteNotSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls10AvailableWithBestCipherSuiteSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.Tls10AvailableWithBestCipherSuiteSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Tls10AvailableWithWeakCipherSuiteNotSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results
+                    .Tls10AvailableWithWeakCipherSuiteNotSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .Ssl3FailsWithBadCipherSuite,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.Ssl3FailsWithBadCipherSuite));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .TlsSecureEllipticCurveSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.TlsSecureEllipticCurveSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .TlsSecureDiffieHellmanGroupSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.TlsSecureDiffieHellmanGroupSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Results
+                    .TlsWeakCipherSuitesRejected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.TlsWeakCipherSuitesRejected));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Certificates.Count,
+                Is.EqualTo(2));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Certificates[0].Thumbprint,
+                Is.EqualTo(CertThumbPrint1));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.Certificates[1].Thumbprint,
+                Is.EqualTo(CertThumbPrint2));
 
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.FailureCount, Is.EqualTo(retrievedSecurityProfiles[0].Results.FailureCount));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.EndDate, Is.EqualTo(retrievedSecurityProfiles[0].EndDate));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test1Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test1Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test2Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test2Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test3Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test3Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test4Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test4Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test5Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test5Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test6Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test6Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test7Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test7Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test8Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test8Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test9Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test9Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test10Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test10Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test11Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test11Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Test12Result, Is.EqualTo(retrievedSecurityProfiles[0].Results.Test12Result));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Certificates.Count, Is.EqualTo(2));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Certificates[0].Thumbprint, Is.EqualTo(CertThumbPrint1));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.Certificates[1].Thumbprint, Is.EqualTo(CertThumbPrint2));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.FailureCount,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.FailureCount));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.EndDate,
+                Is.EqualTo(retrievedSecurityProfiles[0].EndDate));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.Tls12AvailableWithBestCipherSuiteSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results
+                    .Tls12AvailableWithBestCipherSuiteSelectedFromReverseList));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithSha2HashFunctionSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.Tls12AvailableWithSha2HashFunctionSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Results
+                    .Tls12AvailableWithWeakCipherSuiteNotSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results
+                    .Tls12AvailableWithWeakCipherSuiteNotSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Results
+                    .Tls11AvailableWithBestCipherSuiteSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.Tls11AvailableWithBestCipherSuiteSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Results
+                    .Tls11AvailableWithWeakCipherSuiteNotSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results
+                    .Tls11AvailableWithWeakCipherSuiteNotSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Results
+                    .Tls10AvailableWithBestCipherSuiteSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.Tls10AvailableWithBestCipherSuiteSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Results
+                    .Tls10AvailableWithWeakCipherSuiteNotSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results
+                    .Tls10AvailableWithWeakCipherSuiteNotSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Results
+                    .Ssl3FailsWithBadCipherSuite,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.Ssl3FailsWithBadCipherSuite));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Results
+                    .TlsSecureEllipticCurveSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.TlsSecureEllipticCurveSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Results
+                    .TlsSecureDiffieHellmanGroupSelected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.TlsSecureDiffieHellmanGroupSelected));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Results
+                    .TlsWeakCipherSuitesRejected,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.Results.TlsWeakCipherSuitesRejected));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Certificates.Count,
+                Is.EqualTo(2));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Certificates[0].Thumbprint,
+                Is.EqualTo(CertThumbPrint1));
+            Assert.That(
+                domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.Certificates[1].Thumbprint,
+                Is.EqualTo(CertThumbPrint2));
         }
 
         [Test]
@@ -378,9 +555,10 @@ namespace Dmarc.MxSecurityTester.Test.Dao
             MxRecord mxRecord2 = InsertMxRecord(2, Host1, DomainName2, time);
             TlsSecurityProfile securityProfile2 = InsertTlsSecurityProfile(mxRecord2.Id, time, null, time, 0);
 
-            List<DomainTlsSecurityProfile> domainTlsSecurityProfiles = new List<DomainTlsSecurityProfile> {
+            List<DomainTlsSecurityProfile> domainTlsSecurityProfiles = new List<DomainTlsSecurityProfile>
+            {
                 new DomainTlsSecurityProfile(new Domain(1, "domain"),
-                new List<MxRecordTlsSecurityProfile>
+                    new List<MxRecordTlsSecurityProfile>
                     {
                         new MxRecordTlsSecurityProfile(mxRecord1, securityProfile1),
                         new MxRecordTlsSecurityProfile(mxRecord2, securityProfile2)
@@ -392,14 +570,20 @@ namespace Dmarc.MxSecurityTester.Test.Dao
             List<TlsSecurityProfilePlus> retrievedSecurityProfiles = SelectAllSecurityProfiles();
             Assert.That(domainTlsSecurityProfiles[0].Profiles.Count, Is.EqualTo(retrievedSecurityProfiles.Count));
 
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Id, Is.EqualTo(retrievedSecurityProfiles[0].Id));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Results.FailureCount, Is.EqualTo(retrievedSecurityProfiles[0].Results.FailureCount));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.EndDate, Is.EqualTo(retrievedSecurityProfiles[0].EndDate));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Id,
+                Is.EqualTo(retrievedSecurityProfiles[0].Id));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.TlsResults.FailureCount,
+                Is.EqualTo(retrievedSecurityProfiles[0].TlsResults.FailureCount));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.EndDate,
+                Is.EqualTo(retrievedSecurityProfiles[0].EndDate));
             Assert.That(retrievedSecurityProfiles[0].LastChecked, Is.GreaterThan(time));
 
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Id, Is.EqualTo(retrievedSecurityProfiles[1].Id));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Results.FailureCount, Is.EqualTo(retrievedSecurityProfiles[1].Results.FailureCount));
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.EndDate, Is.EqualTo(retrievedSecurityProfiles[1].EndDate));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Id,
+                Is.EqualTo(retrievedSecurityProfiles[1].Id));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.TlsResults.FailureCount,
+                Is.EqualTo(retrievedSecurityProfiles[1].TlsResults.FailureCount));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.EndDate,
+                Is.EqualTo(retrievedSecurityProfiles[1].EndDate));
             Assert.That(retrievedSecurityProfiles[1].LastChecked, Is.GreaterThan(time));
         }
 
@@ -414,40 +598,47 @@ namespace Dmarc.MxSecurityTester.Test.Dao
             MxRecord mxRecord2 = InsertMxRecord(2, Host1, DomainName2, time);
             TlsSecurityProfile securityProfile2 = InsertTlsSecurityProfile(mxRecord2.Id, time, null, time, 0);
 
-            List<DomainTlsSecurityProfile> domainTlsSecurityProfiles = new List<DomainTlsSecurityProfile> {
+            List<DomainTlsSecurityProfile> domainTlsSecurityProfiles = new List<DomainTlsSecurityProfile>
+            {
                 new DomainTlsSecurityProfile(new Domain(1, "domain"),
-                new List<MxRecordTlsSecurityProfile>
+                    new List<MxRecordTlsSecurityProfile>
                     {
-                        new MxRecordTlsSecurityProfile(mxRecord1, new TlsSecurityProfile(securityProfile1.Id, DateTime.Now, new TlsTestResults(securityProfile1.Results.FailureCount, 
-                        securityProfile1.Results.Test1Result,
-                        securityProfile1.Results.Test2Result,
-                        securityProfile1.Results.Test3Result,
-                        securityProfile1.Results.Test4Result,
-                        securityProfile1.Results.Test5Result,
-                        securityProfile1.Results.Test6Result,
-                        securityProfile1.Results.Test7Result,
-                        securityProfile1.Results.Test8Result,
-                        securityProfile1.Results.Test9Result,
-                        securityProfile1.Results.Test10Result,
-                        securityProfile1.Results.Test11Result,
-                        securityProfile1.Results.Test12Result,
-                        new List<X509Certificate2>()))),
+                        new MxRecordTlsSecurityProfile(mxRecord1, new TlsSecurityProfile(securityProfile1.Id,
+                            DateTime.Now, new TlsTestResults(securityProfile1.TlsResults.FailureCount,
+                                new TlsTestResultsWithoutCertificate(
+                                    securityProfile1.TlsResults.Results.Tls12AvailableWithBestCipherSuiteSelected,
+                                    securityProfile1.TlsResults.Results
+                                        .Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
+                                    securityProfile1.TlsResults.Results.Tls12AvailableWithSha2HashFunctionSelected,
+                                    securityProfile1.TlsResults.Results.Tls12AvailableWithWeakCipherSuiteNotSelected,
+                                    securityProfile1.TlsResults.Results.Tls11AvailableWithBestCipherSuiteSelected,
+                                    securityProfile1.TlsResults.Results.Tls11AvailableWithWeakCipherSuiteNotSelected,
+                                    securityProfile1.TlsResults.Results.Tls10AvailableWithBestCipherSuiteSelected,
+                                    securityProfile1.TlsResults.Results.Tls10AvailableWithWeakCipherSuiteNotSelected,
+                                    securityProfile1.TlsResults.Results.Ssl3FailsWithBadCipherSuite,
+                                    securityProfile1.TlsResults.Results.TlsSecureEllipticCurveSelected,
+                                    securityProfile1.TlsResults.Results.TlsSecureDiffieHellmanGroupSelected,
+                                    securityProfile1.TlsResults.Results.TlsWeakCipherSuitesRejected),
+                                new List<X509Certificate2>()))),
 
-                        new MxRecordTlsSecurityProfile(mxRecord1, new TlsSecurityProfile(securityProfile2.Id, DateTime.Now, 
-                        new TlsTestResults(securityProfile2.Results.FailureCount,
-                        securityProfile2.Results.Test1Result,
-                        securityProfile2.Results.Test2Result,
-                        securityProfile2.Results.Test3Result,
-                        securityProfile2.Results.Test4Result,
-                        securityProfile2.Results.Test5Result,
-                        securityProfile2.Results.Test6Result,
-                        securityProfile2.Results.Test7Result,
-                        securityProfile2.Results.Test8Result,
-                        securityProfile2.Results.Test9Result,
-                        securityProfile2.Results.Test10Result,
-                        securityProfile2.Results.Test11Result,
-                        securityProfile2.Results.Test12Result,
-                        new List<X509Certificate2>())))
+                        new MxRecordTlsSecurityProfile(mxRecord1, new TlsSecurityProfile(securityProfile2.Id,
+                            DateTime.Now,
+                            new TlsTestResults(securityProfile2.TlsResults.FailureCount,
+                                new TlsTestResultsWithoutCertificate(
+                                    securityProfile2.TlsResults.Results.Tls12AvailableWithBestCipherSuiteSelected,
+                                    securityProfile2.TlsResults.Results
+                                        .Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
+                                    securityProfile2.TlsResults.Results.Tls12AvailableWithSha2HashFunctionSelected,
+                                    securityProfile2.TlsResults.Results.Tls12AvailableWithWeakCipherSuiteNotSelected,
+                                    securityProfile2.TlsResults.Results.Tls11AvailableWithBestCipherSuiteSelected,
+                                    securityProfile2.TlsResults.Results.Tls11AvailableWithWeakCipherSuiteNotSelected,
+                                    securityProfile2.TlsResults.Results.Tls10AvailableWithBestCipherSuiteSelected,
+                                    securityProfile2.TlsResults.Results.Tls10AvailableWithWeakCipherSuiteNotSelected,
+                                    securityProfile2.TlsResults.Results.Ssl3FailsWithBadCipherSuite,
+                                    securityProfile2.TlsResults.Results.TlsSecureEllipticCurveSelected,
+                                    securityProfile2.TlsResults.Results.TlsSecureDiffieHellmanGroupSelected,
+                                    securityProfile2.TlsResults.Results.TlsWeakCipherSuitesRejected),
+                                new List<X509Certificate2>())))
                     })
             };
 
@@ -456,11 +647,13 @@ namespace Dmarc.MxSecurityTester.Test.Dao
             List<TlsSecurityProfilePlus> retrievedSecurityProfiles = SelectAllSecurityProfiles();
             Assert.That(domainTlsSecurityProfiles[0].Profiles.Count, Is.EqualTo(retrievedSecurityProfiles.Count));
 
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Id, Is.EqualTo(retrievedSecurityProfiles[0].Id));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.Id,
+                Is.EqualTo(retrievedSecurityProfiles[0].Id));
             Assert.That(domainTlsSecurityProfiles[0].Profiles[0].TlsSecurityProfile.EndDate, Is.Not.Null);
             Assert.That(retrievedSecurityProfiles[0].LastChecked, Is.GreaterThan(time));
 
-            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Id, Is.EqualTo(retrievedSecurityProfiles[1].Id));
+            Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.Id,
+                Is.EqualTo(retrievedSecurityProfiles[1].Id));
             Assert.That(domainTlsSecurityProfiles[0].Profiles[1].TlsSecurityProfile.EndDate, Is.Not.Null);
             Assert.That(retrievedSecurityProfiles[1].LastChecked, Is.GreaterThan(time));
         }
@@ -472,7 +665,9 @@ namespace Dmarc.MxSecurityTester.Test.Dao
         }
 
         #region Test Support
-        private void SetConfig(IMxSecurityTesterConfig config, int refreshIntervalSeconds, int failureRefreshIntervalSeconds, int tlsSecurityProfileLimit)
+
+        private void SetConfig(IMxSecurityTesterConfig config, int refreshIntervalSeconds,
+            int failureRefreshIntervalSeconds, int tlsSecurityProfileLimit)
         {
             A.CallTo(() => config.RefreshIntervalSeconds).Returns(refreshIntervalSeconds);
             A.CallTo(() => config.FailureRefreshIntervalSeconds).Returns(failureRefreshIntervalSeconds);
@@ -481,12 +676,16 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
         private Domain InsertDomain(string domainName)
         {
-            MySqlHelper.ExecuteNonQuery(ConnectionString, $@"INSERT INTO `domain`(`name`, `created_by`, `publish`) VALUES('{domainName}', 'test', b'1');");
-            ulong id = (ulong)MySqlHelper.ExecuteScalar(ConnectionString, "SELECT LAST_INSERT_ID();");
-            return new Domain((int)id, domainName);
+
+            ulong id = (ulong) MySqlHelper.ExecuteScalar(ConnectionString,
+                $@"INSERT INTO `domain`(`name`, `created_by`, `publish`) VALUES('{
+                        domainName
+                    }', '1', b'1'); SELECT LAST_INSERT_ID();");
+            return new Domain((int) id, domainName);
         }
 
-        private MxRecord InsertMxRecord(int preference, string hostname, string domainName, DateTime lastChecked, DateTime? endDate = null, int failureCount = 0)
+        private MxRecord InsertMxRecord(int preference, string hostname, string domainName, DateTime lastChecked,
+            DateTime? endDate = null, int failureCount = 0)
         {
             Domain domain = InsertDomain(domainName);
 
@@ -494,13 +693,18 @@ namespace Dmarc.MxSecurityTester.Test.Dao
                 ? "null"
                 : $"'{endDate::yyyy-MM-dd HH:mm:ss}'";
 
-            string sql = $@"INSERT INTO `dns_record_mx`(`domain_id`, `preference`, `hostname`, `last_checked`, `end_date`, `failure_count`, `result_code`) VALUES({domain.Id}, {preference}, '{hostname}', '{lastChecked:yyyy-MM-dd HH:mm:ss}', { endDateString }, {failureCount}, 0);";
-            MySqlHelper.ExecuteNonQuery(ConnectionString, sql);
-            ulong id = (ulong)MySqlHelper.ExecuteScalar(ConnectionString, "SELECT LAST_INSERT_ID();");
+            string sql =
+                $@"INSERT INTO `dns_record_mx`(`domain_id`, `preference`, `hostname`, `last_checked`, `end_date`, `failure_count`, `result_code`) VALUES({
+                        domain.Id
+                    }, {preference}, '{hostname}', '{lastChecked:yyyy-MM-dd HH:mm:ss}', {endDateString}, {
+                        failureCount
+                    }, 0); SELECT LAST_INSERT_ID();";
+            ulong id = (ulong) MySqlHelper.ExecuteScalar(ConnectionString, sql);
             return new MxRecord(id, hostname);
         }
 
-        private TlsSecurityProfile InsertTlsSecurityProfile(ulong mxRecordId, DateTime startDate, DateTime? endDate, DateTime lastChecked, int failureCount)
+        private TlsSecurityProfile InsertTlsSecurityProfile(ulong mxRecordId, DateTime startDate, DateTime? endDate,
+            DateTime lastChecked, int failureCount)
         {
             string endDateString = endDate == null
                 ? "null"
@@ -511,69 +715,64 @@ namespace Dmarc.MxSecurityTester.Test.Dao
             CurveGroup curveGroup = CurveGroup.Ffdhe2048;
             SignatureHashAlgorithm signatureHashAlgorithm = SignatureHashAlgorithm.SHA1_DSA;
 
-            string sql = "INSERT INTO `dns_record_mx_tls_profile_2` (`mx_record_id`, `start_date`, `end_date`, `last_checked`, `failure_count`, " +
-                         "`test1_tls_version`, `test1_cipher_suite`, `test1_curve_group`, `test1_signature_hash_alg`, `test1_error`, " +
-                         "`test2_tls_version`, `test2_cipher_suite`, `test2_curve_group`, `test2_signature_hash_alg`, `test2_error`, " +
-                         "`test3_tls_version`, `test3_cipher_suite`, `test3_curve_group`, `test3_signature_hash_alg`, `test3_error`, " +
-                         "`test4_tls_version`, `test4_cipher_suite`, `test4_curve_group`, `test4_signature_hash_alg`, `test4_error`, " +
-                         "`test5_tls_version`, `test5_cipher_suite`, `test5_curve_group`, `test5_signature_hash_alg`, `test5_error`, " +
-                         "`test6_tls_version`, `test6_cipher_suite`, `test6_curve_group`, `test6_signature_hash_alg`, `test6_error`, " +
-                         "`test7_tls_version`, `test7_cipher_suite`, `test7_curve_group`, `test7_signature_hash_alg`, `test7_error`, " +
-                         "`test8_tls_version`, `test8_cipher_suite`, `test8_curve_group`, `test8_signature_hash_alg`, `test8_error`, " +
-                         "`test9_tls_version`, `test9_cipher_suite`, `test9_curve_group`, `test9_signature_hash_alg`, `test9_error`, " +
-                         "`test10_tls_version`, `test10_cipher_suite`, `test10_curve_group`, `test10_signature_hash_alg`, `test10_error`, " +
-                         "`test11_tls_version`, `test11_cipher_suite`, `test11_curve_group`, `test11_signature_hash_alg`, `test11_error`, " +
-                         "`test12_tls_version`, `test12_cipher_suite`, `test12_curve_group`, `test12_signature_hash_alg`, `test12_error`)" +
-                         $"VALUES ({mxRecordId}, '{startDate:yyyy-MM-dd HH:mm:ss}', {endDateString}, '{lastChecked:yyyy-MM-dd HH:mm:ss}', {failureCount}, " +
-                         $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
-                         $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
-                         $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
-                         $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
-                         $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
-                         $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
-                         $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
-                         $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
-                         $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
-                         $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
-                         $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL, " +
-                         $"{(int)tlsVersion}, {(int)cipherSuite}, {(int)curveGroup}, {(int)signatureHashAlgorithm}, NULL);";
+            TlsTestResultsWithoutCertificate tlsResult = new TlsTestResultsWithoutCertificate(
+                new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null, null, null),
+                new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null, null, null),
+                new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null, null, null),
+                new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null, null, null),
+                new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null, null, null),
+                new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null, null, null),
+                new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null, null, null),
+                new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null, null, null),
+                new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null, null, null),
+                new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null, null, null),
+                new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null, null, null),
+                new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null, null, null));
 
-            MySqlHelper.ExecuteNonQuery(ConnectionString, sql);
-            ulong id = (ulong)MySqlHelper.ExecuteScalar(ConnectionString, "SELECT LAST_INSERT_ID();");
 
-            TlsTestResult tlsTestResult = new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm, null);
-            return new TlsSecurityProfile(id, endDate, new TlsTestResults(failureCount, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult,
-                tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, new List<X509Certificate2>()));
+            string sql =
+                "INSERT INTO `dns_record_mx_tls_profile_results` (`mx_record_id`, `start_date`, `end_date`, `last_checked`, `failure_count`, `data`)" +
+                $"VALUES ({mxRecordId}, '{startDate:yyyy-MM-dd HH:mm:ss}', {endDateString}, '{lastChecked:yyyy-MM-dd HH:mm:ss}', {failureCount},  '{JsonConvert.SerializeObject(tlsResult)}'); SELECT LAST_INSERT_ID();";
+
+            ulong id = (ulong) MySqlHelper.ExecuteScalar(ConnectionString, sql);
+
+            TlsTestResult tlsTestResult = new TlsTestResult(tlsVersion, cipherSuite, curveGroup, signatureHashAlgorithm,
+                null, null, null);
+            return new TlsSecurityProfile(id, endDate, new TlsTestResults(failureCount,
+                new TlsTestResultsWithoutCertificate(tlsTestResult, tlsTestResult,
+                    tlsTestResult, tlsTestResult, tlsTestResult,
+                    tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult,
+                    tlsTestResult),
+                new List<X509Certificate2>()));
         }
 
         private Certificate InsertCertificate(int sequence, ulong profileId, string thumbPrint)
         {
-            string issuer = string.Empty;
-            string subject = string.Empty;
-            DateTime startDate = DateTime.UtcNow;
-            DateTime endDate = DateTime.UtcNow;
-            int keyLength = 2048;
-            string algorithm = "RSA";
-            string serialNumber = string.Empty;
-            int version = 1;
-            bool valid = true;
+            string sql = "INSERT INTO `dmarc`.`certificate`(`thumb_print`, `raw_data`)" +
+                         $"VALUES('{thumbPrint}','@raw_data');";
 
-            string sql = "INSERT INTO `dmarc`.`certificate`(`thumb_print`, `issuer`, `subject`, `start_date`, " +
-                        "`end_date`, `key_length`, `algorithm`, `serial_number`, `version`, `valid`)" +
-                        $"VALUES('{ thumbPrint}','{ issuer }','{ subject }','{startDate:yyyy-MM-dd HH:mm:ss}','{ endDate:yyyy-MM-dd HH:mm:ss}',{ keyLength}," +
-                        $"'{ algorithm}','{ serialNumber}',{ version }, {valid});";
+            MySqlParameter rawData = new MySqlParameter
+            {
+                ParameterName = "@raw_data",
+                Value = TestCertificates.Certificate1.RawData
+            };
 
-            MySqlHelper.ExecuteNonQuery(ConnectionString, sql);
+            MySqlHelper.ExecuteNonQuery(ConnectionString, sql, rawData);
 
             InsertCertificateMapping(sequence, profileId, thumbPrint);
 
-            return new Certificate(thumbPrint, issuer, subject, startDate, endDate, keyLength, algorithm, serialNumber, version, valid);
+            return new Certificate(thumbPrint, TestCertificates.Certificate1.Issuer,
+                TestCertificates.Certificate1.Subject, TestCertificates.Certificate1.NotBefore,
+                TestCertificates.Certificate1.NotAfter, TestCertificates.Certificate1.GetKeyAlgorithm().Length,
+                TestCertificates.Certificate1.GetKeyAlgorithm(), TestCertificates.Certificate1.SerialNumber,
+                TestCertificates.Certificate1.Version, true);
         }
 
         private void InsertCertificateMapping(int sequence, ulong profileId, string thumbPrint)
         {
-            string sql = "INSERT INTO `certificate_mapping`(`sequence`,`dns_record_mx_tls_profile_2_id`,`certificate_thumb_print`)" +
-                         $"VALUES({sequence},{profileId },'{thumbPrint}');";
+            string sql =
+                "INSERT INTO `certificate_mapping`(`sequence`,`dns_record_mx_tls_profile_id`,`certificate_thumb_print`)" +
+                $"VALUES({sequence},{profileId},'{thumbPrint}');";
 
             MySqlHelper.ExecuteNonQuery(ConnectionString, sql);
         }
@@ -581,29 +780,32 @@ namespace Dmarc.MxSecurityTester.Test.Dao
         private List<TlsSecurityProfilePlus> SelectAllSecurityProfiles()
         {
             List<TlsSecurityProfilePlus> records = new List<TlsSecurityProfilePlus>();
-            using (DbDataReader reader = MySqlHelper.ExecuteReader(ConnectionString, "SELECT * FROM dns_record_mx_tls_profile_2"))
+            using (DbDataReader reader =
+                MySqlHelper.ExecuteReader(ConnectionString, "SELECT * FROM dns_record_mx_tls_profile_results"))
             {
                 while (reader.Read())
                 {
+                    var tlsTestResults = CreateTlsTestResult(reader);
+
                     TlsSecurityProfilePlus recordEntity = new TlsSecurityProfilePlus(
                         reader.GetUInt64Nullable("id"),
                         null,
                         reader.GetInt32("failure_count"),
-                        CreateTlsTestResult(reader, 1),
-                        CreateTlsTestResult(reader, 2),
-                        CreateTlsTestResult(reader, 3),
-                        CreateTlsTestResult(reader, 4),
-                        CreateTlsTestResult(reader, 5),
-                        CreateTlsTestResult(reader, 6),
-                        CreateTlsTestResult(reader, 7),
-                        CreateTlsTestResult(reader, 8),
-                        CreateTlsTestResult(reader, 9),
-                        CreateTlsTestResult(reader, 10),
-                        CreateTlsTestResult(reader, 11),
-                        CreateTlsTestResult(reader, 12),
+                        tlsTestResults.Tls12AvailableWithBestCipherSuiteSelected,
+                        tlsTestResults.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
+                        tlsTestResults.Tls12AvailableWithSha2HashFunctionSelected,
+                        tlsTestResults.Tls12AvailableWithWeakCipherSuiteNotSelected,
+                        tlsTestResults.Tls11AvailableWithBestCipherSuiteSelected,
+                        tlsTestResults.Tls11AvailableWithWeakCipherSuiteNotSelected,
+                        tlsTestResults.Tls10AvailableWithBestCipherSuiteSelected,
+                        tlsTestResults.Tls10AvailableWithWeakCipherSuiteNotSelected,
+                        tlsTestResults.Ssl3FailsWithBadCipherSuite,
+                        tlsTestResults.TlsSecureEllipticCurveSelected,
+                        tlsTestResults.TlsSecureDiffieHellmanGroupSelected,
+                        tlsTestResults.TlsWeakCipherSuitesRejected,
                         null,
                         reader.GetDateTime("last_checked"),
-                        (ulong)reader.GetInt64("mx_record_id"));
+                        (ulong) reader.GetInt64("mx_record_id"));
 
                     records.Add(recordEntity);
                 }
@@ -611,7 +813,7 @@ namespace Dmarc.MxSecurityTester.Test.Dao
 
             foreach (var record in records)
             {
-                record.Results.Certificates.AddRange(SelectCertificate(record.Id.Value));
+                record.TlsResults.Certificates.AddRange(SelectCertificate(record.Id.Value));
             }
 
             return records;
@@ -622,7 +824,7 @@ namespace Dmarc.MxSecurityTester.Test.Dao
             string sql = "SELECT * " +
                          "FROM certificate_mapping cm " +
                          "JOIN certificate c on c.thumb_print = cm.certificate_thumb_print " +
-                         $"WHERE cm.dns_record_mx_tls_profile_2_id = {profileId} " +
+                         $"WHERE cm.dns_record_mx_tls_profile_id = {profileId} " +
                          "ORDER BY cm.sequence;";
 
             List<X509Certificate2> certs = new List<X509Certificate2>();
@@ -636,51 +838,62 @@ namespace Dmarc.MxSecurityTester.Test.Dao
                     certs.Add(certificate);
                 }
             }
+
             return certs;
         }
 
-        private MxRecordTlsSecurityProfile CreateTlsSecurityProfile(MxRecord record, ulong? id = 1, CipherSuite cipherSuite = CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA, List<X509Certificate2> certificates = null)
+        private MxRecordTlsSecurityProfile CreateTlsSecurityProfile(MxRecord record, ulong? id = 1,
+            CipherSuite cipherSuite = CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA,
+            List<X509Certificate2> certificates = null)
         {
-            TlsTestResult tlsTestResult = new TlsTestResult(TlsVersion.TlsV12, cipherSuite, CurveGroup.Ffdhe2048, SignatureHashAlgorithm.SHA1_DSA, null);
+            TlsTestResult tlsTestResult = new TlsTestResult(TlsVersion.TlsV12, cipherSuite, CurveGroup.Ffdhe2048,
+                SignatureHashAlgorithm.SHA1_DSA, null, null, null);
 
-            return new MxRecordTlsSecurityProfile(record, new TlsSecurityProfile(id, null, new TlsTestResults(0, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult,
-                tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, certificates ?? new List<X509Certificate2>())));
+            return new MxRecordTlsSecurityProfile(record, new TlsSecurityProfile(id, null, new TlsTestResults(0,
+                new TlsTestResultsWithoutCertificate(tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult,
+                    tlsTestResult, tlsTestResult, tlsTestResult,
+                    tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult, tlsTestResult),
+                certificates ?? new List<X509Certificate2>())));
         }
 
-        private static TlsTestResult CreateTlsTestResult(DbDataReader reader, int testId)
+        private static TlsTestResultsWithoutCertificate CreateTlsTestResult(DbDataReader reader)
         {
-            return new TlsTestResult(
-                (TlsVersion?)reader.GetInt32Nullable($"test{testId}_tls_version"),
-                (CipherSuite?)reader.GetInt32Nullable($"test{testId}_cipher_suite"),
-                (CurveGroup?)reader.GetInt32Nullable($"test{testId}_curve_group"),
-                (SignatureHashAlgorithm?)reader.GetInt32Nullable($"test{testId}_signature_hash_alg"),
-                (Error?)reader.GetInt32Nullable($"test{testId}_error")
-            );
+            string jsonData = reader.GetString("data");
+
+            if (string.IsNullOrWhiteSpace(jsonData))
+            {
+                return new TlsTestResultsWithoutCertificate(null, null, null, null, null, null, null, null, null, null,
+                    null, null);
+            }
+
+            return JsonConvert.DeserializeObject<TlsTestResultsWithoutCertificate>(jsonData);
         }
+
 
         private class TlsSecurityProfilePlus : TlsSecurityProfile
         {
-            public TlsSecurityProfilePlus(ulong? id, 
-                DateTime? endDate, 
-                int failureCount, 
-                TlsTestResult test1Result, 
-                TlsTestResult test2Result, 
-                TlsTestResult test3Result, 
-                TlsTestResult test4Result, 
-                TlsTestResult test5Result, 
-                TlsTestResult test6Result, 
-                TlsTestResult test7Result, 
-                TlsTestResult test8Result, 
-                TlsTestResult test9Result, 
-                TlsTestResult test10Result, 
-                TlsTestResult test11Result, 
-                TlsTestResult test12Result, 
-                List<X509Certificate2> certificates, 
-                DateTime lastChecked, 
-                ulong mxRecordId) 
-                : base(id, endDate, new TlsTestResults(failureCount, test1Result, test2Result, test3Result, 
-                      test4Result, test5Result, test6Result, test7Result, test8Result, 
-                      test9Result, test10Result, test11Result, test12Result, certificates))
+            public TlsSecurityProfilePlus(ulong? id,
+                DateTime? endDate,
+                int failureCount,
+                TlsTestResult test1Result,
+                TlsTestResult test2Result,
+                TlsTestResult test3Result,
+                TlsTestResult test4Result,
+                TlsTestResult test5Result,
+                TlsTestResult test6Result,
+                TlsTestResult test7Result,
+                TlsTestResult test8Result,
+                TlsTestResult test9Result,
+                TlsTestResult test10Result,
+                TlsTestResult test11Result,
+                TlsTestResult test12Result,
+                List<X509Certificate2> certificates,
+                DateTime lastChecked,
+                ulong mxRecordId)
+                : base(id, endDate, new TlsTestResults(failureCount, new TlsTestResultsWithoutCertificate(test1Result,
+                    test2Result, test3Result,
+                    test4Result, test5Result, test6Result, test7Result, test8Result,
+                    test9Result, test10Result, test11Result, test12Result), certificates))
             {
                 LastChecked = lastChecked;
                 MxRecordId = mxRecordId;
