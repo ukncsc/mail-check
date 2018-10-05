@@ -25,7 +25,9 @@ const LinkedMenuItem = ({ name, link, pathname, external }) => (
     external={external}
     style={{ textDecoration: 'none' }}
   >
-    <Menu.Item name={name} active={startsWith(pathname, link)} />
+    <Menu.Item name={name} active={startsWith(pathname, link)}>
+      {name}
+    </Menu.Item>
   </VersatileLink>
 );
 

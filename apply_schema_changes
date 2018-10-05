@@ -24,8 +24,8 @@ if [ "${dbpasswd}" == "null" ]; then
 fi
 
 
-echo "Will replace ${dbtoken} with ${dbuser}"
-sedtokencmd="${sedtokencmd} sed -E \"s/(${dbtoken})/${dbuser}/g\" |"
+echo "Will replace ${dbtoken} with ${dbuserhost}"
+sedtokencmd="${sedtokencmd} sed -E \"s/(${dbtoken})/${dbuserhost}/g\" |"
 
 
 echo "Creating user $dbuserhost"

@@ -14,19 +14,19 @@ namespace Dmarc.DomainStatus.Api.Test.Services
     [TestFixture]
     public class ReverseDnsApiTests
     {
-        private IReverseDnsApiConfig _config;
+        private IDomainStatusApiConfig _config;
         private IReverseDnsApi sut;
         private HttpTest _httpTest;
 
         [SetUp]
         public void SetUp()
         {
-            _config = A.Fake<IReverseDnsApiConfig>();
+            _config = A.Fake<IDomainStatusApiConfig>();
             sut = new ReverseDnsApiClient(_config, A.Fake<ILogger<ReverseDnsApiClient>>());
 
             _httpTest = new HttpTest();
 
-            A.CallTo(() => _config.Endpoint).Returns("https://ncsc.gov.uk");
+            A.CallTo(() => _config.ReverseDnsApiEndpoint).Returns("https://ncsc.gov.uk");
         }
 
         [TearDown]
@@ -50,7 +50,7 @@ namespace Dmarc.DomainStatus.Api.Test.Services
         [Test]
         public async Task ItShouldReturnTheOriginalExportIfTheEndpointUriIsInvalid()
         {
-            A.CallTo(() => _config.Endpoint).Returns("flim flam");
+            A.CallTo(() => _config.ReverseDnsApiEndpoint).Returns("flim flam");
 
             var export = new List<AggregateReportExportItem>();
             var result = await GetResults(export);

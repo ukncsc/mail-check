@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Grid, Header } from 'semantic-ui-react';
+import { Grid, Header, Label } from 'semantic-ui-react';
 import kebabCase from 'lodash/kebabCase';
 import flatMap from 'lodash/flatMap';
 import {
@@ -47,6 +47,22 @@ export default class DomainSecuritySummaryMx extends Component {
   getIdentifier = () =>
     this.props.type === 'TLS' ? this.props.domainId : this.props.domainName;
 
+  getRecordPrefix = () => (this.props.type === 'DKIM' ? 'Selector : ' : '');
+
+  getNoResultMessage() {
+    switch (this.props.type) {
+      case 'TLS Certificates':
+      case 'TLS':
+        return `We're currently checking your MX records. This usually takes less than 15 minutes, so check back soon.`;
+      case 'DKIM':
+        return `We haven't seen any DKIM selectors for this domain.`;
+      default:
+        return `We're currently checking your ${
+          this.props.type
+        } configuration. Please check back later.`;
+    }
+  }
+
   fetchDomainBasedMx() {
     const {
       domainName,
@@ -62,6 +78,8 @@ export default class DomainSecuritySummaryMx extends Component {
   render() {
     const { description, domainId, getDomainSecurityMx, type } = this.props;
     const mx = getDomainSecurityMx(this.getIdentifier()) || {};
+    const recordPrefix = this.getRecordPrefix();
+    const noResultMesssage = this.getNoResultMessage();
 
     return (
       <Grid stackable>
@@ -76,6 +94,11 @@ export default class DomainSecuritySummaryMx extends Component {
               pending={mx.pending}
               loading={mx.loading}
             />
+            { type === 'DKIM' && (
+              <div>
+                <Label color="blue">In Development</Label>
+              </div>
+            )}
           </Grid.Column>
           <Grid.Column width="8">
             <p>{description}</p>
@@ -84,7 +107,10 @@ export default class DomainSecuritySummaryMx extends Component {
               <React.Fragment>
                 {mx.records.filter(record => !!record.hostname).map(record => (
                   <React.Fragment key={record.hostname}>
-                    <Header as="h3">{record.hostname}</Header>
+                    <Header as="h3">
+                      {recordPrefix}
+                      {record.hostname}
+                    </Header>
                     {record.records &&
                       record.records.map(_ => (
                         <DomainSecurityRecord type="DKIM">
@@ -123,11 +149,7 @@ export default class DomainSecuritySummaryMx extends Component {
             )}
 
             {mx.pending && (
-              <MailCheckMessage info>
-                {type.startsWith('TLS')
-                  ? `We're currently checking your MX records. This usually takes less than 15 minutes, so check back soon.`
-                  : `We're currently checking your ${type} configuration. Please check back later.`}
-              </MailCheckMessage>
+              <MailCheckMessage info>{noResultMesssage}</MailCheckMessage>
             )}
 
             {mx.error && (

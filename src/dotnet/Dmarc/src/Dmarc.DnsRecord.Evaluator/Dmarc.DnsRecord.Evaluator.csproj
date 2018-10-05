@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssemblyName>Dmarc.DnsRecord.Evaluator</AssemblyName>
+    <PackageId>Dmarc.DnsRecord.Evaluator</PackageId>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Dmarc.Common/Dmarc.Common.csproj" />
+    <ProjectReference Include="../Dmarc.Common.Interface/Dmarc.Common.Interface.csproj" />
+    <ProjectReference Include="../Dmarc.Common.Messaging.Sns/Dmarc.Common.Messaging.Sns.csproj" />
+    <ProjectReference Include="../Dmarc.Common.Messaging.Sqs/Dmarc.Common.Messaging.Sqs.csproj" />
+    <ProjectReference Include="../Dmarc.Common.PublicSuffix/Dmarc.Common.PublicSuffix.csproj" />
+    <ProjectReference Include="../Dmarc.DnsRecord.Contract/Dmarc.DnsRecord.Contract.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.SQS" Version="3.3.3.17" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
+  </ItemGroup>
+
+</Project>

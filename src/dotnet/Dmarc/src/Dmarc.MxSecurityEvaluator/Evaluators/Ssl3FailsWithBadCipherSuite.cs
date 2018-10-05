@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Dmarc.Common.Interface.Tls.Domain;
-using Dmarc.MxSecurityEvaluator.Dao;
+﻿using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.Common.Util;
 using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Util;
 
@@ -14,7 +13,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
         public TlsEvaluatorResult Test(ConnectionResults tlsConnectionResults)
         {
             TlsConnectionResult tlsConnectionResult = tlsConnectionResults.Ssl3FailsWithBadCipherSuite;
-            
+
             switch (tlsConnectionResult.Error)
             {
                 case Error.HANDSHAKE_FAILURE:
@@ -34,7 +33,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
             }
 
             string introWithCipherSuite = string.Format(intro,
-                $"the server accepted the connection and selected {tlsConnectionResult.CipherSuite.GetName()}");
+                $"the server accepted the connection and selected {tlsConnectionResult.CipherSuite.GetEnumAsString()}");
 
             switch (tlsConnectionResult.CipherSuite)
             {

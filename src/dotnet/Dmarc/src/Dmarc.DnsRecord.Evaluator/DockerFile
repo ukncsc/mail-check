@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:1.0.5-core
+FROM microsoft/dotnet:2.1.3-runtime
 ARG publish_dir
 
 WORKDIR /app

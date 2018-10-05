@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { Divider, Header, Image } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { BackLink, MailCheckMessage } from 'common/components';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  MailCheckMessage,
+} from 'common/components';
 import {
   AggregateReportSummaryContainer,
   DomainSecuritySummaryCertificatesContainer,
-  //DomainSecuritySummaryDkimContainer,
+  DomainSecuritySummaryDkimContainer,
   DomainSecuritySummaryDmarcContainer,
   DomainSecuritySummarySpfContainer,
   DomainSecuritySummarySubdomainsContainer,
@@ -41,7 +45,9 @@ export default class DomainSecuritySummary extends Component {
 
     return (
       <React.Fragment>
-        <BackLink />
+        <Breadcrumb>
+          <BreadcrumbItem active>{domain && domain.name}</BreadcrumbItem>
+        </Breadcrumb>
         {domain && (
           <React.Fragment>
             {domain.name && <Header as="h1">{domain.name}</Header>}
@@ -80,11 +86,11 @@ export default class DomainSecuritySummary extends Component {
         <Divider className="DomainSecuritySummary--divider" />
         <DomainSecuritySummarySpfContainer domainId={params.domainId} />
         <Divider className="DomainSecuritySummary--divider" />
-        {/* <DomainSecuritySummaryDkimContainer
+        <DomainSecuritySummaryDkimContainer
           domainId={params.domainId}
           domainName={domain && domain.name}
         />
-        <Divider className="DomainSecuritySummary--divider" /> */}
+        <Divider className="DomainSecuritySummary--divider" />
         <DomainSecuritySummaryTlsContainer domainId={params.domainId} />
         <Divider className="DomainSecuritySummary--divider" />
         <DomainSecuritySummaryCertificatesContainer

@@ -12,7 +12,9 @@ using Dmarc.Common.Environment;
 using Dmarc.Common.Interface.Logging;
 using Dmarc.Common.Interface.Mapping;
 using Dmarc.Common.Interface.Messaging;
+using Dmarc.Common.Interface.PublicSuffix;
 using Dmarc.Common.Messaging.Sns.Publisher;
+using Dmarc.Common.PublicSuffix;
 using Dmarc.DnsRecord.Contract.Messages;
 using Dmarc.DnsRecord.Importer.Lambda.Config;
 using Dmarc.DnsRecord.Importer.Lambda.Dao;
@@ -45,6 +47,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Factory
                 .AddSingleton<IConnectionInfoAsync, ConnectionInfoAsync>()
                 .AddTransient<IDnsRecordDao, DmarcRecordDao>()
                 .AddTransient<IDnsRecordClient, DmarcRecordDnsClient>()
+                .AddTransient<IOrganisationalDomainProvider, OrganisationDomainProvider>()
                 .AddTransient<IPublisher, SnsPublisher>()
                 .AddTransient<IMapper<List<RecordEntity>, DnsRecordMessage>, DmarcConfigsUpdatedMapper>()
                 .AddTransient<IAmazonSimpleNotificationService>(provider => new AmazonSimpleNotificationServiceClient(new EnvironmentVariablesAWSCredentials()))

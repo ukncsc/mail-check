@@ -11,6 +11,7 @@ namespace Dmarc.MxSecurityTester.Dao.Entities
         }
 
         public Domain Domain { get; }
+
         public List<MxRecordTlsSecurityProfile> Profiles { get; }
     }
 }

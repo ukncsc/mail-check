@@ -7,7 +7,7 @@ const DomainSecurityRecord = ({ type, inheritedFrom, children }) => (
   <React.Fragment>
     <Header as="h3">
       Record{type === 'DMARC' && inheritedFrom
-        ? ` inherited from ${inheritedFrom.name}`
+        ? ` inherited from ${inheritedFrom}`
         : ''}
     </Header>
     <p className="DomainSecurityRecord">{children}</p>

@@ -8,11 +8,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules {
+namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules
+{
     using System;
     using System.Reflection;
-    
-    
+
+
     /// <summary>
     ///    A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -22,211 +23,268 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules {
     // with the /str option, or rebuild your VS project.
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class DmarcRulesResource {
-        
+    public class DmarcRulesResource
+    {
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
-        internal DmarcRulesResource() {
+
+        internal DmarcRulesResource()
+        {
         }
-        
+
         /// <summary>
         ///    Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
-            get {
-                if (object.ReferenceEquals(resourceMan, null)) {
+        public static global::System.Resources.ResourceManager ResourceManager
+        {
+            get
+            {
+                if (object.ReferenceEquals(resourceMan, null))
+                {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dmarc.DnsRecord.Evaluator.Dmarc.Rules.DmarcRulesResource", typeof(DmarcRulesResource).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///    Overrides the current thread's CurrentUICulture property for all
         ///    resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
-            get {
+        public static global::System.Globalization.CultureInfo Culture
+        {
+            get
+            {
                 return resourceCulture;
             }
-            set {
+            set
+            {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to Record length should be less than or equal to {0} characters. This record has {1} characters..
         /// </summary>
-        public static string MaxLengthOf450CharactersErrorMessage {
-            get {
+        public static string MaxLengthOf450CharactersErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("MaxLengthOf450CharactersErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to No DMARC record configured, to safely get started with DMARC add the following to DNS: `_dmarc.{0} TXT v=DMARC1;p=none;sp=none;rua=mailto:dmarc-rua@dmarc.service.gov.uk;`. For more information, see our [detailed guidance](https://www.ncsc.gov.uk/guidance/email-security-and-anti-spoofing). .
         /// </summary>
-        public static string NoDmarcErrorMessage {
-            get {
+        public static string NoDmarcErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("NoDmarcErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to A domain should have only 1 DMARC record..
         /// </summary>
-        public static string OnlyOneDmarcRecordErrorMessage {
-            get {
+        public static string OnlyOneDmarcRecordErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("OnlyOneDmarcRecordErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to Only a percent value (pct) of 100 will apply DMARC policy to all messages. Consider changing percent value from {0} to 100..
         /// </summary>
-        public static string PctValueShouldBe100ErrorMessage {
-            get {
+        public static string PctValueShouldBe100ErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PctValueShouldBe100ErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to Only a policy (p) of Quarantine or Reject will protect recipients from spoofed email. Consider changing policy from {0} to Quarantine or Reject..
         /// </summary>
-        public static string PolicyShouldBeQuarantineOrRejectErrorMessage {
-            get {
+        public static string PolicyShouldBeQuarantineOrRejectErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PolicyShouldBeQuarantineOrRejectErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to Record must contain a policy (p) tag..
         /// </summary>
-        public static string PolicyTagMustExistErrorMessage {
-            get {
+        public static string PolicyTagMustExistErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PolicyTagMustExistErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to mailto:dmarc-rua@dmarc.service.gov.uk.
         /// </summary>
-        public static string RuaMailbox {
-            get {
+        public static string RuaMailbox
+        {
+            get
+            {
                 return ResourceManager.GetString("RuaMailbox", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to Rua tag should have at least 1 URI. This rua tag has 0..
         /// </summary>
-        public static string RuaTagShouldHaveAtLeastOneUri {
-            get {
+        public static string RuaTagShouldHaveAtLeastOneUri
+        {
+            get
+            {
                 return ResourceManager.GetString("RuaTagShouldHaveAtLeastOneUri", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to The report aggregate URIs tag (rua) has duplicate URIs. Consider removing the duplicate entries from the rua tag..
         /// </summary>
-        public static string RuaTagShouldNotContainDuplicateUrisErrorMessage {
-            get {
+        public static string RuaTagShouldNotContainDuplicateUrisErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("RuaTagShouldNotContainDuplicateUrisErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to The aggregate report URI tag (rua) is misconfigured. Mail Check only processes aggregate reports sent to {0}. Update the rua value to `{1}`..
         /// </summary>
-        public static string RuaTagShouldNotHaveMisconfiguredMailCheckMailboxErrorMessage {
-            get {
+        public static string RuaTagShouldNotHaveMisconfiguredMailCheckMailboxErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("RuaTagShouldNotHaveMisconfiguredMailCheckMailboxErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to Only 2 aggregate report URIs (rua) are guaranteed to have reports delivered. This record has {0}..
         /// </summary>
-        public static string RuaTagShouldNotHaveMoreThanTwoUrisErrorMessage {
-            get {
+        public static string RuaTagShouldNotHaveMoreThanTwoUrisErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("RuaTagShouldNotHaveMoreThanTwoUrisErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to Only URIs with mailto: scheme are guaranteed to have aggregate reports delivered. This record has non mailto: scheme URIs in its aggregate report URI tag (rua)..
         /// </summary>
-        public static string RuaTagsShouldBeMailToErrorMessage {
-            get {
+        public static string RuaTagsShouldBeMailToErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("RuaTagsShouldBeMailToErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to Mail Check can only provide email reporting if the aggregate report URI tag (rua) includes the {0} mailbox. Consider adding `{1}` to the rua tag values..
         /// </summary>
-        public static string RuaTagsShouldContainDmarcServiceMailBoxErrorMessage {
-            get {
+        public static string RuaTagsShouldContainDmarcServiceMailBoxErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("RuaTagsShouldContainDmarcServiceMailBoxErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to Only URIs with mailto: scheme are guaranteed to have forensic reports delivered. This record has non mailto: scheme URIs in its forensic report URI tag (ruf)..
         /// </summary>
-        public static string RufTagShouldBeMailToErrorMessage {
-            get {
+        public static string RufTagShouldBeMailToErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("RufTagShouldBeMailToErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to The report forensic URIs tag (ruf) has duplicate URIs. Consider removing the duplicate entries from the ruf tag. .
         /// </summary>
-        public static string RufTagShouldNotContainDuplicateUrisErrorMessage {
-            get {
+        public static string RufTagShouldNotContainDuplicateUrisErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("RufTagShouldNotContainDuplicateUrisErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to Only 2 forensic report URIs (ruf) are guaranteed to have reports delivered. This record has {0}..
         /// </summary>
-        public static string RufTagShouldNotHaveMoreThanTwoUrisErrorMessage {
-            get {
+        public static string RufTagShouldNotHaveMoreThanTwoUrisErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("RufTagShouldNotHaveMoreThanTwoUrisErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to The specified sub-domain policy (sp) is ineffective because {0} is not an organisational domain. Only sub-domain policies on organisational domains are valid..
         /// </summary>
-        public static string SubDomainIneffectualErrorMessage {
-            get {
+        public static string SubDomainIneffectualErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("SubDomainIneffectualErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to Only a sub domain policy (sp) of Quarantine or Reject will protect recipients from spoofed email. Consider changing sub domain policy from {0} to Quarantine or Reject..
         /// </summary>
-        public static string SubdomainPolicyMustBeQuarantineOrRejectErrorMessage {
-            get {
+        public static string SubdomainPolicyMustBeQuarantineOrRejectErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("SubdomainPolicyMustBeQuarantineOrRejectErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///    Looks up a localized string similar to First tag should be version (v=DMARC1) but was {0}..
         /// </summary>
-        public static string VersionMustBeFirstTagErrorMessage {
-            get {
+        public static string VersionMustBeFirstTagErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("VersionMustBeFirstTagErrorMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///    Looks up a localized string similar to DMARC behaviour for domains that appear..
+        /// </summary>
+        public static string TldDmarcWeaklyDefinedMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("TldDmarcWeaklyDefinedMessage", resourceCulture);
             }
         }
     }

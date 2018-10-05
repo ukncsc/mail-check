@@ -23,14 +23,26 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Mapping
         private DmarcConfig MapConfig(IGrouping<DomainEntity, RecordEntity> config)
         {
             Domain domain = new Domain(config.Key.Id, config.Key.Name);
+            RecordEntity recordEntity  = config.FirstOrDefault();
+            string orgDomain = null;
+            bool isTls = false;
+            bool isInherited = false;
 
-            List<string> records = config.Select(_ => _.RecordInfo)
+            if (recordEntity != null)
+            {
+                orgDomain = ((DmarcRecordInfo)recordEntity.RecordInfo).OrgDomain;
+                isTls = ((DmarcRecordInfo)recordEntity.RecordInfo).IsTld;
+                isInherited = ((DmarcRecordInfo) recordEntity.RecordInfo).IsInherited;
+
+            }
+
+            List <string> records = config.Select(_ => _.RecordInfo)
                 .OfType<DmarcRecordInfo>()
                 .Select(_ => _.Record)
                 .Where(_ => _ != null)
                 .ToList();
 
-            return new DmarcConfig(domain, records, DateTime.UtcNow);
+            return new DmarcConfig(domain, records, DateTime.UtcNow, orgDomain, isTls, isInherited);
         }
     }
 }

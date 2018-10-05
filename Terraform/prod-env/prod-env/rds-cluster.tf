@@ -41,6 +41,11 @@ resource "aws_db_parameter_group" "dmarc-rds-pg" {
     value = "ON"
   }
 
+  parameter {
+    name = "max_connections"
+    value = "1000"
+  }
+
   lifecycle {
     create_before_destroy = true
   }

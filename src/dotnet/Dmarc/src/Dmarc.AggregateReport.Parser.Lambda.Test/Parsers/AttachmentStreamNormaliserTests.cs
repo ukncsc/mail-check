@@ -79,13 +79,13 @@ namespace Dmarc.Lambda.AggregateReport.Parser.Test.Parsers
         {
             var contentType = new MimeKit.ContentType(mediaType, mediaSubtype);
 
-            IContentObject contentObject = A.Fake<IContentObject>();
+            IMimeContent contentObject = A.Fake<IMimeContent>();
             A.CallTo(() => contentObject.Stream).Returns(new MemoryStream());
 
             MimePart mimePart = new MimePart(contentType)
             {
                 FileName = filename,
-                ContentObject = contentObject
+                Content = contentObject
             };
 
             foreach (Header header in headers)

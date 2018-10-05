@@ -24,10 +24,9 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Config
         public void WhenThereIsOnlyOneDmarcRecordNoErrorMessage()
         {
             DmarcConfig dmarcConfig =
-                new DmarcConfig(new List<DmarcRecord> { new DmarcRecord("", new List<Tag>(), string.Empty) }, string.Empty, DateTime.UtcNow);
+                new DmarcConfig(new List<DmarcRecord> { new DmarcRecord("", new List<Tag>(), string.Empty, string.Empty, false, false) }, string.Empty, DateTime.UtcNow, string.Empty, false, false);
 
-            Error error;
-            bool isErrored = _rule.IsErrored(dmarcConfig, out error);
+            bool isErrored = _rule.IsErrored(dmarcConfig, out Error error);
 
             Assert.That(isErrored, Is.EqualTo(false));
             Assert.That(error, Is.Null);
@@ -36,11 +35,10 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Config
         [Test]
         public void WhenThereIsMoreThanOneDmarcRecordAErrorMessageIsReturned()
         {
-            List<DmarcRecord> dmarcRecords = Enumerable.Range(0, 3).Select(_ => new DmarcRecord("", new List<Tag>(), string.Empty)).ToList();
-            DmarcConfig dmarcConfig = new DmarcConfig(dmarcRecords, string.Empty, DateTime.UtcNow);
+            List<DmarcRecord> dmarcRecords = Enumerable.Range(0, 3).Select(_ => new DmarcRecord("", new List<Tag>(), string.Empty, string.Empty, false, false)).ToList();
+            DmarcConfig dmarcConfig = new DmarcConfig(dmarcRecords, string.Empty, DateTime.UtcNow, string.Empty, false, false);
 
-            Error error;
-            bool isErrored = _rule.IsErrored(dmarcConfig, out error);
+            bool isErrored = _rule.IsErrored(dmarcConfig, out Error error);
 
             Assert.That(isErrored, Is.EqualTo(true));
             Assert.That(error.Message, Is.EqualTo(DmarcRulesResource.OnlyOneDmarcRecordErrorMessage));
@@ -50,14 +48,24 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Config
         public void WhenThereIsNoDmarcRecordAHelpfulMessageShouldBeReturned()
         {
             var domain = "abc.gov.uk";
-            DmarcConfig dmarcConfig = new DmarcConfig(new List<DmarcRecord>(), domain, DateTime.UtcNow);
 
-            Error error;
-            bool isErrored = _rule.IsErrored(dmarcConfig, out error);
+            DmarcConfig dmarcConfig = new DmarcConfig(new List<DmarcRecord>(), domain, DateTime.UtcNow, string.Empty, false, false);
+
+            bool isErrored = _rule.IsErrored(dmarcConfig, out Error error);
 
             Assert.That(isErrored, Is.EqualTo(true));
             Assert.That(error.Message, Is.EqualTo(string.Format(DmarcRulesResource.NoDmarcErrorMessage, domain)));
             StringAssert.Contains(domain, error.Message);
+        }
+
+        [Test]
+        public void WhenDmarcRecordArePresentOnATldThereShouldBeNoError()
+        {
+            List<DmarcRecord> records = Enumerable.Range(0, 3).Select(_ => new DmarcRecord("", new List<Tag>(), string.Empty, string.Empty, true, false)).ToList();
+            DmarcConfig dmarcConfig = new DmarcConfig(records, "gov.uk", DateTime.UtcNow, string.Empty, true, false);
+
+            Assert.That(_rule.IsErrored(dmarcConfig, out Error error), Is.False);
+            Assert.That(error, Is.Null);
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using Dmarc.Common.Interface.Logging;
-using Dmarc.MxSecurityEvaluator.Dao;
-using Dmarc.MxSecurityEvaluator.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dmarc.Common.Interface.Logging;
+using Dmarc.MxSecurityEvaluator.Dao;
+using Dmarc.MxSecurityEvaluator.Domain;
 
 namespace Dmarc.MxSecurityEvaluator.Processors
 {

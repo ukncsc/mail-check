@@ -106,7 +106,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
 
         private static DmarcRecord CreateDmarcRecord(params Tag[] tags)
         {
-            return new DmarcRecord("", tags.ToList(), string.Empty);
+            return new DmarcRecord("", tags.ToList(), string.Empty, string.Empty, false, false);
         }
 
         private static ReportUriAggregate CreateReportUriAggregate(params Uri[] uris)

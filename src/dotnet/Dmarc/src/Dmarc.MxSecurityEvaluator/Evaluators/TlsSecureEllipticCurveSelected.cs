@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Dmarc.Common.Interface.Tls.Domain;
-using Dmarc.MxSecurityEvaluator.Dao;
+﻿using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.Common.Util;
 using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Util;
 
@@ -37,7 +36,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
             }
 
             string introWithCurveGroup = string.Format(intro,
-                $"the server selected {tlsConnectionResult.CurveGroup.GetGroupName()}");
+                $"the server selected {tlsConnectionResult.CurveGroup.GetEnumAsString()}");
 
             switch (tlsConnectionResult.CurveGroup)
             {
@@ -58,7 +57,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
                 case CurveGroup.Sect233r1:
                 case CurveGroup.Sect239k1:
                     return new TlsEvaluatorResult(EvaluatorResult.FAIL,
-                        string.Format(intro, $"the server selected {tlsConnectionResult.CurveGroup.GetGroupName()} which has a curve length of less than 256 bits."));
+                        string.Format(intro, $"the server selected {tlsConnectionResult.CurveGroup.GetEnumAsString()} which has a curve length of less than 256 bits."));
 
                 case CurveGroup.Secp256k1:
                 case CurveGroup.Secp256r1:

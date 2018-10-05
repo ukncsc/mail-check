@@ -14,6 +14,7 @@ import {
 class DomainSecurityDetailsDkimContainer extends Component {
   state = {
     dkim: null,
+    domain: null,
   };
 
   static getDerivedStateFromProps = props => {
@@ -33,24 +34,28 @@ class DomainSecurityDetailsDkimContainer extends Component {
         return null;
       }
 
-      return { dkim };
+      return { dkim, domain };
     }
 
     return null;
   };
 
   render() {
-    const { dkim } = this.state;
+    const { dkim, domain } = this.state;
 
     return (
       <DomainSecurityDetailsMx
         type="DKIM"
         {...this.props.match.params}
         {...dkim}
+        domainName={domain && domain.name}
       >
         {dkim &&
+          dkim.records &&
           dkim.records
-            .filter(record => !!record.hostname)
+            .filter(
+              record => record.hostname === this.props.match.params.hostname
+            )
             .map(
               record =>
                 record.records &&

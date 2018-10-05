@@ -1,6 +1,6 @@
 module "reverse-dns" {
-  source                 = "git@github.com:ukncsc/MailCheck.ReverseDns//infrastructure/modules/reverse-dns-microservice?ref=14682ec"
-  artefact-version       = "14682ec"
+  source                 = "git@github.com:ukncsc/MailCheck.ReverseDns//infrastructure/modules/reverse-dns-microservice?ref=f407d84"
+  artefact-version       = "f407d84"
   vpc-id                 = "${aws_vpc.dmarc-env.id}"
   aws-account-id         = "${var.aws-account-id}"
   aws-region             = "${var.aws-region}"

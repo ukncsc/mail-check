@@ -1,21 +1,21 @@
-﻿using Amazon.SimpleSystemsManagement;
+﻿using System;
+using System.Collections.Generic;
+using Amazon.SimpleSystemsManagement;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Dmarc.Common.Data;
 using Dmarc.Common.Encryption;
 using Dmarc.Common.Environment;
+using Dmarc.Common.Interface.Logging;
 using Dmarc.Common.Interface.Messaging;
 using Dmarc.Common.Logging;
 using Dmarc.Common.Messaging.Sqs.QueueProcessor;
 using Dmarc.MxSecurityEvaluator.Config;
 using Dmarc.MxSecurityEvaluator.Dao;
+using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Evaluators;
 using Dmarc.MxSecurityEvaluator.Processors;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using Dmarc.Common.Interface.Logging;
-using Dmarc.MxSecurityEvaluator.Domain;
 
 namespace Dmarc.MxSecurityEvaluator.Factory
 {

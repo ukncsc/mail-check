@@ -2,18 +2,41 @@
 
 exports[`DomainSecurityDetailsMx when no records are provided it should match the snapshot 1`] = `
 <div>
-  <p>
-    <span
-      class="BackLink"
+  <div>
+    <div
+      class="ui breadcrumb"
     >
+      <div
+        class="section"
+      >
+        <a
+          href="/"
+        >
+          Home
+        </a>
+      </div>
       <i
-        style="text-decoration: none;"
         aria-hidden="true"
-        class="caret left icon"
+        class="right angle icon divider"
       />
-      Back
-    </span>
-  </p>
+      <div
+        class="section"
+      >
+        <a
+          href="/domain-security/123"
+        />
+      </div>
+      <i
+        aria-hidden="true"
+        class="right angle icon divider"
+      />
+      <div
+        class="active section"
+      >
+        SPF
+      </div>
+    </div>
+  </div>
   <h1
     class="ui header DomainSecurityTitle--header"
   >

@@ -4,16 +4,14 @@ node {
 
 //---------------- Variables/Definitions
     env.WORKSPACE = pwd()
-	env.DOTNETPATH = "/mnt/jenkins-home/dotnet-${BRANCH_NAME}"
-	env.DOTNET = "${env.DOTNETPATH}/dotnet"
-	env.DOTNETVERSION = "1.0.0-preview2-003131"
+    env.JENKINSHOME = "/mnt/jenkins-home"
 	env.TERRAFORMPATH = "/mnt/jenkins-home/terraform-${BRANCH_NAME}"
 	env.TERRAFORM ="${env.TERRAFORMPATH}/terraform"
 	env.TERRAFORMVERSION = "0.11.7"
 	env.TERRAFORMURL = "https://releases.hashicorp.com/terraform/${env.TERRAFORMVERSION}/terraform_${env.TERRAFORMVERSION}_linux_amd64.zip"
 	env.YARNPATH = "/mnt/jenkins-home/yarn-${BRANCH_NAME}"
-	env.YARN ="${env.YARNPATH}/yarn-v1.6.0/bin/yarn"
-	env.YARNVERSION = "1.6.0"
+	env.YARN ="${env.YARNPATH}/yarn-v1.9.4/bin/yarn"
+	env.YARNVERSION = "1.9.4"
 	env.YARNURL = "https://yarnpkg.com/latest.tar.gz"
 	env.NODEPATH ="/mnt/jenkins-home/node-${BRANCH_NAME}"
 	env.TF_PLAN_FILE = "TF-${BRANCH_NAME}-plan.out"
@@ -78,7 +76,7 @@ node {
    install_angular()
    install_yarn()
    install_terraform()
-   install_dotnet()
+   env.DOTNET = install_dotnet("dotnet","https://download.microsoft.com/download/E/8/A/E8AF2EE0-5DDA-4420-A395-D1A50EEFD83E/dotnet-sdk-2.1.401-linux-x64.tar.gz")
    }
    
    stage('Environment') {
@@ -188,19 +186,19 @@ node {
 			
 			env.PROJECT = "${env.DOTNETBINARYSTASH}"
 			sh "rm -rf /mnt/jenkins-home/.nuget"			
-            sh "cd ${env.PROJECT}; ${env.DOTNET} restore"
-
+           
 			sh "#!/bin/bash \n" +
-			   "for f in ${env.PROJECT}*; do \n" +
-			   "echo Building \$f \n" +
-			   "cd \$f \n" +
-			   "if ${env.DOTNET} build --version-suffix build-${env.GITSHORTHASH} \n" +
-			   "then \n" +
-			   "echo Build ok \n" +
-			   "else \n" +
-			   "exit 1\n" +
-			   "fi \n" +
-			   "done" 
+			"for f in ${env.PROJECT}*/; do \n" +
+			"echo Building in \n" +
+			"cd \$f \n" +
+			"pwd \n" +
+			"if ${env.DOTNET} build --version-suffix build-${env.GITSHORTHASH} \n" +
+			"then \n" +
+			"echo Successfully built \$f \n" +
+			"else \n" +
+			"exit 1\n" +
+			"fi \n" +
+			"done" 
 			
         } 
     }
@@ -210,10 +208,10 @@ node {
         if (env.DOTNETCOMPILE == "true") {
 		    sh "/bin/df -kh"
             sh "#!/bin/bash \n" +
-			   "for f in ${env.PROJECT}*.Test; do \n" +
+			   "for f in ${env.PROJECT}/*.Test; do \n" +
 			   "echo Running unit tests on \$f \n" +
 			   "cd \$f \n" +
-			   "if ${env.DOTNET} test --no-build --where:cat!=Integration \n" +
+			   "if ${env.DOTNET} test --no-build --filter TestCategory!=Integration \n" +
 			   "then \n" +
 			   "echo Tests ok \n" +
 			   "else \n" +
@@ -221,6 +219,7 @@ node {
 			   "fi \n" +
 			   "done" 
         }
+		
     }
 
 
@@ -279,7 +278,7 @@ node {
   
     stage('Package AggregateReportParser') {
 	    if (env.DOTNETCOMPILE == "true") {
-            sh "cd ${env.PROJECT}Dmarc.AggregateReport.Parser.Lambda; ${env.DOTNET} lambda package -c Release -o ${env.DOTNETPUBLISHSTASH}AggregateReportParser.zip"
+            sh "cd ${env.PROJECT}Dmarc.AggregateReport.Parser.Lambda; ${env.DOTNET} lambda package --framework netcoreapp2.1 -c Release -o ${env.DOTNETPUBLISHSTASH}AggregateReportParser.zip"
         }
 	}
 
@@ -287,7 +286,7 @@ node {
 
     stage('Package DNS Importer') {
 	    if (env.DOTNETCOMPILE == "true") {
-            sh "cd ${env.PROJECT}Dmarc.DnsRecord.Importer.Lambda; ${env.DOTNET} lambda package -c Release -o ${env.DOTNETPUBLISHSTASH}DnsRecordImporter.zip" 
+            sh "cd ${env.PROJECT}Dmarc.DnsRecord.Importer.Lambda; ${env.DOTNET} lambda package --framework netcoreapp2.1 -c Release -o ${env.DOTNETPUBLISHSTASH}DnsRecordImporter.zip" 
         }
 	}
 
@@ -577,8 +576,9 @@ node {
 	}
 	
     stage('TF Apply (Common)') {
-		def bucketName = sh(returnStdout : true, script: 'cat Terraform/common/common.tfvars | grep staging-report-bucket | awk \'{print $3}\' FS=\'[=\"]\'').trim()
-		echo "Staging report bucket: ${bucketName}"
+		def stagingBucketName = sh(returnStdout : true, script: 'cat Terraform/common/common.tfvars | grep staging-report-bucket | awk \'{print $3}\' FS=\'[=\"]\'').trim()
+		def devBucketName = sh(returnStdout : true, script: 'cat Terraform/common/common.tfvars | grep dev-report-bucket | awk \'{print $3}\' FS=\'[=\"]\'').trim()
+		echo "Report buckets Staging: ${stagingBucketName} Dev: ${devBucketName}"
 	    if ("${BRANCH_NAME}" == "master") {
 	        echo "Checking to see if plan was approved, or there are no changes to make...${env.apply}"
 		if (env.APPLY == "true") {
@@ -590,7 +590,8 @@ node {
                 def applyExitCode = readFile('/tmp/status.apply').trim()
 				
                 if (applyExitCode == "0") {
-					sh "${env.AWS}  s3api put-bucket-replication --bucket ${bucketName} --replication-configuration  file://Terraform/common/staging-bucket-replication-policy.json"
+					sh "${env.AWS}  s3api put-bucket-replication --bucket ${stagingBucketName} --replication-configuration  file://Terraform/common/staging-bucket-replication-policy.json"
+					sh "${env.AWS}  s3api put-bucket-replication --bucket ${devBucketName} --replication-configuration  file://Terraform/common/dev-bucket-replication-policy.json"
                     echo "Changes Applied ${env.JOB_NAME} - ${env.BUILD_NUMBER}"    
                 } else {
                     error "Apply Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER} "
@@ -872,30 +873,38 @@ void install_terraform() {
         }
 }
 
-void install_dotnet() {
-	//----------- Dotnet install
+def install_dotnet(dotnetPathBase, dotnetSdkUrl){
+	def dotnetSdkHash = sh(returnStdout : true, script: "echo ${dotnetSdkUrl} | md5sum | cut -d ' ' -f 1").trim()
 
-	if (fileExists("${env.DOTNET}")) {
-	    sh "${env.DOTNET} --version | tee version"
-		env.DOTNETCURRENTVERSION = readFile('version').trim()
-		} else {
-		sh "echo NOT INSTALLED >version"
-		}
-		
-	if ("${env.DOTNETCURRENTVERSION}" != "${env.DOTNETVERSION}") {
-	    echo "Installing .net CLI"
-	    sh "rm -rf ${env.DOTNETPATH}; mkdir -p ${env.DOTNETPATH}"
-		// install sdk last
-	    sh "wget -O dotnetsdk.tar.gz https://go.microsoft.com/fwlink/?LinkID=827530"
-	    sh "wget -O dotnet105.tar.gz https://download.microsoft.com/download/2/4/A/24A06858-E8AC-469B-8AE6-D0CEC9BA982A/dotnet-debian-x64.1.0.5.tar.gz"
-        sh "tar -xvf dotnet105.tar.gz -C ${env.DOTNETPATH}"
-		sh "tar -xvf dotnetsdk.tar.gz -C ${env.DOTNETPATH}"
-	    
-		//output dotnet version
-  	    sh "${env.DOTNET} --version"
-	    }
+    def dotnetDir = env.JENKINSHOME + "/" +dotnetPathBase + "/" + dotnetSdkHash
+
+	def dotnet = "${dotnetDir}" + "/" + "dotnet"
 	
-  }
+	if(fileExists("${dotnet}"))
+	{
+		def dotnetVersion = sh(returnStdout : true, script: "${dotnet} --version").trim()
+
+		echo "Current version ${dotnetVersion} of dotnet core up to date."
+	}else{
+		echo "Didnt find dotnet core installed. Installing from ${dotnetSdkUrl}"
+
+		sh "mkdir -p ${dotnetDir}"
+
+		def dotnetTar = "${dotnetDir}" + "/" + "dotnet-core-sdk.tar.gz"
+
+		sh "wget -O ${dotnetTar} ${dotnetSdkUrl}"
+
+		sh "tar -xvf ${dotnetTar} -C ${dotnetDir}"
+
+		sh "rm -rf ${dotnetTar}"
+
+		def dotnetVersion = sh(returnStdout : true, script: "${dotnet} --version").trim()
+
+		echo "Installed version ${dotnetVersion} of dotnet core."
+	}
+	return dotnet
+}
+
 
   void docker_push(String serviceName,String tag) {
 	  sh "docker tag  ${env.ENV_NAME}-${serviceName} ${env.ecrAwsAccount}.dkr.ecr.${env.AWSREGION}.amazonaws.com/${env.ENV_NAME}/${serviceName}:${tag}" 	

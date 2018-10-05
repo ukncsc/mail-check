@@ -6,11 +6,12 @@ namespace Dmarc.DnsRecord.Evaluator.Spf.Rules.Record
 {
     public class AllMustBeLastMechanism : IRule<SpfRecord>
     {
-        public bool IsErrored(SpfRecord record, out Evaluator.Rules.Error error)
+        public bool IsErrored(SpfRecord record, out Error error)
         {
+            bool isRedirect = record.Terms.OfType<Redirect>().Any();
             Mechanism lastMechanism = record.Terms.OfType<Mechanism>().LastOrDefault();
 
-            if (lastMechanism == null || lastMechanism is All)
+            if (isRedirect || lastMechanism == null || lastMechanism is All)
             {
                 error = null;
                 return false;
@@ -18,7 +19,7 @@ namespace Dmarc.DnsRecord.Evaluator.Spf.Rules.Record
 
             string errorMessage = string.Format(SpfRulesResource.AllMustBeLastMechanismErrorMessage, lastMechanism.Value);
 
-            error = new Evaluator.Rules.Error(Evaluator.Rules.ErrorType.Error, errorMessage);
+            error = new Error(ErrorType.Error, errorMessage);
             return true;
         }
     }

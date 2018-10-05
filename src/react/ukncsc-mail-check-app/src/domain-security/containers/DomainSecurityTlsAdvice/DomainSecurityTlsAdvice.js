@@ -1,12 +1,10 @@
 import React from 'react';
 import { Divider, Header } from 'semantic-ui-react';
-import { BackLink } from 'common/components';
 
 import './DomainSecurityTlsAdvice.css';
 
 const DomainSecurityTlsAdvice = () => (
   <React.Fragment>
-    <BackLink />
     <Header as="h1">TLS Advice</Header>
     <p>
       Transport Layer Security (TLS) is a protocol to allow the encrypted

@@ -75,28 +75,31 @@ namespace Dmarc.Common.Tls.BouncyCastle
             }
             catch (SocketException e)
             {
-                _log.Error($"An error occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
-                return new TlsConnectionResult(Error.TCP_CONNECTION_FAILED, e.Message, null);
+                _log.Error($"{e.GetType().Name} occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
+
+                return e.SocketErrorCode == SocketError.HostNotFound
+                    ? new TlsConnectionResult(Error.HOST_NOT_FOUND, e.Message, null)
+                    : new TlsConnectionResult(Error.TCP_CONNECTION_FAILED, e.Message, null);
             }
             catch (ArgumentNullException e)
             {
-                _log.Error($"An error occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
+                _log.Error($"{e.GetType().Name} occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
                 return new TlsConnectionResult(Error.TCP_CONNECTION_FAILED, e.Message, null);
             }
             catch (IOException e)
             {
-                _log.Error($"An error occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
+                _log.Error($"{e.GetType().Name} occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
                 return new TlsConnectionResult(Error.TCP_CONNECTION_FAILED, e.Message, null);
             }
             catch (TimeoutException e)
             {
-                _log.Error($"An error occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
+                _log.Error($"{e.GetType().Name} occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
                 return new TlsConnectionResult(Error.TCP_CONNECTION_FAILED, e.Message, null);
             }
             catch (Exception e)
             {
-                _log.Error($"An error occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
-                return new TlsConnectionResult( Error.INTERNAL_ERROR, e.Message, null);
+                _log.Error($"{e.GetType().Name} occurred {e.Message}{System.Environment.NewLine}{e.StackTrace}");
+                return new TlsConnectionResult(Error.INTERNAL_ERROR, e.Message, null);
             }
         }
 

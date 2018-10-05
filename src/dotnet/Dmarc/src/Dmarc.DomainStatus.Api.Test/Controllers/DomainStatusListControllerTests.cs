@@ -49,6 +49,8 @@ namespace Dmarc.DomainStatus.Api.Test.Controllers
             _organisationDomainProvider = A.Fake<IOrganisationalDomainProvider>();
             _domainRequestValidator = A.Fake<IValidator<DomainsRequest>>();
             _certificateEvaluatorApi = A.Fake<ICertificateEvaluatorApi>();
+            _domainValidator = A.Fake<IDomainValidator>();
+            _publicDomainValidator = A.Fake<IPublicDomainListValidator>();
 
             _domainStatusListController = new DomainStatusListController(_domainStatusListDao, _organisationDomainProvider,
                 _certificateEvaluatorApi, _domainValidator, _publicDomainValidator, _domainRequestValidator, A.Fake<ILogger<DomainStatusListController>>());

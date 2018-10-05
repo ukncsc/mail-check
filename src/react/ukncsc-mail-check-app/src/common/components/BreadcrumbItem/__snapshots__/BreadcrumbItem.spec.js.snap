@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BreadcrumbItem it should match the snapshot 1`] = `
+<div>
+  <i
+    aria-hidden="true"
+    class="right angle icon divider"
+  />
+  <div
+    class="section"
+  >
+    ncsc.gov.uk
+  </div>
+</div>
+`;

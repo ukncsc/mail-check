@@ -184,7 +184,7 @@ FROM (
 	d1.name as domain_name,
 	MAX(COALESCE(tls1.last_checked, '1900-01-01')) as lst_checked
 	FROM domain d1
-	JOIN dns_record_mx mx1 ON mx1.domain_id = d1.id AND (d1.monitor = b'1' OR d1.publish = b'1') AND mx1.end_date IS NULL AND mx1.hostname IS NOT NULL
+	JOIN dns_record_mx mx1 ON mx1.domain_id = d1.id AND (d1.monitor = b'1' OR d1.publish = b'1') AND mx1.end_date IS NULL 
 	LEFT JOIN dns_record_mx_tls_profile_results tls1 ON mx1.id = tls1.mx_record_id AND tls1.end_date IS NULL
 	WHERE (tls1.id IS NULL ||
 		(UTC_TIMESTAMP() &gt; DATE_ADD(tls1.last_checked, INTERVAL @refreshIntervalSeconds SECOND) &amp;&amp; (tls1.failure_count = 0 || tls1.failure_count &gt;= 3)) ||
@@ -193,7 +193,7 @@ FROM (
 	ORDER BY lst_checked, d1.id
 	LIMIT @limit
 ) AS temp
-JOIN dns_record_mx mx ON temp.domain_id = mx.domain_id AND mx.end_date IS NULL AND mx.hostname IS NOT NULL
+JOIN dns_record_mx mx ON temp.domain_id = mx.domain_id AND mx.end_date IS NULL
 LEFT JOIN dns_record_mx_tls_profile_results tls ON mx.id = tls.mx_record_id AND tls.end_date IS NULL
 LEFT JOIN certificate_mapping cm on cm.dns_record_mx_tls_profile_id = tls.id
 LEFT JOIN certificate c on c.thumb_print = cm.certificate_thumb_print

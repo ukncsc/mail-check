@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using Dmarc.Common.Interface.Tls.Domain;
-using Dmarc.MxSecurityEvaluator.Dao;
 
 namespace Dmarc.MxSecurityEvaluator.Domain
 {
     public class ConnectionResults
     {
+        private readonly List<TlsConnectionResult> _results;
+
         public ConnectionResults(TlsConnectionResult tls12AvailableWithBestCipherSuiteSelected,
             TlsConnectionResult tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
             TlsConnectionResult tls12AvailableWithSha2HashFunctionSelected,
@@ -20,85 +21,47 @@ namespace Dmarc.MxSecurityEvaluator.Domain
             TlsConnectionResult tlsSecureDiffieHellmanGroupSelected,
             TlsConnectionResult tlsWeakCipherSuitesRejected)
         {
-            Tls12AvailableWithBestCipherSuiteSelected = tls12AvailableWithBestCipherSuiteSelected;
-            Tls12AvailableWithBestCipherSuiteSelectedFromReverseList =
-                tls12AvailableWithBestCipherSuiteSelectedFromReverseList;
-            Tls12AvailableWithSha2HashFunctionSelected = tls12AvailableWithSha2HashFunctionSelected;
-            Tls12AvailableWithWeakCipherSuiteNotSelected = tls12AvailableWithWeakCipherSuiteNotSelected;
-            Tls11AvailableWithBestCipherSuiteSelected = tls11AvailableWithBestCipherSuiteSelected;
-            Tls11AvailableWithWeakCipherSuiteNotSelected = tls11AvailableWithWeakCipherSuiteNotSelected;
-            Tls10AvailableWithBestCipherSuiteSelected = tls10AvailableWithBestCipherSuiteSelected;
-            Tls10AvailableWithWeakCipherSuiteNotSelected = tls10AvailableWithWeakCipherSuiteNotSelected;
-            Ssl3FailsWithBadCipherSuite = ssl3FailsWithBadCipherSuite;
-            TlsSecureEllipticCurveSelected = tlsSecureEllipticCurveSelected;
-            TlsSecureDiffieHellmanGroupSelected = tlsSecureDiffieHellmanGroupSelected;
-            TlsWeakCipherSuitesRejected = tlsWeakCipherSuitesRejected;
-        }
-
-        public TlsConnectionResult Tls12AvailableWithBestCipherSuiteSelected { get; }
-        public TlsConnectionResult Tls12AvailableWithBestCipherSuiteSelectedFromReverseList { get; }
-        public TlsConnectionResult Tls12AvailableWithSha2HashFunctionSelected { get; }
-        public TlsConnectionResult Tls12AvailableWithWeakCipherSuiteNotSelected { get; }
-        public TlsConnectionResult Tls11AvailableWithBestCipherSuiteSelected { get; }
-        public TlsConnectionResult Tls11AvailableWithWeakCipherSuiteNotSelected { get; }
-        public TlsConnectionResult Tls10AvailableWithBestCipherSuiteSelected { get; }
-        public TlsConnectionResult Tls10AvailableWithWeakCipherSuiteNotSelected { get; }
-        public TlsConnectionResult Ssl3FailsWithBadCipherSuite { get; }
-        public TlsConnectionResult TlsSecureEllipticCurveSelected { get; }
-        public TlsConnectionResult TlsSecureDiffieHellmanGroupSelected { get; }
-        public TlsConnectionResult TlsWeakCipherSuitesRejected { get; }
-        
-        public bool HasFailedConnection()
-        {
-            return TlsHasFailedConnection(Tls12AvailableWithBestCipherSuiteSelected)
-                   && TlsHasFailedConnection(Tls12AvailableWithBestCipherSuiteSelectedFromReverseList)
-                   && TlsHasFailedConnection(Tls12AvailableWithSha2HashFunctionSelected)
-                   && TlsHasFailedConnection(Tls12AvailableWithWeakCipherSuiteNotSelected)
-                   && TlsHasFailedConnection(Tls11AvailableWithBestCipherSuiteSelected)
-                   && TlsHasFailedConnection(Tls11AvailableWithWeakCipherSuiteNotSelected)
-                   && TlsHasFailedConnection(Tls10AvailableWithBestCipherSuiteSelected)
-                   && TlsHasFailedConnection(Tls10AvailableWithWeakCipherSuiteNotSelected)
-                   && TlsHasFailedConnection(Ssl3FailsWithBadCipherSuite)
-                   && TlsHasFailedConnection(TlsSecureEllipticCurveSelected)
-                   && TlsHasFailedConnection(TlsSecureDiffieHellmanGroupSelected)
-                   && TlsHasFailedConnection(TlsWeakCipherSuitesRejected);
-        }
-
-        public string GetFailedConnectionErrors()
-        {
-            List<string> errors = new List<string>();
-
-            if (HasFailedConnection())
+            _results = new List<TlsConnectionResult>
             {
-                AddErrorToList(errors, Tls12AvailableWithBestCipherSuiteSelected);
-                AddErrorToList(errors, Tls12AvailableWithBestCipherSuiteSelectedFromReverseList);
-                AddErrorToList(errors, Tls12AvailableWithSha2HashFunctionSelected);
-                AddErrorToList(errors, Tls12AvailableWithWeakCipherSuiteNotSelected);
-                AddErrorToList(errors, Tls11AvailableWithBestCipherSuiteSelected);
-                AddErrorToList(errors, Tls11AvailableWithWeakCipherSuiteNotSelected);
-                AddErrorToList(errors, Tls10AvailableWithBestCipherSuiteSelected);
-                AddErrorToList(errors, Tls10AvailableWithWeakCipherSuiteNotSelected);
-                AddErrorToList(errors, Ssl3FailsWithBadCipherSuite);
-                AddErrorToList(errors, TlsSecureEllipticCurveSelected);
-                AddErrorToList(errors, TlsSecureDiffieHellmanGroupSelected);
-                AddErrorToList(errors, TlsWeakCipherSuitesRejected);
-            }
-
-            return string.Join(", ", errors);
-
+                tls12AvailableWithBestCipherSuiteSelected,
+                tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
+                tls12AvailableWithSha2HashFunctionSelected,
+                tls12AvailableWithWeakCipherSuiteNotSelected,
+                tls11AvailableWithBestCipherSuiteSelected,
+                tls11AvailableWithWeakCipherSuiteNotSelected,
+                tls10AvailableWithBestCipherSuiteSelected,
+                tls10AvailableWithWeakCipherSuiteNotSelected,
+                ssl3FailsWithBadCipherSuite,
+                tlsSecureEllipticCurveSelected,
+                tlsSecureDiffieHellmanGroupSelected,
+                tlsWeakCipherSuitesRejected
+            };
         }
 
-        private bool TlsHasFailedConnection(TlsConnectionResult result)
-        {
-            return result.Error == Error.SESSION_INITIALIZATION_FAILED || result.Error == Error.TCP_CONNECTION_FAILED;
-        }
+        public TlsConnectionResult Tls12AvailableWithBestCipherSuiteSelected => _results[0];
+        public TlsConnectionResult Tls12AvailableWithBestCipherSuiteSelectedFromReverseList => _results[1];
+        public TlsConnectionResult Tls12AvailableWithSha2HashFunctionSelected => _results[2];
+        public TlsConnectionResult Tls12AvailableWithWeakCipherSuiteNotSelected => _results[3];
+        public TlsConnectionResult Tls11AvailableWithBestCipherSuiteSelected => _results[4];
+        public TlsConnectionResult Tls11AvailableWithWeakCipherSuiteNotSelected => _results[5];
+        public TlsConnectionResult Tls10AvailableWithBestCipherSuiteSelected => _results[6];
+        public TlsConnectionResult Tls10AvailableWithWeakCipherSuiteNotSelected => _results[7];
+        public TlsConnectionResult Ssl3FailsWithBadCipherSuite => _results[8];
+        public TlsConnectionResult TlsSecureEllipticCurveSelected => _results[9];
+        public TlsConnectionResult TlsSecureDiffieHellmanGroupSelected => _results[10];
+        public TlsConnectionResult TlsWeakCipherSuitesRejected => _results[11];
 
-        private void AddErrorToList(List<string> errors, TlsConnectionResult result)
-        {
-            if (!errors.Contains(result.ErrorDescription))
-            {
-                errors.Add(result.ErrorDescription);
-            }
-        }
+        public bool HostNotFound() =>
+            _results.All(_ => _.Error == Error.HOST_NOT_FOUND);
+
+        public bool HasFailedConnection() =>
+            _results.All(_ => _.Error == Error.SESSION_INITIALIZATION_FAILED ||
+                _.Error == Error.TCP_CONNECTION_FAILED);
+
+        public string GetFailedConnectionErrors() =>
+            string.Join(", ", _results
+                .Select(_ => _.ErrorDescription)
+                .Distinct()
+                .ToList());
     }
 }

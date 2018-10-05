@@ -52,7 +52,7 @@ export default () => (
     />
     <Route
       exact
-      path="/my-domains/:domainId/dkim/:mxId"
+      path="/my-domains/:domainId/dkim/:hostname"
       component={props => (
         <DomainSecurityLocationContext.Provider value="my-domains">
           <DomainSecurityDetailsDkimContainer {...props} />

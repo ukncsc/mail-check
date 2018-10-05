@@ -80,7 +80,7 @@ namespace Dmarc.Lambda.AggregateReport.Parser.Test.Parsers
 
             var attachment = new MimePart("application", "gzip")
             {
-                ContentObject = new ContentObject(new MemoryStream()),
+                Content = new MimeContent(new MemoryStream()),
                 ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
                 ContentTransferEncoding = ContentEncoding.Base64,
                 FileName = ""

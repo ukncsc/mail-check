@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Dmarc.Common.Interface.Tls.Domain;
-using Dmarc.MxSecurityEvaluator.Dao;
+﻿using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.Common.Util;
 using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Util;
 
@@ -41,7 +40,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
             }
 
             string introWithCipherSuite = string.Format(intro,
-                $"the server selected {tlsConnectionResult.CipherSuite.GetName()}");
+                $"the server selected {tlsConnectionResult.CipherSuite.GetEnumAsString()}");
 
             switch (tlsConnectionResult.CipherSuite)
             {

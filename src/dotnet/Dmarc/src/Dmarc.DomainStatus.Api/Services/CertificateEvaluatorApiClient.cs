@@ -17,10 +17,10 @@ namespace Dmarc.DomainStatus.Api.Services
 
     public class CertificateEvaluatorApiClient : ICertificateEvaluatorApi
     {
-        private readonly ICertificateEvaluatorApiConfig _config;
+        private readonly IDomainStatusApiConfig _config;
         private readonly ILogger<CertificateEvaluatorApiClient> _log;
 
-        public CertificateEvaluatorApiClient(ICertificateEvaluatorApiConfig config, ILogger<CertificateEvaluatorApiClient> log)
+        public CertificateEvaluatorApiClient(IDomainStatusApiConfig config, ILogger<CertificateEvaluatorApiClient> log)
         {
             _config = config;
             _log = log;
@@ -33,7 +33,7 @@ namespace Dmarc.DomainStatus.Api.Services
 
             try
             {
-                response = await _config.Endpoint
+                response = await _config.CertificateEvaluatorApiEndpoint
                     .AppendPathSegment(path)
                     .PostJsonAsync(new CertificateEvaluatorApiRequest(domainSecurityInfos.Select(_ => _.Domain.Name).ToList()))
                     .ReceiveJson<List<CertificateEvaluatorApiResponse>>();
@@ -44,7 +44,7 @@ namespace Dmarc.DomainStatus.Api.Services
             }
             catch (UriFormatException)
             {
-                _log.LogDebug($"Bad URI for Certificate Evaluator API. Got endpoint {_config.Endpoint} and path {path}.");
+                _log.LogDebug($"Bad URI for Certificate Evaluator API. Got endpoint {_config.CertificateEvaluatorApiEndpoint} and path {path}.");
             }
 
             return response != null

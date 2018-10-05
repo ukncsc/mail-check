@@ -9,14 +9,17 @@ import {
   DomainSecurityTitle,
 } from 'domain-security/components';
 import {
-  BackLink,
+  Breadcrumb,
+  BreadcrumbItem,
   ShowMoreDropdown,
   MailCheckMessage,
 } from 'common/components';
+import { DomainSecurityLocationContext } from 'domain-security/context';
 
 const DomainSecurityDetailsTxt = ({
   type,
   pending,
+  domainId,
   domainName,
   loading,
   error,
@@ -30,7 +33,12 @@ const DomainSecurityDetailsTxt = ({
   children,
 }) => (
   <React.Fragment>
-    <BackLink />
+    <Breadcrumb>
+      <DomainSecurityLocationContext.Consumer>
+        {location => <BreadcrumbItem link={`/${location}/${domainId}`}>{domainName}</BreadcrumbItem>}
+      </DomainSecurityLocationContext.Consumer>
+      <BreadcrumbItem active>{type}</BreadcrumbItem>
+    </Breadcrumb>
     <DomainSecurityTitle
       title={type}
       subtitle={domainName}
@@ -40,7 +48,7 @@ const DomainSecurityDetailsTxt = ({
       warnings={warnings}
       inconclusives={inconclusives}
     >
-      {lastChecked && <p>Last Checked {moment(lastChecked).fromNow()}</p>}
+      {lastChecked && <p>Last Checked {moment.utc(lastChecked).local().fromNow()}</p>}
     </DomainSecurityTitle>
     {children}
     {error && <Message error>{error.message}</Message>}
@@ -111,10 +119,7 @@ DomainSecurityDetailsTxt.propTypes = {
   inconclusives: PropTypes.arrayOf(PropTypes.string),
   tagsProperty: PropTypes.string,
   lastChecked: PropTypes.string,
-  inheritedFrom: PropTypes.shape({
-    id: PropTypes.string,
-    name: PropTypes.string,
-  }),
+  inheritedFrom: PropTypes.string,
 };
 
 export default DomainSecurityDetailsTxt;

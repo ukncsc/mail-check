@@ -6,7 +6,7 @@ namespace Dmarc.DnsRecord.Evaluator.Spf.Rules.Record
 {
     public class RedirectDoesntOccurMoreThanOnce : IRule<SpfRecord>
     {
-        public bool IsErrored(SpfRecord record, out Evaluator.Rules.Error error)
+        public bool IsErrored(SpfRecord record, out Error error)
         {
             int redirectCount = record.Terms.OfType<Redirect>().Count();
             if (redirectCount <= 1)
@@ -14,7 +14,8 @@ namespace Dmarc.DnsRecord.Evaluator.Spf.Rules.Record
                 error = null;
                 return false;
             }
-            error = new Evaluator.Rules.Error(Evaluator.Rules.ErrorType.Error, string.Format(SpfRulesResource.RedirectDoesntOccurMoreThanOnceErrorMessage, redirectCount));
+
+            error = new Error(ErrorType.Error, string.Format(SpfRulesResource.RedirectDoesntOccurMoreThanOnceErrorMessage, redirectCount));
             return true;
         }
     }

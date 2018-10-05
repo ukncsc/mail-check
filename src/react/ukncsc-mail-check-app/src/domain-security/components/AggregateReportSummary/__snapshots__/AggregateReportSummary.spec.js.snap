@@ -120,6 +120,7 @@ exports[`AggregateReportSummary when successfully retrieves data it should match
                 tabindex="0"
                 type="checkbox"
                 value=""
+                checked=""
               />
               <label>
                 Include subdomains

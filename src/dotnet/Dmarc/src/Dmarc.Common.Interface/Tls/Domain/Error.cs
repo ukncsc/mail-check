@@ -37,6 +37,7 @@
         NO_APPLICATION_PROTOCOL         = 120,
 
         TCP_CONNECTION_FAILED           = 200,
-        SESSION_INITIALIZATION_FAILED   = 201
+        SESSION_INITIALIZATION_FAILED   = 201,
+        HOST_NOT_FOUND                  = 202
     };
 }

@@ -1,5 +1,5 @@
 ﻿using Dmarc.Common.Interface.Tls.Domain;
-using Dmarc.MxSecurityEvaluator.Dao;
+using Dmarc.Common.Util;
 using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Util;
 
@@ -31,7 +31,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
                             $"the server responded with an error. Error description \"{tlsConnectionResult.ErrorDescription}\"."));
             }
 
-            string introWithCipherSuite = string.Format(intro, $"the server selected {tlsConnectionResult.CipherSuite.GetName()}");
+            string introWithCipherSuite = string.Format(intro, $"the server selected {tlsConnectionResult.CipherSuite.GetEnumAsString()}");
 
             switch (tlsConnectionResult.CipherSuite)
             {

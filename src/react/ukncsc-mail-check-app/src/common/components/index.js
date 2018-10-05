@@ -1,4 +1,5 @@
-export { default as BackLink } from './BackLink';
+export { default as Breadcrumb } from './Breadcrumb';
+export { default as BreadcrumbItem } from './BreadcrumbItem';
 export { default as ConfirmationModal } from './ConfirmationModal';
 export { default as DetailedTab } from './DetailedTab';
 export { default as DetailedTabList } from './DetailedTabList';

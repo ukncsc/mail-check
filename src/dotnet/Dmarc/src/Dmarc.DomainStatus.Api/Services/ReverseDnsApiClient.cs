@@ -17,10 +17,10 @@ namespace Dmarc.DomainStatus.Api.Services
 
     public class ReverseDnsApiClient : IReverseDnsApi
     {
-        private readonly IReverseDnsApiConfig _config;
+        private readonly IDomainStatusApiConfig _config;
         private readonly ILogger<ReverseDnsApiClient> _log;
 
-        public ReverseDnsApiClient(IReverseDnsApiConfig config, ILogger<ReverseDnsApiClient> log)
+        public ReverseDnsApiClient(IDomainStatusApiConfig config, ILogger<ReverseDnsApiClient> log)
         {
             _config = config;
             _log = log;
@@ -33,7 +33,7 @@ namespace Dmarc.DomainStatus.Api.Services
 
             try
             {
-                response = await _config.Endpoint
+                response = await _config.ReverseDnsApiEndpoint
                     .AppendPathSegment(path)
                     .PostJsonAsync(new ReverseDnsInfoApiRequest(export.Select(_ => _.SourceIp).ToList(), date))
                     .ReceiveJson<List<ReverseDnsInfoApiResponse>>();
@@ -44,7 +44,7 @@ namespace Dmarc.DomainStatus.Api.Services
             }
             catch (UriFormatException)
             {
-                _log.LogDebug($"Bad URI for Reverse DNS API. Got endpoint {_config.Endpoint} and path {path}.");
+                _log.LogDebug($"Bad URI for Reverse DNS API. Got endpoint {_config.ReverseDnsApiEndpoint} and path {path}.");
             }
 
             return response != null

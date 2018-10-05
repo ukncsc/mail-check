@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Dmarc.Common.Interface.Logging;
-using Dmarc.Common.Interface.Tls.Domain;
 using Dmarc.MxSecurityEvaluator.Dao;
 using Dmarc.MxSecurityEvaluator.Domain;
-using Dmarc.MxSecurityEvaluator.Evaluators;
-using Dmarc.MxSecurityEvaluator.Util;
 
 namespace Dmarc.MxSecurityEvaluator.Processors
 {
@@ -37,11 +33,9 @@ namespace Dmarc.MxSecurityEvaluator.Processors
 
         protected async Task ProcessTlsConnectionResults(int domainId)
         {
-            var stopwatch = new Stopwatch();
+            Stopwatch stopwatch = Stopwatch.StartNew();
 
-            stopwatch.Start();
-
-            var tlsConnectionResults = await _tlsRecordDao.GetDomainTlsConnectionResults(domainId);
+            List<MxRecordTlsProfile> tlsConnectionResults = await _tlsRecordDao.GetDomainTlsConnectionResults(domainId);
 
             await Task.WhenAll(tlsConnectionResults.Select(EvaluateMxRecordProfile));
 
@@ -50,37 +44,38 @@ namespace Dmarc.MxSecurityEvaluator.Processors
             _log.Debug($"Processed domain with ID {domainId}. Took {stopwatch.Elapsed.TotalSeconds} seconds.");
         }
 
-        protected async Task EvaluateMxRecordProfile(MxRecordTlsProfile mxRecordTlsProfile)
+        protected Task EvaluateMxRecordProfile(MxRecordTlsProfile mxRecordTlsProfile)
         {
             if (mxRecordTlsProfile.MxHostname == null)
             {
-                await _tlsRecordDao.SaveTlsEvaluatorResults(mxRecordTlsProfile, EvaluatorResults.EmptyResults);
+                _log.Debug($"No hostname for MX record with ID {mxRecordTlsProfile.MxRecordId}.");
 
-                _log.Debug(
-                    $"MX record with ID {mxRecordTlsProfile.MxRecordId} has no hostname, saving null results.");
+                return _tlsRecordDao.SaveTlsEvaluatorResults(mxRecordTlsProfile, EvaluatorResults.EmptyResults);
             }
-            else
+
+            if (mxRecordTlsProfile.ConnectionResults.HasFailedConnection())
             {
+                _log.Debug($"TLS connection failed for host {mxRecordTlsProfile.MxHostname}");
+
                 string failedConnectionErrors = mxRecordTlsProfile.ConnectionResults.GetFailedConnectionErrors();
 
-                if (string.IsNullOrWhiteSpace(failedConnectionErrors))
-                {
-                    var tlsEvaluatorResults = _mxSecurityEvaluator.Evaluate(mxRecordTlsProfile.ConnectionResults);
-
-                    await _tlsRecordDao.SaveTlsEvaluatorResults(mxRecordTlsProfile, tlsEvaluatorResults);
-
-                    _log.Debug(
-                        $"Evaluated TLS connection results for MX record with ID {mxRecordTlsProfile.MxRecordId}.");
-                }
-                else
-                {
-                    await _tlsRecordDao.SaveTlsEvaluatorResults(mxRecordTlsProfile,
-                        EvaluatorResults.GetConnectionFailedResults(failedConnectionErrors));
-
-                    _log.Debug(
-                        $"MX record with ID {mxRecordTlsProfile.MxRecordId} TLS connection failed, saving single inconclusive result.");
-                }
+                return _tlsRecordDao.SaveTlsEvaluatorResults(mxRecordTlsProfile,
+                    EvaluatorResults.GetConnectionFailedResults(failedConnectionErrors));
             }
+
+            if (mxRecordTlsProfile.ConnectionResults.HostNotFound())
+            {
+                _log.Debug($"Host not found for {mxRecordTlsProfile.MxHostname}");
+
+                return _tlsRecordDao.SaveTlsEvaluatorResults(mxRecordTlsProfile,
+                    EvaluatorResults.GetHostNotFoundResults(mxRecordTlsProfile.MxHostname));
+            }
+
+            _log.Debug($"Evaluating TLS connection results for {mxRecordTlsProfile.MxHostname}.");
+
+            return _tlsRecordDao.SaveTlsEvaluatorResults(mxRecordTlsProfile,
+                _mxSecurityEvaluator.Evaluate(mxRecordTlsProfile.ConnectionResults));
+
         }
     }
 }

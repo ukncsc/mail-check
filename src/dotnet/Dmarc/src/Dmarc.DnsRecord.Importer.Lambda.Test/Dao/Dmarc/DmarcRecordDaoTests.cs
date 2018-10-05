@@ -151,8 +151,8 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.Dao.Dmarc
 
             List<RecordEntity> recordEntities = new List<RecordEntity>
             {
-                new RecordEntity(null, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord1), RCode.NoError, 0),
-                new RecordEntity(null, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord2), RCode.NoError, 0)
+                new RecordEntity(null, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord1, string.Empty, false, false), RCode.NoError, 0),
+                new RecordEntity(null, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord2, string.Empty, false, false), RCode.NoError, 0)
             };
 
             await _dmarcRecordDao.InsertOrUpdateRecords(recordEntities);
@@ -187,8 +187,8 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.Dao.Dmarc
 
             List<RecordEntity> recordEntities = new List<RecordEntity>
             {
-                new RecordEntity((int)recordId1, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord1), RCode.NoError, 0),
-                new RecordEntity((int)recordId2, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord2), RCode.NoError, 0),
+                new RecordEntity((int)recordId1, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord1, string.Empty, false, false), RCode.NoError, 0),
+                new RecordEntity((int)recordId2, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord2, string.Empty, false, false), RCode.NoError, 0),
             };
 
             await _dmarcRecordDao.InsertOrUpdateRecords(recordEntities);
@@ -226,8 +226,8 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.Dao.Dmarc
 
             List<RecordEntity> recordEntities = new List<RecordEntity>
             {
-                new RecordEntity((int)recordId1, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord1), RCode.NoError, 0, now),
-                new RecordEntity((int)recordId2, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord2), RCode.NoError, 0, nowPlusOne),
+                new RecordEntity((int)recordId1, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord1, string.Empty, false, false), RCode.NoError, 0, now),
+                new RecordEntity((int)recordId2, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord2, string.Empty, false, false), RCode.NoError, 0, nowPlusOne),
             };
 
             await _dmarcRecordDao.InsertOrUpdateRecords(recordEntities);
@@ -264,7 +264,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.Dao.Dmarc
             int failureCount = 1;
             List<RecordEntity> recordEntities = new List<RecordEntity>
             {
-                new RecordEntity((int)recordId1, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord1), RCode.NoError, failureCount, now)
+                new RecordEntity((int)recordId1, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord1, string.Empty, false, false), RCode.NoError, failureCount, now)
             };
 
             await _dmarcRecordDao.InsertOrUpdateRecords(recordEntities);
@@ -293,7 +293,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.Dao.Dmarc
             RCode responseCode = RCode.ServFail;
             List<RecordEntity> recordEntities = new List<RecordEntity>
             {
-                new RecordEntity((int)recordId1, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord1), responseCode, 0, now)
+                new RecordEntity((int)recordId1, new DomainEntity((int)domainId, Domain), new DmarcRecordInfo(DmarcRecord1, string.Empty, false, false), responseCode, 0, now)
             };
 
             await _dmarcRecordDao.InsertOrUpdateRecords(recordEntities);

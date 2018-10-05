@@ -24,7 +24,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
         [TestCase(RecordTooLong, true, TestName = "Error for string of 451 characters.")]
         public void NoErrorWhenFailureReportingOptionIsOne(string record, bool isErroredExpected)
         {
-            DmarcRecord dmarcRecord = new DmarcRecord(record, new List<Tag>(), string.Empty);
+            DmarcRecord dmarcRecord = new DmarcRecord(record, new List<Tag>(), string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);

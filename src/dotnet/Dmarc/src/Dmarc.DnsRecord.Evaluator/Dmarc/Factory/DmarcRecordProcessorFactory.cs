@@ -50,6 +50,7 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Factory
                 .AddTransient<IMaxReportSizeParser, MaxReportSizeParser>()
                 .AddTransient<IRuleEvaluator<DmarcConfig>, RuleEvaluator<DmarcConfig>>()
                 .AddTransient<IRule<DmarcConfig>, OnlyOneDmarcRecord>()
+                .AddTransient<IRule<DmarcConfig>, TldDmarcRecordBehaviourIsWeaklyDefined>()
                 .AddTransient<IRuleEvaluator<DmarcRecord>, RuleEvaluator<DmarcRecord>>()
                 .AddTransient<IRule<DmarcRecord>, VersionMustBeFirstTag>()
                 .AddTransient<IRule<DmarcRecord>, MaxLengthOf450Characters>()

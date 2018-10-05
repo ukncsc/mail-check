@@ -20,7 +20,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
         [TestCaseSource(nameof(CreateTestCaseData))]
         public void Test(int? percent, bool isErrorExpected)
         {
-            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { new Percent("", percent) }, string.Empty);
+            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { new Percent("", percent) }, string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);
@@ -39,7 +39,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
 
         public void NoErrorWhenPercentTermNotFound()
         {
-            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag>(), string.Empty);
+            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag>(), string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);

@@ -20,7 +20,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
         [Test]
         public void VersionIsFirstTagNoError()
         {
-            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { new Version("v=DMARC1") }, string.Empty);
+            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { new Version("v=DMARC1") }, string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);
@@ -33,7 +33,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
         [Test]
         public void NoVersionTagError()
         {
-            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag>(), string.Empty);
+            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag>(), string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);
@@ -50,7 +50,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
             {
                 new SubDomainPolicy("", PolicyType.None),
                 new Version("v=DMARC1")
-            }, string.Empty);
+            }, string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);

@@ -22,14 +22,16 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Mapping
             List<DmarcRecord> dmarcRecords = domainDmarcConfig.Records.Select(ToDmarcRecord).ToList();
 
             List<Error> errors = domainDmarcConfig.Errors.Select(_ => _.ToError("Global"))
-                .Concat(domainDmarcConfig.Records.SelectMany((v, i) => v.AllErrors.Select(_ => _.ToError($"Record {i + 1}"))))
+                .Concat(domainDmarcConfig.Records.SelectMany((v, i) =>
+                    v.AllErrors.Select(_ => _.ToError($"Record {i + 1}"))))
                 .ToList();
-           
-            ErrorType? maxErrorSeverity = errors.Any() 
-                ? errors.Min(_ => _.ErrorType)
-                : (ErrorType?)null;
 
-            return new DmarcConfig(dmarcRecords, errors, domainDmarcConfig.AllErrorCount, maxErrorSeverity, domainDmarcConfig.LastChecked);
+            ErrorType? maxErrorSeverity = errors.Any()
+                ? errors.Min(_ => _.ErrorType)
+                : (ErrorType?) null;
+
+            return new DmarcConfig(dmarcRecords, errors, domainDmarcConfig.AllErrorCount, maxErrorSeverity,
+                domainDmarcConfig.LastChecked, domainDmarcConfig.IsInherited ? domainDmarcConfig.OrgDomain : null);
         }
 
         public static DmarcRecord ToDmarcRecord(this DomainDmarcRecord domainDmarcRecord, int index)

@@ -2,7 +2,7 @@ resource "aws_lambda_function" "scheduled-lambda-function" {
   filename         = "${var.lambda-filename}"
   function_name    = "${var.lambda-function-name}"
   role             = "${aws_iam_role.lambda-processor.arn}"
-  runtime          = "dotnetcore1.0"
+  runtime          = "dotnetcore2.1"
   handler          = "${var.handler}"
   source_code_hash = "${var.source-code-hash}"
   memory_size      = "${var.lambda-memory}"

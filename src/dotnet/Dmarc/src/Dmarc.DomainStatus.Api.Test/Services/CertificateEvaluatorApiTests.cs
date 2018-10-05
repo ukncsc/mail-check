@@ -13,19 +13,19 @@ namespace Dmarc.DomainStatus.Api.Test.Services
     [TestFixture]
     public class CertificateEvaluatorApiTests
     {
-        private ICertificateEvaluatorApiConfig _config;
+        private IDomainStatusApiConfig _config;
         private ICertificateEvaluatorApi sut;
         private HttpTest _httpTest;
 
         [SetUp]
         public void SetUp()
         {
-            _config = A.Fake<ICertificateEvaluatorApiConfig>();
+            _config = A.Fake<IDomainStatusApiConfig>();
             sut = new CertificateEvaluatorApiClient(_config, A.Fake<ILogger<CertificateEvaluatorApiClient>>());
 
             _httpTest = new HttpTest();
 
-            A.CallTo(() => _config.Endpoint).Returns("https://ncsc.gov.uk");
+            A.CallTo(() => _config.CertificateEvaluatorApiEndpoint).Returns("https://ncsc.gov.uk");
         }
 
         [TearDown]

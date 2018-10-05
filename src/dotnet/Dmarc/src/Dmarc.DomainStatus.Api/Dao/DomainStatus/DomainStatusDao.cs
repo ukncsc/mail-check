@@ -20,15 +20,15 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus
 
         Task<string> GetSpfReadModel(int id);
 
-        Task<DmarcReadModel> GetDmarcReadModel(int id);
+        Task<string> GetDmarcReadModel(int id);
 
-        Task<DmarcReadModel> GetDmarcReadModel(string domainName);
+        Task<string> GetDmarcReadModel(string domainName);
 
         Task<int> GetAggregateReportTotalEmailCount(int domainId, DateTime startDate, DateTime endDate, bool includeSubdomains);
 
         Task<SortedDictionary<DateTime, AggregateSummaryItem>> GetAggregateReportSummary(int domainId, DateTime startDate, DateTime endDate, bool includeSubdomains);
 
-        Task<List<AggregateReportExportItem>> GetAggregateReportExport(int domainId, DateTime date);
+        Task<List<AggregateReportExportItem>> GetAggregateReportExport(int domainId, DateTime startDate, DateTime endDate);
     }
 
     internal class DomainStatusDao : IDomainStatusDao
@@ -62,16 +62,16 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus
                 _ => _.AddWithValue("domainId", id), _ => _log.LogDebug(_), nameof(GetSpfReadModel));
         }
 
-        public Task<DmarcReadModel> GetDmarcReadModel(int id)
+        public Task<string> GetDmarcReadModel(int id)
         {
-            return Db.ExecuteReaderSingleResultTimed(_connectionInfo, DomainStatusDaoResources.SelectDmarcReadModelByDomainId,
-                _ => _.AddWithValue("domainId", id), CreateDmarcReadModel, _ => _log.LogDebug(_), nameof(GetDmarcReadModel));
+            return Db.ExecuteScalarTimed<string>(_connectionInfo, DomainStatusDaoResources.SelectDmarcReadModelByDomainId,
+                _ => _.AddWithValue("domainId", id), _ => _log.LogDebug(_), nameof(GetDmarcReadModel));
         }
 
-        public Task<DmarcReadModel> GetDmarcReadModel(string domainName)
+        public Task<string> GetDmarcReadModel(string domainName)
         {
-            return Db.ExecuteReaderSingleResultTimed(_connectionInfo, DomainStatusDaoResources.SelectDmarcReadModelByDomainName,
-               _ => _.AddWithValue("domainName", domainName), CreateDmarcReadModel, _ => _log.LogDebug(_), nameof(GetDmarcReadModel));
+            return Db.ExecuteScalarTimed<string>(_connectionInfo, DomainStatusDaoResources.SelectDmarcReadModelByDomainName,
+               _ => _.AddWithValue("domainName", domainName), _ => _log.LogDebug(_), nameof(GetDmarcReadModel));
         }
 
         public Task<int> GetAggregateReportTotalEmailCount(int domainId, DateTime startDate, DateTime endDate, bool includeSubdomains)
@@ -107,24 +107,17 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus
             return Db.ExecuteReaderTimed(_connectionInfo, query, addParameters, CreateAggegateReportSummary, _ => _log.LogDebug(_), nameof(GetAggregateReportSummary));
         }
 
-        public Task<List<AggregateReportExportItem>> GetAggregateReportExport(int domainId, DateTime date)
+        public Task<List<AggregateReportExportItem>> GetAggregateReportExport(int domainId, DateTime startDate, DateTime endDate)
         {
             Action<MySqlParameterCollection> addParameters = parameterCollection =>
             {
                 parameterCollection.AddWithValue("domainId", domainId);
-                parameterCollection.AddWithValue("date", date.ToString("yyyy-MM-dd"));
+                parameterCollection.AddWithValue("startDate", startDate.ToString("yyyy-MM-dd"));
+                parameterCollection.AddWithValue("endDate", endDate.ToString("yyyy-MM-dd"));
             };
 
             return Db.ExecuteReaderListResultTimed(_connectionInfo, DomainStatusDaoResources.SelectAggregateExportData, addParameters,
                 CreateAggregateReportExportItem, _ => _log.LogDebug(_), nameof(GetAggregateReportExport));
-        }
-
-        private DmarcReadModel CreateDmarcReadModel(DbDataReader reader)
-        {
-            return new DmarcReadModel(
-                CreateDomain(reader),
-                reader.GetBoolean("has_dmarc"),
-                reader.GetString("read_model"));
         }
 
         private Domain.Domain CreateDomain(DbDataReader reader)

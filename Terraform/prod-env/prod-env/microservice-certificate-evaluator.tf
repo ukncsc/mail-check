@@ -1,6 +1,6 @@
 module "certificate-evaluator" {
-  source                 = "git@github.com:ukncsc/MailCheck.CertificateEvaluator//infrastructure/modules/certificate-evaluator-microservice?ref=8131b8a"
-  artefact-version       = "8131b8a"
+  source                 = "git@github.com:ukncsc/MailCheck.CertificateEvaluator//infrastructure/modules/certificate-evaluator-microservice?ref=452e574"
+  artefact-version       = "452e574"
   vpc-id                 = "${aws_vpc.dmarc-env.id}"
   aws-account-id         = "${var.aws-account-id}"
   aws-region             = "${var.aws-region}"

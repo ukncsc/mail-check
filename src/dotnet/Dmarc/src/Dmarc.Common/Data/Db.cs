@@ -8,8 +8,8 @@ namespace Dmarc.Common.Data
 {
     public static class Db
     {
-        public static Task<T> ExecuteReaderTimed<T>(IConnectionInfoAsync connectionInfo, 
-            string sql, Action<MySqlParameterCollection> addParameters, Func<DbDataReader, Task<T>> factory, 
+        public static Task<T> ExecuteReaderTimed<T>(IConnectionInfoAsync connectionInfo,
+            string sql, Action<MySqlParameterCollection> addParameters, Func<DbDataReader, Task<T>> factory,
             Action<string> log, string callName) where T : class
         {
             using (Timer timer = new Timer(log, callName))
@@ -52,7 +52,7 @@ namespace Dmarc.Common.Data
             }
         }
 
-        public static async Task<T> ExecuteReaderSingleResult<T>(IConnectionInfoAsync connectionInfo, 
+        public static async Task<T> ExecuteReaderSingleResult<T>(IConnectionInfoAsync connectionInfo,
             string sql, Action<MySqlParameterCollection> addParameters, Func<DbDataReader, T> factory) where T : class
         {
             string connectionString = await connectionInfo.GetConnectionStringAsync();
@@ -62,21 +62,21 @@ namespace Dmarc.Common.Data
         public static async Task<T> ExecuteReaderSingleResult<T>(string connectionString, string sql,
             Action<MySqlParameterCollection> addParameters, Func<DbDataReader, T> factory) where T : class
         {
-            Func<DbDataReader, Task<T>>  iteratedFactory = async _ =>
-            {
-                T result = null;
-                while (await _.ReadAsync())
-                {
-                    result = factory(_);
-                }
-                return result;
-            };
+            Func<DbDataReader, Task<T>> iteratedFactory = async _ =>
+           {
+               T result = null;
+               while (await _.ReadAsync())
+               {
+                   result = factory(_);
+               }
+               return result;
+           };
 
             return await ExecuteReader(connectionString, sql, addParameters, iteratedFactory);
         }
 
-        public static async Task<List<T>> ExecuteReaderListResultTimed<T>(IConnectionInfoAsync connectionInfo, 
-            string sql, Action<MySqlParameterCollection> addParameters, Func<DbDataReader, T> factory, 
+        public static async Task<List<T>> ExecuteReaderListResultTimed<T>(IConnectionInfoAsync connectionInfo,
+            string sql, Action<MySqlParameterCollection> addParameters, Func<DbDataReader, T> factory,
             Action<string> log, string callName)
         {
             using (Timer timer = new Timer(log, callName))
@@ -114,7 +114,7 @@ namespace Dmarc.Common.Data
         {
             using (Timer timer = new Timer(log, callName))
             {
-                return await ExecuteScalar(connectionInfo, sql, addParameters, (Func<object, T>) null);
+                return await ExecuteScalar(connectionInfo, sql, addParameters, (Func<object, T>)null);
             }
         }
 
@@ -135,11 +135,11 @@ namespace Dmarc.Common.Data
         }
 
         public static Task<T> ExecuteScalar<T>(string connectionString, string sql,
-            Action<MySqlParameterCollection> addParameters, Func<object,T> factory = null)
+            Action<MySqlParameterCollection> addParameters, Func<object, T> factory = null)
         {
             if (factory == null)
             {
-                factory = o => (T) o;
+                factory = o => (T)o;
             }
 
             Func<MySqlCommand, Task<T>> executeCommand = async command => factory(await command.ExecuteScalarAsync());
@@ -147,24 +147,25 @@ namespace Dmarc.Common.Data
             return Execute(connectionString, sql, addParameters, executeCommand);
         }
 
-        private static async Task<T> Execute<T>(string connectionString, string sql, 
+        private static async Task<T> Execute<T>(string connectionString, string sql,
             Action<MySqlParameterCollection> addParameters, Func<MySqlCommand, Task<T>> executeCommand)
         {
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 await connection.OpenAsync().ConfigureAwait(false);
 
-                MySqlCommand command = new MySqlCommand(sql, connection);
+                using (MySqlCommand command = new MySqlCommand(sql, connection))
+                {
+                    addParameters(command.Parameters);
 
-                addParameters(command.Parameters);
+                    command.Prepare();
 
-                command.Prepare();
+                    T result = await executeCommand(command);
 
-                T result = await executeCommand(command);
+                    connection.Close();
 
-                connection.Close();
-
-                return result;
+                    return result;
+                }
             }
         }
     }

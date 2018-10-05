@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using Amazon.MissingTypes;
-using Dmarc.Common.Interface.Tls.Domain;
-using Dmarc.MxSecurityTester.Util;
-using Newtonsoft.Json;
-
-namespace Dmarc.MxSecurityTester.Dao.Entities
+﻿namespace Dmarc.MxSecurityTester.Dao.Entities
 {
     public class TlsTestResultsWithoutCertificate
     {
@@ -56,7 +46,7 @@ namespace Dmarc.MxSecurityTester.Dao.Entities
 
         protected bool Equals(TlsTestResultsWithoutCertificate other)
         {
-            return Equals(Tls12AvailableWithBestCipherSuiteSelected, 
+            return Equals(Tls12AvailableWithBestCipherSuiteSelected,
                        other.Tls12AvailableWithBestCipherSuiteSelected) &&
                    Equals(Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
                        other.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList) &&
@@ -81,7 +71,7 @@ namespace Dmarc.MxSecurityTester.Dao.Entities
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((TlsTestResultsWithoutCertificate) obj);
+            return Equals((TlsTestResultsWithoutCertificate)obj);
         }
 
         public override int GetHashCode()

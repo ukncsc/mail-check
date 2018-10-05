@@ -1,15 +1,11 @@
-﻿using Dmarc.Common.Data;
-using Dmarc.Common.Interface.Tls.Domain;
-using MySql.Data.MySqlClient;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Dmarc.Common.Data;
 using Dmarc.Common.Interface.Logging;
 using Dmarc.MxSecurityEvaluator.Domain;
-using Dmarc.MxSecurityEvaluator.Util;
-using System;
-using System.Reflection;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 

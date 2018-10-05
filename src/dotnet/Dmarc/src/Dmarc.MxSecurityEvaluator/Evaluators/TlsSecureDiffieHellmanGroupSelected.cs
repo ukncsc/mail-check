@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Dmarc.Common.Interface.Tls.Domain;
-using Dmarc.MxSecurityEvaluator.Dao;
+﻿using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.Common.Util;
 using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Util;
 
@@ -54,16 +52,19 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 
                 case CurveGroup.UnknownGroup1024:
                     return new TlsEvaluatorResult(EvaluatorResult.WARNING,
-                        $"{intro} the server selected an unknown 1024 bit group. {advice}");
+                        string.Format(intro, $"the server selected an unknown 1024 bit group. {advice}"));
 
                 case CurveGroup.Java1024:
                 case CurveGroup.Rfc2409_1024:
                 case CurveGroup.Rfc5114_1024:
                     return new TlsEvaluatorResult(EvaluatorResult.FAIL,
-                        string.Format(intro, $"the server selected {tlsConnectionResult.CurveGroup.GetGroupName()} which is an insecure 1024 bit (or less) group. {advice}"));
+                        string.Format(intro,
+                            $"the server selected {tlsConnectionResult.CurveGroup.GetEnumAsString()} which is an insecure 1024 bit (or less) group. {advice}"));
 
                 case CurveGroup.Unknown:
-                    return new TlsEvaluatorResult(EvaluatorResult.FAIL, $"{intro} the server selected an unknown group which is potentially insecure. {advice}");
+                    return new TlsEvaluatorResult(EvaluatorResult.FAIL,
+                        string.Format(intro,
+                            $"the server selected an unknown group which is potentially insecure. {advice}"));
             }
 
             return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE,

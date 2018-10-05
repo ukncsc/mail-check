@@ -11,7 +11,7 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Parsers
 {
     public interface IDmarcRecordParser
     {
-        bool TryParse(string record, string domain, out DmarcRecord dmarcRecord);
+        bool TryParse(string record, string domain, string orgDomain, bool isTld, bool isInherited, out DmarcRecord dmarcRecord);
     }
 
     public class DmarcRecordParser : IDmarcRecordParser
@@ -33,7 +33,7 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Parsers
             _explainer = explainer;
         }
 
-        public bool TryParse(string record, string domain, out DmarcRecord dmarcRecord)
+        public bool TryParse(string record, string domain, string orgDomain, bool isTld, bool isInherited, out DmarcRecord dmarcRecord)
         {
             if (string.IsNullOrEmpty(record))
             {
@@ -56,7 +56,7 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Parsers
                 }
             }
 
-            dmarcRecord = new DmarcRecord(record, tags, domain);
+            dmarcRecord = new DmarcRecord(record, tags, domain, orgDomain, isTld, isInherited);
             dmarcRecord.AddErrors(_ruleEvaluator.Evaluate(dmarcRecord));
             return true;
         }

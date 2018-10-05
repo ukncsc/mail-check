@@ -14,6 +14,7 @@ import {
 class DomainSecurityDetailsCertificates extends Component {
   state = {
     certificates: null,
+    domain: null,
   };
 
   static getDerivedStateFromProps = props => {
@@ -33,14 +34,14 @@ class DomainSecurityDetailsCertificates extends Component {
         return null;
       }
 
-      return { certificates };
+      return { certificates, domain };
     }
 
     return null;
   };
 
   render() {
-    const { certificates } = this.state;
+    const { certificates, domain } = this.state;
     const record =
       certificates &&
       certificates.records &&
@@ -52,6 +53,7 @@ class DomainSecurityDetailsCertificates extends Component {
         type="TLS Certificate"
         {...this.props.match.params}
         {...certificates}
+        domainName={domain && domain.name}
       >
         <ShowMoreDropdown title="Certificate chain details">
           {record ? (

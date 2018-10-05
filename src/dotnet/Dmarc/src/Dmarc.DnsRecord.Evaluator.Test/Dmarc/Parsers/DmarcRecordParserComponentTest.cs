@@ -33,7 +33,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Parsers
                 "v=DMARC1; fo=1; p=quarantine; sp=quarantine; rua=mailto:dcc-dmarc@abc.gov.uk; rua=mailto:dmarc-rua@dmarc.service.gov.uk; ruf=mailto:dmarc-rua@dmarc.service.gov.uk; ruf=mailto:dcc-dmarc@abc.gov.uk; pct=100";
 
             DmarcRecord dmarcRecord;
-            bool parsed = _dmarcRecordParser.TryParse(rawDmarcRecord, "ncsc.gov.uk", out dmarcRecord);
+            bool parsed = _dmarcRecordParser.TryParse(rawDmarcRecord, "ncsc.gov.uk", string.Empty, false,false, out dmarcRecord);
 
             Assert.That(parsed, Is.True);
             Assert.That(dmarcRecord.AllErrorCount, Is.EqualTo(2));

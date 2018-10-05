@@ -1,5 +1,5 @@
 ﻿using Dmarc.Common.Interface.Tls.Domain;
-using Dmarc.MxSecurityEvaluator.Dao;
+using Dmarc.Common.Util;
 using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Util;
 
@@ -60,7 +60,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
                 case CipherSuite.TLS_DHE_DSS_WITH_DES_CBC_SHA:
                 case CipherSuite.TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA:
                 case CipherSuite.TLS_DHE_RSA_WITH_DES_CBC_SHA:
-                    return new TlsEvaluatorResult(EvaluatorResult.FAIL, string.Format(intro, $"the server selected {tlsConnectionResult.CipherSuite.GetName()} which is insecure."));
+                    return new TlsEvaluatorResult(EvaluatorResult.FAIL, string.Format(intro, $"the server selected {tlsConnectionResult.CipherSuite.GetEnumAsString()} which is insecure."));
             }
 
             return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, string.Format(intro, "there was a problem and we are unable to provide additional information."));

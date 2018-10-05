@@ -20,7 +20,7 @@ module "domainstatusapi" {
   command                   = "Dmarc.DomainStatus.Api.dll"
   service-name              = "domainstatusapi"
   container-memory          = "${var.default-container-memory}"
-  connection-string         = "Server = ${aws_rds_cluster.rds-cluster.endpoint}; Port = 3306; Database = ${var.db-name}; Uid = ${var.env-name}_${lookup(var.db-users,"statusapi")};Connection Timeout=5;"
+  connection-string         = "Server = ${aws_rds_cluster.rds-cluster.endpoint}; Port = 3306; Database = ${var.db-name}; Uid = ${var.env-name}_${lookup(var.db-users,"statusapi")};Connection Timeout=5;Default Command Timeout=120;"
   default-task-count        = "1"
   prod-stage-task-count     = "3"
   health-check-grace-period = "300"

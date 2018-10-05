@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Dmarc.Common.Data;
 using Dmarc.DomainStatus.Api.Domain;
-using MySql.Data.MySqlClient;
+using Microsoft.Extensions.Logging;
 
 namespace Dmarc.DomainStatus.Api.Dao.Permission
 {
@@ -14,40 +14,31 @@ namespace Dmarc.DomainStatus.Api.Dao.Permission
     public class PermissionDao : IPermissionDao
     {
         private readonly IConnectionInfoAsync _connectionInfo;
+        private readonly ILogger<IPermissionDao> _log;
 
-        public PermissionDao(IConnectionInfoAsync connectionInfo)
+        public PermissionDao(IConnectionInfoAsync connectionInfo, ILogger<IPermissionDao> log)
         {
             _connectionInfo = connectionInfo;
+            _log = log;
         }
 
-        public async Task<DomainPermissions> GetPermissions(int userId, int domainId)
+        public Task<DomainPermissions> GetPermissions(int userId, int domainId)
         {
-            using (MySqlConnection connection = new MySqlConnection(await _connectionInfo.GetConnectionStringAsync()))
-            {
-                MySqlCommand command = new MySqlCommand(PermissionDaoResource.SelectPermissionByDomain, connection);
+            return Db.ExecuteReaderSingleResultTimed(
+                _connectionInfo,
+                PermissionDaoResource.SelectPermissionByDomain,
+                _ => { _.AddWithValue("userId", userId); _.AddWithValue("domainId", domainId); },
+                _ => CreateDomainPermissions(domainId, _),
+                _ => _log.LogDebug(_),
+                nameof(GetPermissions));
+        }
 
-                command.Parameters.AddWithValue("userId", userId);
-                command.Parameters.AddWithValue("domainId", domainId);
+        private DomainPermissions CreateDomainPermissions(int domainId, DbDataReader reader)
+        {
+            bool aggregatePermission = reader.GetBoolean("aggregate_permission");
+            bool domainPermission = reader.GetBoolean("domain_permission");
 
-                command.Prepare();
-
-                await connection.OpenAsync().ConfigureAwait(false);
-
-                DbDataReader reader = await command.ExecuteReaderAsync();
-
-                bool aggregatePermission = false;
-                bool domainPermission = false; 
-                while (await reader.ReadAsync())
-                {
-                    aggregatePermission = reader.GetBoolean("aggregate_permission");
-                    domainPermission = reader.GetBoolean("domain_permission");
-                }
-
-                DomainPermissions domainPermissions = new DomainPermissions(domainId, aggregatePermission, domainPermission);
-
-                connection.Close();
-                return domainPermissions;
-            }
+            return new DomainPermissions(domainId, aggregatePermission, domainPermission);
         }
     }
 }

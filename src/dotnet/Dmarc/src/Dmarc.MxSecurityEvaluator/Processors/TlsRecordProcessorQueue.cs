@@ -1,10 +1,10 @@
-﻿using Amazon.SQS.Model;
+﻿using System.Threading.Tasks;
+using Amazon.SQS.Model;
 using Dmarc.Common.Interface.Logging;
 using Dmarc.Common.Interface.Messaging;
 using Dmarc.Common.Messaging.Sns.Models;
 using Dmarc.MxSecurityEvaluator.Dao;
 using Dmarc.MxSecurityTester.Contract.Messages;
-using System.Threading.Tasks;
 using static Newtonsoft.Json.JsonConvert;
 
 namespace Dmarc.MxSecurityEvaluator.Processors
@@ -27,14 +27,14 @@ namespace Dmarc.MxSecurityEvaluator.Processors
 
         private async Task Process(Message message)
         {
-            var domain = GetSnsMessageBody(message);
+            DomainTlsProfileChanged domain = GetSnsMessageBody(message);
 
             await ProcessTlsConnectionResults(domain.DomainId);
         }
 
         private static DomainTlsProfileChanged GetSnsMessageBody(Message message)
         {
-            var snsMessage = DeserializeObject<SnsMessage>(message.Body);
+            SnsMessage snsMessage = DeserializeObject<SnsMessage>(message.Body);
 
             return DeserializeObject<DomainTlsProfileChanged>(snsMessage.Message);
         }

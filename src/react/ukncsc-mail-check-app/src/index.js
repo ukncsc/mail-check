@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 
 import 'core-js/fn/array';
+import 'core-js/fn/string';
 import 'ukncsc-semantic-ui-theme';
 
 import store, { history } from 'common/store';

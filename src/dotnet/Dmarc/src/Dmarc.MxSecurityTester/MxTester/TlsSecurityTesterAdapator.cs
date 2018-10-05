@@ -25,12 +25,16 @@ namespace Dmarc.MxSecurityTester.MxTester
 
         public async Task<MxRecordTlsSecurityProfile> Test(MxRecordTlsSecurityProfile mxRecordTlsSecurityProfile)
         {
-            List<Console.TlsTestResult> results =
-                await _tlsSecurityTester.Test(mxRecordTlsSecurityProfile.MxRecord.Hostname);
+            List<Console.TlsTestResult> results = new List<Console.TlsTestResult>();
+            List<X509Certificate2> certificates = null;
 
-            List<X509Certificate2> certificates =
-                results.FirstOrDefault(_ => _.Result.Certificates.Any())?
-                    .Result.Certificates.ToList() ?? new List<X509Certificate2>();
+            if (!string.IsNullOrWhiteSpace(mxRecordTlsSecurityProfile.MxRecord.Hostname))
+            {
+                results = await _tlsSecurityTester.Test(mxRecordTlsSecurityProfile.MxRecord.Hostname);
+
+                certificates = results.FirstOrDefault(_ => _.Result.Certificates.Any())?
+                                   .Result.Certificates.ToList() ?? new List<X509Certificate2>();
+            }
 
             return new MxRecordTlsSecurityProfile(mxRecordTlsSecurityProfile.MxRecord,
                 new TlsSecurityProfile(

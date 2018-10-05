@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Dmarc.Common.Interface.Tls.Domain;
+﻿using Dmarc.Common.Interface.Tls.Domain;
 using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Util;
 

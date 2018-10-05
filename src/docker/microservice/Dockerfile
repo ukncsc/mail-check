@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:1.0.5-runtime
+FROM microsoft/dotnet:2.1.3-runtime
 WORKDIR /app
 COPY . .
 ENTRYPOINT ["dotnet"]

@@ -9,13 +9,13 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Rules.Config
         {
             int recordCount = config.Records.Count;
 
-            if (recordCount == 1)
+            if (config.IsTld || recordCount == 1)
             {
                 error = null;
                 return false;
             }
 
-            var message = recordCount == 0
+            string message = recordCount == 0
                 ? string.Format(DmarcRulesResource.NoDmarcErrorMessage, config.Domain)
                 : DmarcRulesResource.OnlyOneDmarcRecordErrorMessage;
 

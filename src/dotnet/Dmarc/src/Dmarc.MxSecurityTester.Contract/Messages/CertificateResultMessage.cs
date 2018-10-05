@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Dmarc.MxSecurityTester.Contract.Messages
 {
@@ -23,9 +22,10 @@ namespace Dmarc.MxSecurityTester.Contract.Messages
 
     public class HostInfo
     {
-        public HostInfo(string hostName, List<string> certificates = null, List<SelectedCipherSuite> selectedCipherSuites = null)
+        public HostInfo(string hostName, bool hostNotFound, List<string> certificates = null, List<SelectedCipherSuite> selectedCipherSuites = null)
         {
             HostName = hostName;
+            HostNotFound = hostNotFound;
             Certificates = certificates?.Distinct().ToList() ?? new List<string>();
             SelectedCipherSuites = selectedCipherSuites ?? new List<SelectedCipherSuite>();
         }
@@ -35,6 +35,8 @@ namespace Dmarc.MxSecurityTester.Contract.Messages
         public List<string> Certificates { get; }
 
         public List<SelectedCipherSuite> SelectedCipherSuites { get; }
+
+        public bool HostNotFound { get; }
     }
 
     public class SelectedCipherSuite

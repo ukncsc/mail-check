@@ -124,7 +124,10 @@
 `record`,
 `end_date`,
 `failure_count`,
-`result_code`) VALUES</value>
+`result_code`,
+`org_domain`,
+`is_tld`,
+`is_inherited`) VALUES</value>
   </data>
   <data name="InsertRecordOnDuplicateKey" xml:space="preserve">
     <value>ON DUPLICATE KEY UPDATE `end_date` = VALUES(`end_date`),
@@ -138,7 +141,10 @@
 @c{0},
 @d{0},
 @e{0},
-@f{0})</value>
+@f{0},
+@g{0},
+@h{0},
+@i{0})</value>
   </data>
   <data name="SelectDomainsWithRecords" xml:space="preserve">
     <value>SELECT temp.domain_id,
@@ -146,7 +152,10 @@ temp.domain_name,
 dr2.id,
 dr2.record,
 dr2.result_code,
-dr2.failure_count
+dr2.failure_count,
+dr2.org_domain,
+dr2.is_tld,
+dr2.is_inherited
 FROM
 (
 SELECT d1.id as domain_id,

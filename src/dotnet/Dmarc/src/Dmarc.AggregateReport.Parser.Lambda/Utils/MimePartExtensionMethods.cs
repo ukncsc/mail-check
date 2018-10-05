@@ -8,7 +8,7 @@ namespace Dmarc.AggregateReport.Parser.Lambda.Utils
         public static Stream GetDecodedStream(this MimePart mimePart)
         {
             MemoryStream memoryStream = new MemoryStream();
-            mimePart.ContentObject.DecodeTo(memoryStream);
+            mimePart.Content.DecodeTo(memoryStream);
             memoryStream.Seek(0, SeekOrigin.Begin);
             return memoryStream;
         }

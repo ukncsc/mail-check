@@ -25,8 +25,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Spf.Rules.Record
         {
             SpfRecord spfRecord = new SpfRecord(record, new Version(string.Empty), new List<Term>(), string.Empty);
 
-            Evaluator.Rules.Error error;
-            bool isErrored = _rule.IsErrored(spfRecord, out error);
+            bool isErrored = _rule.IsErrored(spfRecord, out Evaluator.Rules.Error error);
 
             Assert.That(isErrored, Is.EqualTo(isErroredExpected));
 

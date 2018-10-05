@@ -1,23 +1,29 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { SingleDatePicker } from 'react-dates';
+import { DateRangePicker } from 'react-dates';
 import replace from 'lodash/replace';
 import moment from 'moment';
 import { Button, Divider, Header, Message, Table } from 'semantic-ui-react';
-import { BackLink, ShowMoreDropdown } from 'common/components';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  ShowMoreDropdown,
+} from 'common/components';
 import { mailCheckApiDownload } from 'common/helpers';
 import {
   fetchDomainSecurityDomain,
   getDomainSecurityDomain,
 } from 'domain-security/store';
+import { DomainSecurityLocationContext } from 'domain-security/context';
 
 import { aggregateReportExportFields as fields } from 'domain-security/data';
 
 class DomainSecurityAggregateExport extends Component {
   state = {
     domain: {},
-    focused: null,
-    date: moment().subtract(1, 'day'),
+    focusedInput: null,
+    startDate: moment().subtract(1, 'month'),
+    endDate: moment(),
     loading: false,
     error: null,
   };
@@ -36,13 +42,15 @@ class DomainSecurityAggregateExport extends Component {
   onDownloadCsv = async () => {
     this.setState({ loading: true, error: null });
 
-    const formattedDate = this.state.date.format('YYYY-MM-DD');
+    const startDateFormatted = this.state.startDate.format('YYYY-MM-DD');
+    const endDateFormatted = this.state.endDate.format('YYYY-MM-DD');
     const { id, name } = this.state.domain;
+    const domain = replace(name, /\./g, '-');
 
     try {
       await mailCheckApiDownload(
-        `/domainstatus/domain/aggregate-export/${id}/${formattedDate}`,
-        `AggregateReport_${formattedDate}_${replace(name, /\./g, '-')}.csv`
+        `/domainstatus/domain/aggregate-export/${id}/${startDateFormatted}/${endDateFormatted}`,
+        `AggregateReport_${startDateFormatted}_${endDateFormatted}_${domain}.csv`
       );
     } catch (error) {
       this.setState({ error });
@@ -51,18 +59,52 @@ class DomainSecurityAggregateExport extends Component {
     }
   };
 
-  onDateChange = date => this.setState({ date });
+  onDatesChange = ({ startDate, endDate }) => {
+    this.setState({
+      startDate,
+      endDate:
+        endDate && endDate.diff(startDate, 'months', true) > 1
+          ? startDate.clone().add(1, 'month')
+          : endDate,
+    });
+  };
 
-  onFocusChange = ({ focused }) => this.setState({ focused });
+  onFocusChange = focusedInput => this.setState({ focusedInput });
+
+  isOutsideRange = date => {
+    if (this.state.focusedInput === 'endDate') {
+      return (
+        !!this.state.startDate &&
+        date.isAfter(this.state.startDate.clone().add(1, 'month'))
+      );
+    }
+
+    if (date.isAfter(new Date())) {
+      return true;
+    }
+
+    return false;
+  };
 
   render() {
-    const now = moment();
-
     return (
       <React.Fragment>
-        <BackLink />
+        <Breadcrumb>
+          <DomainSecurityLocationContext.Consumer>
+            {location => (
+              <BreadcrumbItem link={`/${location}/${this.state.domain.id}`}>
+                {this.state.domain.name}
+              </BreadcrumbItem>
+            )}
+          </DomainSecurityLocationContext.Consumer>
+          <BreadcrumbItem active>Aggregate Report Export</BreadcrumbItem>
+        </Breadcrumb>
         <Header as="h1">Download aggregate report data as CSV</Header>
         <Header as="h2">{this.state.domain.name || null}</Header>
+        <p>
+          You can download up to a month of aggregate report data at a time.
+          Downloads may take up to a minute to complete.
+        </p>
         <ShowMoreDropdown title="Explain report information">
           <Table>
             <Table.Body>
@@ -78,22 +120,28 @@ class DomainSecurityAggregateExport extends Component {
           </Table>
         </ShowMoreDropdown>
         <Divider hidden />
-        <SingleDatePicker
+        <DateRangePicker
+          startDate={this.state.startDate}
+          startDateId="AggregateExportStartDate"
+          endDate={this.state.endDate}
+          endDateId="AggregateExportEndDate"
           showDefaultInputIcon
           keepFocusOnInput
-          focused={this.state.focused}
-          date={this.state.date}
-          onDateChange={this.onDateChange}
+          minimumNights={0}
+          onDatesChange={this.onDatesChange}
+          focusedInput={this.state.focusedInput}
           onFocusChange={this.onFocusChange}
-          displayFormat="DD/MM/YYYY"
-          isOutsideRange={date => date.isAfter(now)}
+          displayFormat="D/M/YYYY"
+          isOutsideRange={this.isOutsideRange}
         />
         <Divider hidden />
         <Button
           primary
           size="large"
           loading={this.state.loading}
-          disabled={this.state.loading || !this.state.date}
+          disabled={
+            this.state.loading || !this.state.startDate || !this.state.endDate
+          }
           onClick={this.onDownloadCsv}
         >
           Download CSV

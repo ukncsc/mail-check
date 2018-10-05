@@ -16,25 +16,20 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
     public class SubDomainPolicyShouldNotBeOnNonOrganisationalDomainTests
     {
         private SubDomainPolicyShouldNotBeOnNonOrganisationalDomain _rule;
-        private IOrganisationalDomainProvider _organisationalDomainProvider;
 
         [SetUp]
         public void SetUp()
         {
-            _organisationalDomainProvider = A.Fake<IOrganisationalDomainProvider>();
-            _rule = new SubDomainPolicyShouldNotBeOnNonOrganisationalDomain(_organisationalDomainProvider);
+            _rule = new SubDomainPolicyShouldNotBeOnNonOrganisationalDomain();
         }
 
-       [Test]
+        [Test]
         public void NoErrorWhenOnOrganisationalDomain()
         {
             string domain = "abc.com";
 
-            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { new SubDomainPolicy("", PolicyType.Unknown) }, domain);
-
-            A.CallTo(() => _organisationalDomainProvider.GetOrganisationalDomain((domain)))
-                .Returns(new OrganisationalDomain(domain, domain));
-
+            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { new SubDomainPolicy("", PolicyType.Unknown) }, domain, domain, false, false);
+            
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);
 
@@ -48,11 +43,8 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
         {
             string domain = "abc.com";
 
-            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag>(), domain);
-
-            A.CallTo(() => _organisationalDomainProvider.GetOrganisationalDomain((domain)))
-                .Returns(new OrganisationalDomain(domain, domain));
-
+            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag>(), domain, domain, false, false);
+            
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);
 
@@ -67,11 +59,8 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
             string domain = "abc.com";
 
             DmarcRecord dmarcRecord = new DmarcRecord("",
-                new List<Tag> { new SubDomainPolicy("", PolicyType.Unknown, true) }, domain);
-
-            A.CallTo(() => _organisationalDomainProvider.GetOrganisationalDomain((domain)))
-                .Returns(new OrganisationalDomain(domain, "def.com"));
-
+                new List<Tag> { new SubDomainPolicy("", PolicyType.Unknown, true) }, domain, "def.com", false, false);
+            
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);
 
@@ -79,24 +68,21 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
 
             Assert.That(error, Is.Null);
         }
-        
+
         [Test]
         public void ErrorWhenOnNonOrganisationalDomain()
         {
             string domain = "abc.com";
 
-            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { new SubDomainPolicy("", PolicyType.Unknown) }, domain);
-
-            A.CallTo(() => _organisationalDomainProvider.GetOrganisationalDomain((domain)))
-                .Returns(new OrganisationalDomain(domain, "def.com"));
-
+            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { new SubDomainPolicy("", PolicyType.Unknown) }, domain, "def.com", false, false);
+            
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);
 
             Assert.That(isErrored, Is.EqualTo(true));
 
             Assert.That(error, Is.Not.Null);
-            Assert.That(error.Message, Is.EqualTo($"The specified sub-domain policy (sp) is ineffective because {domain} is not an organisational domain. Only sub-domain policies on organisational domains are valid."));
+            Assert.That(error.Message, Is.EqualTo($"The specified sub-domain policy (sp) is ineffective because {domain} is not an organisational domain."));
         }
 
     }

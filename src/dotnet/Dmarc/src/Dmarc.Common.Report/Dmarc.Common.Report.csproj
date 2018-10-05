@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Dmarc.Common.Report</AssemblyName>
+    <PackageId>Dmarc.Common.Report</PackageId>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Dmarc.Common/Dmarc.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.Core" Version="1.0.0" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.3.3.17" />
+    <PackageReference Include="Amazon.Lambda.S3Events" Version="1.0.2" />
+    <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.3.0" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.21.1" />
+    <PackageReference Include="FluentValidation" Version="8.0.0" />
+    <PackageReference Include="MimeKit" Version="2.0.6" />
+  </ItemGroup>
+
+</Project>

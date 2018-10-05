@@ -1,7 +1,9 @@
-﻿using Dmarc.MxSecurityEvaluator.Factory;
-using Microsoft.Extensions.CommandLineUtils;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Dmarc.MxSecurityEvaluator.Factory;
+using Dmarc.MxSecurityEvaluator.Processors;
+using Microsoft.Extensions.CommandLineUtils;
 
 namespace Dmarc.MxSecurityEvaluator
 {
@@ -22,9 +24,9 @@ namespace Dmarc.MxSecurityEvaluator
 
                 command.OnExecute(() =>
                 {
-                    var ids = domainId.Values.Select(int.Parse).ToList();
+                    List<int> ids = domainId.Values.Select(int.Parse).ToList();
 
-                    var tslRecordProcessor = MxSecurityEvaluatorFactory.CreateManualProcessor(ids);
+                    ITlsRecordProcessor tslRecordProcessor = MxSecurityEvaluatorFactory.CreateManualProcessor(ids);
 
                     tslRecordProcessor.Run().Wait();
 
@@ -34,14 +36,13 @@ namespace Dmarc.MxSecurityEvaluator
 
                     return 0;
                 });
-            },
-            false);
+            });
 
             commandLineApplication.HelpOption("-? | -h | --help");
 
             commandLineApplication.OnExecute(() =>
             {
-                var tlsRecordProcessor = MxSecurityEvaluatorFactory.CreateQueueProcessor();
+                ITlsRecordProcessor tlsRecordProcessor = MxSecurityEvaluatorFactory.CreateQueueProcessor();
 
                 tlsRecordProcessor.Run().Wait();
 

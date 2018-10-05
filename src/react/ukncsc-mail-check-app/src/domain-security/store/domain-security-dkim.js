@@ -24,12 +24,12 @@ const transformResponse = ({ domain: domainName, selectors }) => ({
   domainName,
   records: selectors.map(({ selector, records, messages }) => ({
     hostname: selector,
-    failures: messages.filter(_ => _.severity === 'error').map(_ => _.message),
+    failures: messages.filter(_ => _.severity === 'Error').map(_ => _.message),
     warnings: messages
-      .filter(_ => _.severity === 'warning')
+      .filter(_ => _.severity === 'Warning')
       .map(_ => _.message),
     inconclusives: messages
-      .filter(_ => _.severity === 'inconclusive')
+      .filter(_ => _.severity === 'Inconclusive')
       .map(_ => _.message),
     records,
   })),

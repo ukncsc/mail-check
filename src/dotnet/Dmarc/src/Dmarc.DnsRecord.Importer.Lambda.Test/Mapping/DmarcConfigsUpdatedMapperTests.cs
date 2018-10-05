@@ -35,9 +35,9 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.Mapping
         {
             List<RecordEntity> entities = new List<RecordEntity>
             {
-                new RecordEntity(null, new DomainEntity(Domain1Id, Domain1Name), new DmarcRecordInfo(Record1), RCode.NoError, 0),
-                new RecordEntity(null, new DomainEntity(Domain1Id, Domain1Name), new DmarcRecordInfo(Record2), RCode.NoError, 0),
-                new RecordEntity(null, new DomainEntity(Domain2Id, Domain2Name), new DmarcRecordInfo(Record3), RCode.NoError, 0)
+                new RecordEntity(null, new DomainEntity(Domain1Id, Domain1Name), new DmarcRecordInfo(Record1, string.Empty, false, false), RCode.NoError, 0),
+                new RecordEntity(null, new DomainEntity(Domain1Id, Domain1Name), new DmarcRecordInfo(Record2, string.Empty, false, false), RCode.NoError, 0),
+                new RecordEntity(null, new DomainEntity(Domain2Id, Domain2Name), new DmarcRecordInfo(Record3, string.Empty, false, false), RCode.NoError, 0)
             };
 
             DmarcConfigsUpdated configs = _mapper.Map(entities);
@@ -63,7 +63,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.Mapping
         {
             List<RecordEntity> entities = new List<RecordEntity>
             {
-                new RecordEntity(null, new DomainEntity(Domain1Id, Domain1Name), new DmarcRecordInfo(null), RCode.NoError, 0),
+                new RecordEntity(null, new DomainEntity(Domain1Id, Domain1Name), new DmarcRecordInfo(null, string.Empty, false, false), RCode.NoError, 0),
             };
 
             DmarcConfigsUpdated configs = _mapper.Map(entities);
@@ -81,9 +81,9 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.Mapping
         {
             List<RecordEntity> entities = new List<RecordEntity>
             {
-                new RecordEntity(1, new DomainEntity(Domain1Id, Domain1Name), new DmarcRecordInfo(Record1), RCode.NoError, 0),
-                new RecordEntity(null, new DomainEntity(Domain2Id, Domain2Name), new DmarcRecordInfo(Record2), RCode.NoError, 0),
-                new RecordEntity(3, new DomainEntity(Domain3Id, Domain3Name), new DmarcRecordInfo(Record3), RCode.NoError, 0)
+                new RecordEntity(1, new DomainEntity(Domain1Id, Domain1Name), new DmarcRecordInfo(Record1, string.Empty, false, false), RCode.NoError, 0),
+                new RecordEntity(null, new DomainEntity(Domain2Id, Domain2Name), new DmarcRecordInfo(Record2, string.Empty, false, false), RCode.NoError, 0),
+                new RecordEntity(3, new DomainEntity(Domain3Id, Domain3Name), new DmarcRecordInfo(Record3, string.Empty, false, false), RCode.NoError, 0)
             };
 
             DmarcConfigsUpdated configs = _mapper.Map(entities);

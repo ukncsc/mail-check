@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Dmarc.AggregateReport.Contracts</AssemblyName>
+    <PackageId>Dmarc.AggregateReport.Contracts</PackageId>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Dmarc.Common.Interface/Dmarc.Common.Interface.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove=".DS_Store" />
+  </ItemGroup>
+</Project>

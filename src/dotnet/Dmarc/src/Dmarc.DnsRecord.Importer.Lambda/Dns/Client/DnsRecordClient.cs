@@ -10,10 +10,10 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Dns.Client
 {
     public abstract class DnsRecordClient : IDnsRecordClient
     {
-        private readonly IDnsResolver _dnsResolver;
-        private readonly ILogger _log;
-        private readonly QType _recordType;
-        private readonly string _recordName;
+        protected readonly IDnsResolver _dnsResolver;
+        protected readonly ILogger _log;
+        protected readonly QType _recordType;
+        protected readonly string _recordName;
 
         protected DnsRecordClient(
             IDnsResolver dnsResolver, 
@@ -27,7 +27,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Dns.Client
             _recordName = recordName;
         }
 
-        public async Task<DnsResponse> GetRecord(string domain)
+        public virtual async Task<DnsResponse> GetRecord(string domain)
         {
             Response response = await _dnsResolver.GetRecord(FormatQuery(domain), _recordType);
 

@@ -50,7 +50,7 @@ describe('AggregateReportSummary', () => {
       expect(
         container.getElementsByClassName('ui info message')[0]
       ).toHaveTextContent(
-        'You do have permission to view aggregate reporting for this domain.'
+        'You do not have permission to view aggregate reporting for this domain.'
       ));
   });
 

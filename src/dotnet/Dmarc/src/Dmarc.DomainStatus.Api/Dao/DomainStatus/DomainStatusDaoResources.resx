@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+    <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,70 +59,70 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+        <xsd:element name="root" msdata:IsDataSet="true">
             <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string" />
+                            <xsd:attribute name="type" type="xsd:string" />
+                            <xsd:attribute name="mimetype" type="xsd:string" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string" />
+                            <xsd:attribute name="name" type="xsd:string" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" />
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
             </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="SelectAggregateExportData" xml:space="preserve">
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="SelectAggregateExportData" xml:space="preserve">
     <value>SELECT
 header_from,
 source_ip,
 NULL ptr,
-count,
+SUM(count) as count,
 spf,
 dkim,
 disposition,
@@ -131,10 +131,11 @@ effective_date
 FROM record
 JOIN aggregate_report ar ON record.aggregate_report_id = ar.id 
 JOIN derived_domain_tree ddt ON record.header_from_domain_id = ddt.child_id
-WHERE ar.effective_date = @date 
-AND ddt.parent_id = @domainId;</value>
+WHERE ar.effective_date BETWEEN @startDate AND @endDate
+AND ddt.parent_id = @domainId
+GROUP BY header_from, source_ip, spf, dkim, disposition, org_name, effective_date;</value>
   </data>
-  <data name="SelectAggregateReportSummary" xml:space="preserve">
+    <data name="SelectAggregateReportSummary" xml:space="preserve">
     <value>SELECT
 ad.effective_date as 'effective_date',
 ad.full_compliance_count as 'fully_trusted',
@@ -147,7 +148,7 @@ FROM derived_aggregate_daily ad
 WHERE ad.domain_id = @domainId
 AND ad.effective_date BETWEEN @startDate AND @endDate;</value>
   </data>
-  <data name="SelectAggregateReportSummaryWithSubdomains" xml:space="preserve">
+    <data name="SelectAggregateReportSummaryWithSubdomains" xml:space="preserve">
     <value>SELECT
 ad.effective_date as 'effective_date',
 ad.full_compliance_count as 'fully_trusted',
@@ -160,48 +161,42 @@ FROM derived_aggregate_daily_rollup ad
 WHERE ad.domain_id = @domainId
 AND ad.effective_date BETWEEN @startDate AND @endDate;</value>
   </data>
-  <data name="SelectAggregateReportTotalEmailCount" xml:space="preserve">
+    <data name="SelectAggregateReportTotalEmailCount" xml:space="preserve">
     <value>SELECT SUM(ad.total_email_count) as 'total_email'
 FROM derived_aggregate_daily ad
 WHERE ad.domain_id = @domainId
 AND ad.effective_date BETWEEN @startDate AND @endDate;</value>
   </data>
-  <data name="SelectAggregateReportTotalEmailCountWithSubdomains" xml:space="preserve">
+    <data name="SelectAggregateReportTotalEmailCountWithSubdomains" xml:space="preserve">
     <value>SELECT SUM(ad.total_email_count) as 'total_email'
 FROM derived_aggregate_daily_rollup ad
 WHERE ad.domain_id = @domainId
 AND ad.effective_date BETWEEN @startDate AND @endDate;</value>
   </data>
-  <data name="SelectDmarcReadModelByDomainId" xml:space="preserve">
-    <value>SELECT d.id as domain_id,
-d.name as domain_name,
-dr.record IS NOT NULL as has_dmarc,
-rm.model as read_model
+    <data name="SelectDmarcReadModelByDomainId" xml:space="preserve">
+    <value>SELECT rm.model as read_model
 FROM dns_record_dmarc_read_model rm
 JOIN domain d ON rm.domain_id = d.id
 LEFT JOIN dns_record_dmarc dr ON dr.domain_id = d.id AND dr.end_date IS NULL
 WHERE d.id = @domainId
 GROUP BY d.id;</value>
   </data>
-  <data name="SelectDmarcReadModelByDomainName" xml:space="preserve">
-    <value>SELECT d.id as domain_id,
-d.name as domain_name,
-dr.record IS NOT NULL as has_dmarc,
-rm.model as read_model
+    <data name="SelectDmarcReadModelByDomainName" xml:space="preserve">
+    <value>SELECT rm.model as read_model
 FROM dns_record_dmarc_read_model rm
 JOIN domain d ON rm.domain_id = d.id
 LEFT JOIN dns_record_dmarc dr ON dr.domain_id = d.id AND dr.end_date IS NULL
 WHERE d.name = @domainName
 GROUP BY d.id;</value>
   </data>
-  <data name="SelectDomainById" xml:space="preserve">
+    <data name="SelectDomainById" xml:space="preserve">
     <value>SELECT 
 d.id AS domain_id, 
 d.name AS domain_name 
 FROM domain d
 WHERE d.id = @domainId AND (d.publish=b'1' OR d.monitor=b'1');</value>
   </data>
-  <data name="SelectReceivingEncryptedById" xml:space="preserve">
+    <data name="SelectReceivingEncryptedById" xml:space="preserve">
     <value>SELECT 
 d.id domain_id,
 d.name domain_name,
@@ -235,12 +230,12 @@ WHERE mx.domain_id = @domainId
 AND mx.end_date IS NULL
 AND tls.end_date IS NULL</value>
   </data>
-  <data name="SelectSpfReadModel" xml:space="preserve">
+    <data name="SelectSpfReadModel" xml:space="preserve">
     <value>SELECT model 
 FROM dns_record_spf_read_model
 WHERE domain_id = @domainId;</value>
   </data>
-  <data name="SelectTlsEvaluatorResults" xml:space="preserve">
+    <data name="SelectTlsEvaluatorResults" xml:space="preserve">
     <value>SELECT d.id, d.name, dnm.hostname, ter.*  
 FROM dmarc.dns_record_mx_tls_evaluator_results ter
 JOIN dmarc.dns_record_mx dnm

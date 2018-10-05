@@ -64,7 +64,7 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus {
         ///header_from,
         ///source_ip,
         ///NULL ptr,
-        ///count,
+        ///SUM(count) as count,
         ///spf,
         ///dkim,
         ///disposition,
@@ -74,7 +74,8 @@ namespace Dmarc.DomainStatus.Api.Dao.DomainStatus {
         ///JOIN aggregate_report ar ON record.aggregate_report_id = ar.id 
         ///JOIN derived_domain_tree ddt ON record.header_from_domain_id = ddt.child_id
         ///WHERE ar.effective_date = @date 
-        ///AND ddt.parent_id = @domainId;.
+        ///AND ddt.parent_id = @domainId
+        ///GROUP BY header_from, source_ip, spf, dkim, disposition, org_name, effective_date;.
         /// </summary>
         public static string SelectAggregateExportData {
             get {

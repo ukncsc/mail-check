@@ -6,15 +6,17 @@ namespace Dmarc.DnsRecord.Evaluator.Spf.Rules.Record
 {
     public class ExplanationDoesntOccurMoreThanOnce : IRule<SpfRecord>
     {
-        public bool IsErrored(SpfRecord record, out Evaluator.Rules.Error error)
+        public bool IsErrored(SpfRecord record, out Error error)
         {
             int explanationCount = record.Terms.OfType<Explanation>().Count();
+
             if (explanationCount <= 1)
             {
                 error = null;
                 return false;
             }
-            error = new Evaluator.Rules.Error(Evaluator.Rules.ErrorType.Error, 
+
+            error = new Error(ErrorType.Error,
                 string.Format(SpfRulesResource.ExplanationDoesntOccurMoreThanOnceErrorMessage, explanationCount));
 
             return true;

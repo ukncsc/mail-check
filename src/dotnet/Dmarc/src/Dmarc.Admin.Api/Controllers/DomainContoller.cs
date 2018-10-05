@@ -36,7 +36,6 @@ namespace Dmarc.Admin.Api.Controllers
         private readonly IValidator<EntitySearchRequest> _searchLimitExcludedIdsRequestValidator;
         private readonly IValidator<PublicDomainForCreation> _publicDomainForCreationValidator;
         private readonly ILogger<DomainContoller> _log;
-        private readonly IOrganisationalDomainProvider _organisationalDomainProvider;
         private readonly IPublisher _publisher;
         private readonly IPublisherConfig _config;
 
@@ -50,7 +49,6 @@ namespace Dmarc.Admin.Api.Controllers
             IValidator<EntitySearchRequest> searchLimitExcludedIdsRequestValidator,
             IValidator<PublicDomainForCreation> publicDomainForCreationValidator,
             ILogger<DomainContoller> log,
-            IOrganisationalDomainProvider organisationalDomainProvider,
             IPublisher publisher,
             IPublisherConfig config)
         {
@@ -64,7 +62,6 @@ namespace Dmarc.Admin.Api.Controllers
             _searchLimitExcludedIdsRequestValidator = searchLimitExcludedIdsRequestValidator;
             _publicDomainForCreationValidator = publicDomainForCreationValidator;
             _log = log;
-            _organisationalDomainProvider = organisationalDomainProvider;
             _publisher = publisher;
             _config = config;
         }
@@ -177,25 +174,12 @@ namespace Dmarc.Admin.Api.Controllers
                     return BadRequest(new ErrorResponse(publicDomainValidationResult.GetErrorString()));
                 }
             }
-
-            OrganisationalDomain organisationalDomain = await
-                _organisationalDomainProvider.GetOrganisationalDomain(domain.Name);
-
+            
             int? userId = User.GetId();
 
             if (!userId.HasValue)
             {
                 return BadRequest(new ErrorResponse("Unable to retrieve user id"));
-            }
-
-            if (!organisationalDomain.IsOrgDomain && !organisationalDomain.IsTld)
-            {
-                _log.LogDebug(
-                    $"{domain.Name} is not an organisational domain adding {organisationalDomain.OrgDomain}");
-                Domain.Domain newOrgDomain =
-                    await _domainDao.CreateDomain(organisationalDomain.OrgDomain, userId.Value);
-                await _publisher.Publish(new DomainCreated(newOrgDomain.Name, email, DateTime.UtcNow),
-                    _config.PublisherConnectionString);
             }
 
             Domain.Domain newDomain = await _domainDao.CreateDomain(domain.Name, userId.Value);

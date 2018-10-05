@@ -23,7 +23,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
         [TestCase(PolicyType.None, true, TestName = "Error for none policy type.")]
         public void Test(PolicyType policyType, bool isErrorExpected)
         {
-            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { new Policy("", policyType) }, string.Empty);
+            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { new Policy("", policyType) }, string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);
@@ -36,7 +36,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
         [Test]
         public void NoErrorWhenPolicyTermNotFound()
         {
-            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag>(), string.Empty);
+            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag>(), string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);

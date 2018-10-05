@@ -1,6 +1,6 @@
 module "dkim" {
-  source                 = "git@github.com:ukncsc/MailCheck.Dkim//infrastructure/modules/dkim-microservice?ref=56c2f76"
-  artefact-version       = "56c2f76"
+  source                 = "git@github.com:ukncsc/MailCheck.Dkim//infrastructure/modules/dkim-microservice?ref=d91aa9b"
+  artefact-version       = "d91aa9b"
   vpc-id                 = "${aws_vpc.dmarc-env.id}"
   aws-account-id         = "${var.aws-account-id}"
   aws-region             = "${var.aws-region}"

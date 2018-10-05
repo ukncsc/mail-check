@@ -28,7 +28,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.RecordProcessor
         {
             string domain = "a.b.com";
             DomainEntity domainEntity = new DomainEntity(1, domain);
-            DmarcRecordInfo existingRecord = new DmarcRecordInfo("existing record");
+            DmarcRecordInfo existingRecord = new DmarcRecordInfo("existing record", string.Empty, false, false);
             Dictionary<DomainEntity, List<RecordEntity>> records = new Dictionary<DomainEntity, List<RecordEntity>>
             {
                 { domainEntity, new List<RecordEntity>{new RecordEntity(1, domainEntity, existingRecord, RCode.NoError, 0)}}
@@ -48,8 +48,8 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.RecordProcessor
         {
             string domain = "a.b.com";
             DomainEntity domainEntity = new DomainEntity(1, domain);
-            DmarcRecordInfo existingRecord = new DmarcRecordInfo("record");
-            DmarcRecordInfo incomingRecord = new DmarcRecordInfo("record");
+            DmarcRecordInfo existingRecord = new DmarcRecordInfo("record", string.Empty, false, false);
+            DmarcRecordInfo incomingRecord = new DmarcRecordInfo("record", string.Empty, false, false);
 
             Dictionary<DomainEntity, List<RecordEntity>> records = new Dictionary<DomainEntity, List<RecordEntity>>
             {
@@ -70,8 +70,8 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.RecordProcessor
         {
             string domain = "a.b.com";
             DomainEntity domainEntity = new DomainEntity(1, domain);
-            DmarcRecordInfo existingRecord = new DmarcRecordInfo("existing record");
-            DmarcRecordInfo newRecord = new DmarcRecordInfo("new record");
+            DmarcRecordInfo existingRecord = new DmarcRecordInfo("existing record", string.Empty, false, false);
+            DmarcRecordInfo newRecord = new DmarcRecordInfo("new record", string.Empty, false, false);
 
             Dictionary<DomainEntity, List<RecordEntity>> records = new Dictionary<DomainEntity, List<RecordEntity>>
             {
@@ -93,7 +93,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.RecordProcessor
         {
             string domain = "a.b.com";
             DomainEntity domainEntity = new DomainEntity(1, domain);
-            DmarcRecordInfo existingRecord = new DmarcRecordInfo("existing record");
+            DmarcRecordInfo existingRecord = new DmarcRecordInfo("existing record", string.Empty, false, false);
 
             Dictionary<DomainEntity, List<RecordEntity>> records = new Dictionary<DomainEntity, List<RecordEntity>>
             {
@@ -136,7 +136,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.RecordProcessor
         {
             string domain = "a.b.com";
             DomainEntity domainEntity = new DomainEntity(1, domain);
-            DmarcRecordInfo existingRecord = new DmarcRecordInfo("existing record");
+            DmarcRecordInfo existingRecord = new DmarcRecordInfo("existing record", string.Empty, false, false);
 
             Dictionary<DomainEntity, List<RecordEntity>> records = new Dictionary<DomainEntity, List<RecordEntity>>
             {
@@ -159,7 +159,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.RecordProcessor
         {
             string domain = "a.b.com";
             DomainEntity domainEntity = new DomainEntity(1, domain);
-            DmarcRecordInfo existingRecord = new DmarcRecordInfo("existing record");
+            DmarcRecordInfo existingRecord = new DmarcRecordInfo("existing record", string.Empty, false, false);
 
             Dictionary<DomainEntity, List<RecordEntity>> records = new Dictionary<DomainEntity, List<RecordEntity>>
             {
@@ -186,7 +186,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Test.RecordProcessor
         {
             string domain = "a.b.com";
             DomainEntity domainEntity = new DomainEntity(1, domain);
-            DmarcRecordInfo existingRecord = new DmarcRecordInfo("existing record");
+            DmarcRecordInfo existingRecord = new DmarcRecordInfo("existing record", string.Empty, false, false);
 
             Dictionary<DomainEntity, List<RecordEntity>> records = new Dictionary<DomainEntity, List<RecordEntity>>
             {

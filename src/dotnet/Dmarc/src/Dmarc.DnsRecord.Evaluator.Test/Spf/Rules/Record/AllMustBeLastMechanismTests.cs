@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Dmarc.DnsRecord.Evaluator.Spf.Domain;
 using Dmarc.DnsRecord.Evaluator.Spf.Rules.Record;
 using NUnit.Framework;
@@ -23,8 +22,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Spf.Rules.Record
         {
             SpfRecord spfRecord = new SpfRecord(string.Empty, new Version(string.Empty), new List<Term>(), string.Empty);
 
-            Evaluator.Rules.Error error;
-            bool isErrored = _rule.IsErrored(spfRecord, out error);
+            bool isErrored = _rule.IsErrored(spfRecord, out Evaluator.Rules.Error error);
 
             Assert.That(isErrored, Is.False);
             Assert.That(error, Is.Null);
@@ -37,9 +35,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Spf.Rules.Record
             Include include = new Include(string.Empty, Qualifier.Pass, new DomainSpec(string.Empty));
             SpfRecord spfRecord = new SpfRecord("", new Version(""), new List<Term> { include, all }, string.Empty);
 
-            Evaluator.Rules.Error error;
-            bool isErrored = _rule.IsErrored(spfRecord, out error);
-
+            bool isErrored = _rule.IsErrored(spfRecord, out Evaluator.Rules.Error error);
             Assert.That(isErrored, Is.False);
             Assert.That(error, Is.Null);
         }
@@ -51,11 +47,24 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Spf.Rules.Record
             All all = new All(string.Empty, Qualifier.Fail);
             SpfRecord spfRecord = new SpfRecord("", new Version(""), new List<Term> { all, include }, string.Empty);
 
-            Evaluator.Rules.Error error;
-            bool isErrored = _rule.IsErrored(spfRecord, out error);
+            bool isErrored = _rule.IsErrored(spfRecord, out Evaluator.Rules.Error error);
 
             Assert.That(isErrored, Is.True);
             Assert.That(error, Is.Not.Null);
+        }
+
+        [Test]
+        public void RedirectWithNoAllShouldHaveNoError()
+        {
+            Include include = new Include(string.Empty, Qualifier.Pass, new DomainSpec(string.Empty));
+            All all = new All(string.Empty, Qualifier.Fail);
+            Redirect redirect = new Redirect("ncsc.gov.uk", new DomainSpec("ncsc.gov.uk"));
+            SpfRecord spfRecord = new SpfRecord("", new Version(""), new List<Term> { all, include, redirect }, string.Empty);
+
+            bool isErrored = _rule.IsErrored(spfRecord, out Evaluator.Rules.Error error);
+
+            Assert.That(isErrored, Is.False);
+            Assert.That(error, Is.Null);
         }
     }
 }

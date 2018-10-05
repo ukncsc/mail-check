@@ -6,7 +6,7 @@ namespace Dmarc.DnsRecord.Evaluator.Spf.Rules.Record
 {
     public class DontUsePtrMechanism : IRule<SpfRecord>
     {
-        public bool IsErrored(SpfRecord record, out Evaluator.Rules.Error error)
+        public bool IsErrored(SpfRecord record, out Error error)
         {
             if (!record.Terms.OfType<Ptr>().Any())
             {
@@ -14,7 +14,7 @@ namespace Dmarc.DnsRecord.Evaluator.Spf.Rules.Record
                 return false;
             }
 
-            error = new Evaluator.Rules.Error(Evaluator.Rules.ErrorType.Warning, SpfRulesResource.DontUsePtrMechanismErrorMessage);
+            error = new Error(ErrorType.Warning, SpfRulesResource.DontUsePtrMechanismErrorMessage);
             return true;
         }
     }

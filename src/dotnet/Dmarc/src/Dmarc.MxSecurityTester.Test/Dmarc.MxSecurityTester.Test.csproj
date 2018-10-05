@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssemblyName>Dmarc.MxSecurityTester.Test</AssemblyName>
+    <PackageId>Dmarc.MxSecurityTester.Test</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Dmarc.MxSecurityTester/Dmarc.MxSecurityTester.csproj" />
+    <ProjectReference Include="../Dmarc.Common.TestSupport/Dmarc.Common.TestSupport.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
+    <PackageReference Include="NUnit" Version="3.10.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
+    <PackageReference Include="FakeItEasy" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="2.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove=".DS_Store" />
+  </ItemGroup>
+</Project>

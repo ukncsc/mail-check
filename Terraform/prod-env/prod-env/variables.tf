@@ -179,6 +179,7 @@ variable "db-users" {
     securitytester     = "sectest"
     securityevaluator  = "seceval"
     quicksight         = "quickst"
+    reports            = "reports"
   }
 }
 
@@ -298,8 +299,14 @@ variable "db-microservice-dkim-snapshot-to-restore" {
   default     = ""
 }
 
+variable "db-microservice-spf-snapshot-to-restore" {
+  description = "DB snapshot to restore into the spf microservice"
+  type        = "string"
+  default     = ""
+}
+
 variable "s3-replication-source-aws-account-id" {
   description = "If the source S3 bucket for reports is in a different account this will set up the bucket policy"
-  type = "string"
-  default = ""
+  type        = "string"
+  default     = ""
 }

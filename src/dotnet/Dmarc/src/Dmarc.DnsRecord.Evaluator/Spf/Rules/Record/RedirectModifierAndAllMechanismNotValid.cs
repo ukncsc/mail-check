@@ -6,14 +6,15 @@ namespace Dmarc.DnsRecord.Evaluator.Spf.Rules.Record
 {
     public class RedirectModifierAndAllMechanismNotValid : IRule<SpfRecord>
     {
-        public bool IsErrored(SpfRecord record, out Evaluator.Rules.Error error)
+        public bool IsErrored(SpfRecord record, out Error error)
         {
-            if (record.Terms.OfType<All>().Any() && record.Terms.OfType<Redirect>().Any())
+            if (record.Terms.OfType<All>().Any(_ => !_.IsImplicit) && record.Terms.OfType<Redirect>().Any())
             {
-                error = new Evaluator.Rules.Error(Evaluator.Rules.ErrorType.Error, 
+                error = new Error(ErrorType.Error,
                     SpfRulesResource.RedirectModifierAndAllMechanismNotValidErrorMessage);
                 return true;
             }
+
             error = null;
             return false;
         }

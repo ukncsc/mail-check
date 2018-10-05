@@ -16,9 +16,10 @@ namespace Dmarc.DnsRecord.Evaluator.Spf.Rules.Record
 
         public bool IsErrored(SpfRecord record, out Error error)
         {
+            bool isRedirect = record.Terms.OfType<Redirect>().Any();
             All all = record.Terms.OfType<All>().FirstOrDefault();
 
-            if (all == null || all.Qualifier == Qualifier.Fail || all.Qualifier == Qualifier.SoftFail)
+            if (isRedirect || all == null || all.Qualifier == Qualifier.Fail || all.Qualifier == Qualifier.SoftFail)
             {
                 error = null;
                 return false;

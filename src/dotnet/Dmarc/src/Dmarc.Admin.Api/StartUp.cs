@@ -13,9 +13,9 @@ using Dmarc.Admin.Api.Dao.Search;
 using Dmarc.Admin.Api.Dao.User;
 using Dmarc.Admin.Api.Domain;
 using Dmarc.Admin.Api.Validation;
+using Dmarc.Common.Api.Identity.Authentication;
 using Dmarc.Common.Api.Identity.Dao;
 using Dmarc.Common.Api.Identity.Domain;
-using Dmarc.Common.Api.Identity.Middleware;
 using Dmarc.Common.Api.Middleware;
 using Dmarc.Common.Data;
 using Dmarc.Common.Encryption;
@@ -23,15 +23,17 @@ using Dmarc.Common.Environment;
 using Dmarc.Common.Interface.Messaging;
 using Dmarc.Common.Interface.PublicSuffix;
 using Dmarc.Common.Messaging.Sns.Publisher;
+using Dmarc.Common.PublicSuffix;
 using Dmarc.Common.Validation;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.HealthChecks;
 using Microsoft.Extensions.Logging;
-using Dmarc.Common.PublicSuffix;
 
 namespace Dmarc.Admin.Api
 {
@@ -51,9 +53,13 @@ namespace Dmarc.Admin.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddHealthChecks(checks =>
-                    checks.AddValueTaskCheck("HTTP Endpoint", () =>
-                        new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok"))))
+                .AddHealthChecks(HealthCheckOptions)
+                .AddCors(CorsOptions)
+                .AddAuthorization(AuthorizationOptions)
+                .AddAuthentication(AuthenticationSchemeName)
+                .AddMailCheckAuthentication();
+
+            services
                 .AddTransient<IConnectionInfo>(p => new StringConnectionInfo(Environment.GetEnvironmentVariable("ConnectionString")))
                 .AddTransient<IParameterStoreRequest, ParameterStoreRequest>()
                 .AddTransient<IAmazonSimpleSystemsManagement>(p => new AmazonSimpleSystemsManagementClient())
@@ -75,44 +81,57 @@ namespace Dmarc.Admin.Api
                 .AddTransient<IValidator<AllEntitiesSearchRequest>, AllEntitiesSearchRequestValidator>()
                 .AddTransient<IValidator<PublicDomainForCreation>, PublicDomainValidator>()
                 .AddTransient<IIdentityDao, IdentityDao>()
-                .AddSingleton<IOrganisationalDomainProvider, OrganisationDomainProvider>()
                 .AddTransient<IPublisher, SnsPublisher>()
                 .AddTransient<IPublisherConfig, AdminApiConfig>()
                 .AddTransient<IAmazonSimpleNotificationService, AmazonSimpleNotificationServiceClient>()
                 .AddTransient<IEnvironmentVariables, EnvironmentVariables>()
-                .AddTransient<IEnvironment, EnvironmentWrapper>()
+                .AddTransient<IEnvironment, EnvironmentWrapper>();
 
-                .AddCors(options =>
-                    options.AddPolicy("CorsPolicy", builder =>
-                        builder
-                            .AllowAnyOrigin()
-                            .AllowAnyMethod()
-                            .AllowAnyHeader()
-                            .AllowCredentials()))
-                .AddAuthorization(options =>
-                {
-                    options.AddPolicy(PolicyType.Standard, policy =>
-                        policy.RequireAssertion(context =>
-                            context.User.Claims.Any(_ =>
-                                _.Type == ClaimTypes.Role && _.Value == RoleType.Standard || _.Value == RoleType.Admin)));
-
-                    options.AddPolicy(PolicyType.Admin, policy =>
-                        policy.RequireAssertion(context =>
-                            context.User.Claims.Any(_ =>
-                                _.Type == ClaimTypes.Role && _.Value == RoleType.Admin)));
-                })
+            services
                 .AddMvc();
         }
 
+        private static Action<AuthorizationOptions> AuthorizationOptions => options =>
+        {
+            options.AddPolicy(PolicyType.Standard, policy =>
+            {
+                policy.RequireAssertion(context => context.User.Claims.Any(_ => _.Type == ClaimTypes.Role && _.Value == RoleType.Standard || _.Value == RoleType.Admin));
+            });
+
+            options.AddPolicy(PolicyType.Admin, policy =>
+            {
+                policy.RequireAssertion(context => context.User.Claims.Any(_ => _.Type == ClaimTypes.Role && _.Value == RoleType.Admin));
+            });
+        };
+        
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole((st, logLevel) => logLevel >= LogLevel.Debug);
 
             app
+                .UseAuthentication()
                 .UseMiddleware<UnhandledExceptionMiddleware>()
-                .UseMiddleware<IdentityMiddleware>()
-                .UseCors("CorsPolicy")
+                .UseCors(CorsPolicyName)
                 .UseMvc();
         }
+
+        private static Action<CorsOptions> CorsOptions => options =>
+        {
+            options.AddPolicy(CorsPolicyName, builder =>
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+        };
+
+        private static Action<HealthCheckBuilder> HealthCheckOptions => checks =>
+        {
+            checks.AddValueTaskCheck("HTTP Endpoint", () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));
+        };
+
+        private const string AuthenticationSchemeName = "Automatic";
+
+        private const string CorsPolicyName = "CorsPolicy";
     }
 }

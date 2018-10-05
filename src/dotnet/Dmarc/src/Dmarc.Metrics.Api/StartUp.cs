@@ -33,15 +33,14 @@ namespace Dmarc.Metrics.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddHealthChecks(checks => checks.AddValueTaskCheck("HTTP Endpoint", () =>
-                         new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok"))))
+                .AddHealthChecks(HealthCheckOptions)
+                .AddCors(CorsOptions)
                 .AddTransient<IConnectionInfoAsync, ConnectionInfoAsync>()
                 .AddTransient<IParameterStoreRequest, ParameterStoreRequest>()
                 .AddTransient<IConnectionInfo>(p => new StringConnectionInfo(Environment.GetEnvironmentVariable("ConnectionString")))
                 .AddTransient<IValidator<MetricsDateRange>, MetricsDateRangeValidator>()
                 .AddTransient<IMetricsDao, MetricsDao>()
                 .AddTransient<IAmazonSimpleSystemsManagement, AmazonSimpleSystemsManagementClient>()
-                .AddCors(CorsOptions)
                 .AddMvc();
         }
 
@@ -50,18 +49,27 @@ namespace Dmarc.Metrics.Api
             loggerFactory.AddConsole((st, logLevel) => logLevel >= LogLevel.Debug);
 
             appBuilder
+                .UseAuthentication()
                 .UseMiddleware<UnhandledExceptionMiddleware>()
-                .UseCors("CorsPolicy")
+                .UseCors(CorsPolicyName)
                 .UseMvc();
         }
 
-        private static Action<CorsOptions> CorsOptions =>
-            options =>
-                options.AddPolicy("CorsPolicy", builder =>
-                    builder
-                        .AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials());
+        private static Action<CorsOptions> CorsOptions => options =>
+        {
+            options.AddPolicy(CorsPolicyName, builder =>
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+        };
+
+        private static Action<HealthCheckBuilder> HealthCheckOptions => checks =>
+        {
+            checks.AddValueTaskCheck("HTTP Endpoint", () => new ValueTask<IHealthCheckResult>(HealthCheckResult.Healthy("Ok")));
+        };
+
+        private const string CorsPolicyName = "CorsPolicy";
     }
 }

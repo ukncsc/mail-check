@@ -22,7 +22,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
         public void Test(bool policyTagExists, bool isErrorExpected)
         {
             Policy policy = policyTagExists ? new Policy("", PolicyType.None) : null;
-            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { policy }, string.Empty);
+            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { policy }, string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);

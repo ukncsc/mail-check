@@ -66,7 +66,9 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Dao.Dmarc {
         ///`record`,
         ///`end_date`,
         ///`failure_count`,
-        ///`result_code`) VALUES.
+        ///`result_code`,
+        ///`org_domain`,
+        ///`is_tld`) VALUES.
         /// </summary>
         public static string InsertRecord {
             get {
@@ -92,7 +94,9 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Dao.Dmarc {
         ///@c{0},
         ///@d{0},
         ///@e{0},
-        ///@f{0}).
+        ///@f{0},
+        ///@g{0},
+        ///@h{0}).
         /// </summary>
         public static string InsertRecordValueFormatString {
             get {
@@ -106,7 +110,9 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Dao.Dmarc {
         ///dr2.id,
         ///dr2.record,
         ///dr2.result_code,
-        ///dr2.failure_count
+        ///dr2.failure_count,
+        ///dr2.org_domain,
+        ///dr2.is_tld
         ///FROM
         ///(
         ///SELECT d1.id as domain_id,
@@ -117,7 +123,7 @@ namespace Dmarc.DnsRecord.Importer.Lambda.Dao.Dmarc {
         ///WHERE (d1.monitor = b&apos;1&apos; OR d1.publish=b&apos;1&apos;) 
         ///AND dr1.end_date IS NULL
         ///AND (dr1.id IS NULL ||
-        ///	(UTC_TIMESTAMP() &gt; DATE_ADD(dr1.last_checked, INTERVAL @refreshIntervalSeconds SECOND) &amp;&amp; dr1.failure_count &lt;= 0) | [rest of string was truncated]&quot;;.
+        ///	(UTC_TIMESTAMP() &gt; DATE_ADD(dr1.last_checked, INTERVAL @refreshIntervalSeconds SECOND [rest of string was truncated]&quot;;.
         /// </summary>
         public static string SelectDomainsWithRecords {
             get {

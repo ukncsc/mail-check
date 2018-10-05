@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 using Dmarc.Admin.Api.Contract.Messages;
 using Dmarc.Admin.Api.Controllers;
@@ -10,7 +9,6 @@ using Dmarc.Admin.Api.Dao.GroupDomain;
 using Dmarc.Admin.Api.Dao.User;
 using Dmarc.Admin.Api.Domain;
 using Dmarc.Common.Interface.Messaging;
-using Dmarc.Common.Interface.PublicSuffix;
 using FakeItEasy;
 using FluentValidation;
 using FluentValidation.Results;
@@ -33,7 +31,6 @@ namespace Dmarc.Admin.Api.Test.Controllers
         private IValidator<EntitySearchRequest> _searchLimitExcludedIdsRequestValidator;
         private IValidator<PublicDomainForCreation> _publicDomainForCreationValidator;
         private ILogger<DomainContoller> _log;
-        private IOrganisationalDomainProvider _organisationalDomainProvider;
         private IDomainDao _domainDao;
         private IPublisher _publisher;
         private IPublisherConfig _publisherConfig;
@@ -51,14 +48,13 @@ namespace Dmarc.Admin.Api.Test.Controllers
             _searchLimitExcludedIdsRequestValidator = A.Fake<IValidator<EntitySearchRequest>>();
             _publicDomainForCreationValidator = A.Fake<IValidator<PublicDomainForCreation>>();
             _log = A.Fake<ILogger<DomainContoller>>();
-            _organisationalDomainProvider = A.Fake<IOrganisationalDomainProvider>();
             _publisher = A.Fake<IPublisher>();
             _publisherConfig = A.Fake<IPublisherConfig>();
 
             _domainContoller = new DomainContoller(_domainDao, _userDao, _groupDao, _groupDomainDao,
                 _idSearchablePagedRequestValidator, _idEntityIdsRequestValidator, _domainForCreationValidator,
                 _searchLimitExcludedIdsRequestValidator,
-                _publicDomainForCreationValidator, _log, _organisationalDomainProvider, _publisher, _publisherConfig)
+                _publicDomainForCreationValidator, _log,  _publisher, _publisherConfig)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -81,7 +77,6 @@ namespace Dmarc.Admin.Api.Test.Controllers
             IActionResult result = await _domainContoller.AddDomain(request);
 
             Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
-            A.CallTo(() => _organisationalDomainProvider.GetOrganisationalDomain(A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _domainDao.CreateDomain(A<string>._, A<int>._)).MustNotHaveHappened();
             A.CallTo(() => _publisher.Publish(A<string>._, A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _publisherConfig.PublisherConnectionString).MustNotHaveHappened();
@@ -100,7 +95,6 @@ namespace Dmarc.Admin.Api.Test.Controllers
             IActionResult result = await _domainContoller.AddDomain(request);
 
             Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
-            A.CallTo(() => _organisationalDomainProvider.GetOrganisationalDomain(A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _domainDao.CreateDomain(A<string>._, A<int>._)).MustNotHaveHappened();
             A.CallTo(() => _publisher.Publish(A<string>._, A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _publisherConfig.PublisherConnectionString).MustNotHaveHappened();
@@ -117,7 +111,6 @@ namespace Dmarc.Admin.Api.Test.Controllers
             IActionResult result = await _domainContoller.AddDomain(request);
 
             Assert.That(result, Is.TypeOf<CreatedAtRouteResult>());
-            A.CallTo(() => _organisationalDomainProvider.GetOrganisationalDomain(A<string>._)).MustHaveHappened();
             A.CallTo(() => _domainDao.CreateDomain(A<string>._, A<int>._)).MustHaveHappened();
             A.CallTo(() => _publisher.Publish(A<DomainCreated>._, A<string>._)).MustHaveHappened();
             A.CallTo(() => _publisherConfig.PublisherConnectionString).MustHaveHappened();
@@ -134,7 +127,6 @@ namespace Dmarc.Admin.Api.Test.Controllers
             IActionResult result = await _domainContoller.AddDomain(request);
 
             Assert.That(result, Is.TypeOf<CreatedAtRouteResult>());
-            A.CallTo(() => _organisationalDomainProvider.GetOrganisationalDomain(A<string>._)).MustHaveHappened();
             A.CallTo(() => _domainDao.CreateDomain(A<string>._, A<int>._)).MustHaveHappened();
             A.CallTo(() => _publisher.Publish(A<DomainCreated>._, A<string>._)).MustHaveHappened();
             A.CallTo(() => _publisherConfig.PublisherConnectionString).MustHaveHappened();
@@ -151,7 +143,6 @@ namespace Dmarc.Admin.Api.Test.Controllers
             IActionResult result = await _domainContoller.AddDomain(request);
 
             Assert.That(result, Is.TypeOf<CreatedAtRouteResult>());
-            A.CallTo(() => _organisationalDomainProvider.GetOrganisationalDomain(A<string>._)).MustHaveHappened();
             A.CallTo(() => _domainDao.CreateDomain(A<string>._, A<int>._)).MustHaveHappened();
             A.CallTo(() => _publisherConfig.PublisherConnectionString).MustHaveHappened();
             A.CallTo(() => _publisher.Publish(A<DomainCreated>._, A<string>._)).MustHaveHappened();

@@ -27,14 +27,19 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Parsers
 
             foreach (string dmarcRecord in dmarcDomainConfig.Records)
             {
-                DmarcRecord record;
-                if (_recordParser.TryParse(dmarcRecord, dmarcDomainConfig.Domain.Name, out record))
+                if (_recordParser.TryParse(dmarcRecord,  dmarcDomainConfig.Domain.Name, dmarcDomainConfig.OrgDomain, dmarcDomainConfig.IsTld, dmarcDomainConfig.IsInherited, out DmarcRecord record))
                 {
                     records.Add(record);
                 }
             }
 
-            DmarcConfig dmarcConfig = new DmarcConfig(records, dmarcDomainConfig.Domain.Name, dmarcDomainConfig.LastChecked);
+            DmarcConfig dmarcConfig = new DmarcConfig(
+                records,
+                dmarcDomainConfig.Domain.Name,
+                dmarcDomainConfig.LastChecked,
+                dmarcDomainConfig.OrgDomain,
+                dmarcDomainConfig.IsTld,
+                dmarcDomainConfig.IsInherited);
 
             dmarcConfig.AddErrors(_configRuleEvaluator.Evaluate(dmarcConfig));
 

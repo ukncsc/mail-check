@@ -64,7 +64,7 @@ export default class AggregateReportSummary extends Component {
 
         {showDontHavePermission(aggregateData) && (
           <MailCheckMessage info fluid>
-            You do have permission to view aggregate reporting for this domain.
+            You do not have permission to view aggregate reporting for this domain.
           </MailCheckMessage>
         )}
 

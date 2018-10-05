@@ -21,8 +21,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Spf.Rules.Record
         {
             SpfRecord spfRecord = new SpfRecord(string.Empty, new Version(string.Empty), terms, string.Empty);
 
-            Evaluator.Rules.Error error;
-            bool isErrored = _rule.IsErrored(spfRecord, out error);
+            bool isErrored = _rule.IsErrored(spfRecord, out Evaluator.Rules.Error error);
 
             Assert.That(isErrored, Is.EqualTo(isErrorExpected));
             Assert.That(error, isErrorExpected ? Is.Not.Null : Is.Null);
@@ -34,6 +33,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Spf.Rules.Record
             yield return new TestCaseData(new List<Term> { new Redirect(string.Empty, new DomainSpec(string.Empty)), new All(string.Empty, Qualifier.Fail) }, true).SetName("Modifiers before mechanisms errors.");
             yield return new TestCaseData(new List<Term> { new All(string.Empty, Qualifier.Fail) }, false).SetName("No modifiers no errors.");
             yield return new TestCaseData(new List<Term> { new Redirect(string.Empty, new DomainSpec(string.Empty)) }, false).SetName("No mechanisms no errors.");
+            yield return new TestCaseData(new List<Term> { new Redirect(string.Empty, new DomainSpec(string.Empty)), new All(string.Empty, Qualifier.Fail, true) }, false).SetName("Implicit modifiers before mechanisms, no errors.");
         }
     }
 }

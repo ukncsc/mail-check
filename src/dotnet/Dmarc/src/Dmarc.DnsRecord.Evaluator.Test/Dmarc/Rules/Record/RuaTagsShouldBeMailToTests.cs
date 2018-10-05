@@ -36,7 +36,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
                                 new MaxReportSize(1000, Unit.K))
                         })
                 },
-                string.Empty);
+                string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);

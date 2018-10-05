@@ -7,18 +7,23 @@ namespace Dmarc.DnsRecord.Evaluator.Dmarc.Domain
 {
     public class DmarcRecord : DmarcEntity
     {
-        public DmarcRecord(string record, List<Tag> tags, string domain)
+        public DmarcRecord(string record, List<Tag> tags, string domain, string orgDomain, bool isTld, bool isInherited)
         {
             Record = record;
             Tags = tags;
             Domain = domain;
+            OrgDomain = orgDomain;
+            IsTld = isTld;
+            IsInherited = isInherited;
         }
 
         public string Record { get; }
-
         public List<Tag> Tags { get; }
-
         public string Domain { get; }
+        public string OrgDomain { get; }
+        public bool IsTld { get; }
+        public bool IsInherited { get; }
+        public bool IsOrgDomain => string.Equals(Domain, OrgDomain);
 
         public override string ToString()
         {

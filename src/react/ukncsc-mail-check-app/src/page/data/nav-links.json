@@ -1,6 +1,6 @@
 {
   "left": [
-    { "name": "Mail Check", "link": "/home" },
+    { "name": "Check a domain", "link": "/home" },
     { "name": "My Domains", "link": "/my-domains" },
     { "name": "Email Abuse", "link": "/a/#/email-abuse", "external": true }
   ],

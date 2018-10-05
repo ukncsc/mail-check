@@ -35,7 +35,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
                                 new MaxReportSize(1000, Unit.K))
                         })
                 },
-                string.Empty);
+                string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);
@@ -55,7 +55,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
         [Test]
         public void NoErrorWhenRufTermNotFound()
         {
-            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag>(), string.Empty);
+            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag>(), string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);

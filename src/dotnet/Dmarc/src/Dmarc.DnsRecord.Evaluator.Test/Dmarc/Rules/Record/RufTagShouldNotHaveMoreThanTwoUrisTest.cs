@@ -30,7 +30,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
 
             ReportUriForensic reportUriForensic = new ReportUriForensic("", uriTags);
 
-            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { reportUriForensic }, string.Empty);
+            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag> { reportUriForensic }, string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);
@@ -43,7 +43,7 @@ namespace Dmarc.DnsRecord.Evaluator.Test.Dmarc.Rules.Record
         [Test]
         public void NoErrorWhenRuaTermNotFound()
         {
-            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag>(), string.Empty);
+            DmarcRecord dmarcRecord = new DmarcRecord("", new List<Tag>(), string.Empty, string.Empty, false, false);
 
             Error error;
             bool isErrored = _rule.IsErrored(dmarcRecord, out error);

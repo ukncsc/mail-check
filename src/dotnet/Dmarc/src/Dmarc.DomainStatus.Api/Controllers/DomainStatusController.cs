@@ -1,7 +1,12 @@
-﻿using Dmarc.Common.Api.Domain;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Dmarc.Common.Api.Domain;
 using Dmarc.Common.Api.Utils;
-using Dmarc.Common.Interface.PublicSuffix;
-using Dmarc.Common.Interface.PublicSuffix.Domain;
+using Dmarc.Common.Linq;
 using Dmarc.Common.Serialisation;
 using Dmarc.DomainStatus.Api.Dao.DomainStatus;
 using Dmarc.DomainStatus.Api.Dao.Permission;
@@ -11,14 +16,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Dmarc.DomainStatus.Api.Controllers
 {
@@ -28,23 +25,19 @@ namespace Dmarc.DomainStatus.Api.Controllers
         private readonly IDomainStatusDao _domainStatusDao;
         private readonly IPermissionDao _permissionDao;
         private readonly IReverseDnsApi _reverseDnsApi;
-        private readonly IOrganisationalDomainProvider _organisationalDomainProvider;
         private readonly IValidator<DomainRequest> _domainRequestValidator;
         private readonly IValidator<DateRangeDomainRequest> _dateRangeDomainRequestValidator;
         private readonly ILogger _log;
 
         public DomainStatusController(IDomainStatusDao domainStatusDao,
             IPermissionDao permissionDao,
-            IOrganisationalDomainProvider organisationalDomainProvider,
             IReverseDnsApi reverseDnsApi,
             IValidator<DomainRequest> domainRequestValidator,
-            IValidator<DomainsRequest> domainsRequestValidator,
             IValidator<DateRangeDomainRequest> dateRangeDomainRequestValidator,
             ILogger<DomainStatusController> log)
         {
             _domainStatusDao = domainStatusDao;
             _permissionDao = permissionDao;
-            _organisationalDomainProvider = organisationalDomainProvider;
             _reverseDnsApi = reverseDnsApi;
             _domainRequestValidator = domainRequestValidator;
             _dateRangeDomainRequestValidator = dateRangeDomainRequestValidator;
@@ -132,7 +125,7 @@ namespace Dmarc.DomainStatus.Api.Controllers
                 return BadRequest(new ErrorResponse(validationResult.GetErrorString()));
             }
 
-            DmarcReadModel dmarc = await _domainStatusDao.GetDmarcReadModel(domainRequest.Id);
+            string dmarc = await _domainStatusDao.GetDmarcReadModel(domainRequest.Id);
 
             if (dmarc == null)
             {
@@ -141,35 +134,11 @@ namespace Dmarc.DomainStatus.Api.Controllers
                 {
                     return NotFound(new ErrorResponse($"No domain found for ID {domainRequest.Id}."));
                 }
+
                 return new ObjectResult(new { records = (List<string>)null, pending = true });
             }
 
-            if (dmarc.HasDmarc)
-            {
-                return new ObjectResult(dmarc.Model);
-            }
-
-            OrganisationalDomain organisationalDomain = await _organisationalDomainProvider.GetOrganisationalDomain(dmarc.Domain.Name);
-
-            if (organisationalDomain.IsOrgDomain || organisationalDomain.IsTld)
-            {
-                return new ObjectResult(dmarc.Model);
-            }
-
-            DmarcReadModel organisationalDomainDmarcRecord =
-                await _domainStatusDao.GetDmarcReadModel(organisationalDomain.OrgDomain);
-
-            if (organisationalDomainDmarcRecord == null)
-            {
-                return new ObjectResult(dmarc.Model);
-            }
-
-            JObject readModel = JObject.Parse(organisationalDomainDmarcRecord.Model);
-
-            readModel.AddFirst(new JProperty("inheritedFrom", JToken.FromObject(organisationalDomainDmarcRecord.Domain,
-                new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver() })));
-
-            return new ObjectResult(readModel.ToString());
+            return new ObjectResult(dmarc);
         }
 
         [HttpGet]
@@ -204,8 +173,7 @@ namespace Dmarc.DomainStatus.Api.Controllers
                 return Forbid();
             }
 
-            bool includeSubdomains = false;
-            bool.TryParse(HttpContext.Request.Query["includeSubdomains"].ToString(), out includeSubdomains);
+            bool.TryParse(HttpContext.Request.Query["includeSubdomains"].ToString(), out bool includeSubdomains);
 
             Task<SortedDictionary<DateTime, AggregateSummaryItem>> getInfos = _domainStatusDao.GetAggregateReportSummary(request.Id, request.StartDate, request.EndDate, includeSubdomains);
             Task<int> getEmailCount = _domainStatusDao.GetAggregateReportTotalEmailCount(request.Id, request.StartDate, request.EndDate, includeSubdomains);
@@ -225,8 +193,7 @@ namespace Dmarc.DomainStatus.Api.Controllers
                 List<DateTime> datesRange = Enumerable.Range(0, days).Select(_ => new DateTime(request.StartDate.Ticks).AddDays(_)).ToList();
                 foreach (DateTime date in datesRange)
                 {
-                    AggregateSummaryItem value;
-                    if (!infoResults.TryGetValue(date, out value))
+                    if (!infoResults.TryGetValue(date, out AggregateSummaryItem value))
                     {
                         _log.LogDebug($"Added empty entry for date {date}");
                         infoResults[date] = new AggregateSummaryItem(0, 0, 0, 0, 0);
@@ -240,8 +207,8 @@ namespace Dmarc.DomainStatus.Api.Controllers
         }
 
         [HttpGet]
-        [Route("domain/aggregate-export/{id}/{date}")]
-        public async Task<IActionResult> GetAggregateReportExport(int id, DateTime date)
+        [Route("domain/aggregate-export/{id}/{startDate}/{endDate}")]
+        public async Task<IActionResult> GetAggregateReportExport(int id, DateTime startDate, DateTime endDate)
         {
             int? userId = User.GetId();
             if (!userId.HasValue)
@@ -264,12 +231,34 @@ namespace Dmarc.DomainStatus.Api.Controllers
                 return Forbid();
             }
 
-            List<AggregateReportExportItem> export = await _reverseDnsApi.AddReverseDnsInfoToExport(
-                await _domainStatusDao.GetAggregateReportExport(id, date), date);
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            List<AggregateReportExportItem> results =
+                await _domainStatusDao.GetAggregateReportExport(id, startDate, endDate);
+
+            _log.LogInformation($"Took {stopwatch.Elapsed.Seconds} seconds to get aggregate data for domain ID {id}.");
+
+            stopwatch.Restart();
+
+            List<AggregateReportExportItem> export = results
+                .GroupBy(_ => _.EffectiveDate)
+                .ToDictionary(_ => _.Key, _ => _.ToList())
+                .Select(_ => _reverseDnsApi.AddReverseDnsInfoToExport(_.Value, _.Key))
+                .Batch(10)
+                .Select(async _ => await Task.WhenAll(_))
+                .SelectMany(_ => _.Result.SelectMany(x => x))
+                .OrderByDescending(_ => _.EffectiveDate)
+                .ToList();
+
+            _log.LogInformation($"Took {stopwatch.Elapsed.Seconds} seconds to get reverse dns data for domain ID {id}.");
+
+            stopwatch.Stop();
 
             Stream stream = await CsvSerialiser.SerialiseAsync(export);
 
-            return File(stream, "application/octet-stream", $"AggregateReportExport-{id}-{date:yyyy-MM-dd}.csv");
+            return File(stream,
+                "application/octet-stream",
+                $"AggregateReportExport_{id}_{startDate:yyyy-MM-dd}_{endDate:yyyy-MM-dd}.csv");
         }
     }
 }

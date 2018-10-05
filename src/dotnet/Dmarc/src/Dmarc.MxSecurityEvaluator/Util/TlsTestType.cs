@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Dmarc.MxSecurityEvaluator.Util
+﻿namespace Dmarc.MxSecurityEvaluator.Util
 {
     public enum TlsTestType
     {

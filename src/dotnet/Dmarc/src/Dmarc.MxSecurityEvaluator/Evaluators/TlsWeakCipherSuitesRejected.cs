@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Dmarc.Common.Interface.Tls.Domain;
-using Dmarc.MxSecurityEvaluator.Dao;
+﻿using Dmarc.Common.Interface.Tls.Domain;
+using Dmarc.Common.Util;
 using Dmarc.MxSecurityEvaluator.Domain;
 using Dmarc.MxSecurityEvaluator.Util;
 
@@ -36,7 +35,7 @@ namespace Dmarc.MxSecurityEvaluator.Evaluators
 
             if (tlsConnectionResult.CipherSuite != null)
             {
-                return new TlsEvaluatorResult(EvaluatorResult.FAIL, $"{intro} the server accepted the connection and selected {tlsConnectionResult.CipherSuite.GetName()}.");
+                return new TlsEvaluatorResult(EvaluatorResult.FAIL, $"{intro} the server accepted the connection and selected {tlsConnectionResult.CipherSuite.GetEnumAsString()}.");
             }
 
             return new TlsEvaluatorResult(EvaluatorResult.INCONCLUSIVE, $"{intro} there was a problem and we are unable to provide additional information.");

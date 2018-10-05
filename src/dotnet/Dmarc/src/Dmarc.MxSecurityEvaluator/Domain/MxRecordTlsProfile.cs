@@ -1,7 +1,4 @@
-﻿using Dmarc.Common.Interface.Tls.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 
 namespace Dmarc.MxSecurityEvaluator.Domain
 {

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dmarc.Common.Interface.Logging;
 using Dmarc.Common.Interface.Messaging;
+using Dmarc.Common.Interface.Tls.Domain;
 using Dmarc.MxSecurityTester.Config;
 using Dmarc.MxSecurityTester.Contract.Messages;
 using Dmarc.MxSecurityTester.Dao.Entities;
-using Dmarc.MxSecurityTester.Tls.Tests;
 using Dmarc.MxSecurityTester.Util;
 
 namespace Dmarc.MxSecurityTester.MxTester
@@ -46,11 +46,9 @@ namespace Dmarc.MxSecurityTester.MxTester
                 CertificateResultMessage certificateResultMessage = new CertificateResultMessage(
                     domainTlsSecurityProfile.Domain.Name,
                     currentProfiles
-                        .Select(_ =>
-                            new HostInfo(
-                                _.MxRecord.Hostname,
-                                _.TlsSecurityProfile.TlsResults.Certificates.Select(c => Convert.ToBase64String(c.RawData)).ToList(),
-                                GetTlsCipherSuitesFromResults(_.TlsSecurityProfile.TlsResults.Results)))
+                        .Select(_ => new HostInfo(_.MxRecord.Hostname, CheckHostNotFound(_.TlsSecurityProfile.TlsResults.Results),
+                            _.TlsSecurityProfile.TlsResults.Certificates.Select(c => Convert.ToBase64String(c.RawData)).ToList(),
+                            GetTlsCipherSuitesFromResults(_.TlsSecurityProfile.TlsResults.Results)))
                         .ToList());
 
                 await _publisher.Publish(certificateResultMessage, _config.PublisherConnectionString);
@@ -61,8 +59,29 @@ namespace Dmarc.MxSecurityTester.MxTester
             return domainTlsSecurityProfiles;
         }
 
+        private bool CheckHostNotFound(TlsTestResultsWithoutCertificate results)
+        {
+            List<TlsTestResult> tlsTestResults = new List<TlsTestResult>
+            {
+                results.Tls12AvailableWithBestCipherSuiteSelected,
+                results.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList,
+                results.Tls12AvailableWithSha2HashFunctionSelected,
+                results.Tls12AvailableWithWeakCipherSuiteNotSelected,
+                results.Tls11AvailableWithBestCipherSuiteSelected,
+                results.Tls11AvailableWithWeakCipherSuiteNotSelected,
+                results.Tls10AvailableWithBestCipherSuiteSelected,
+                results.Tls10AvailableWithWeakCipherSuiteNotSelected,
+                results.Ssl3FailsWithBadCipherSuite,
+                results.TlsSecureEllipticCurveSelected,
+                results.TlsSecureDiffieHellmanGroupSelected,
+                results.TlsWeakCipherSuitesRejected
+            };
+
+            return tlsTestResults.All(_ => _.Error == Error.HOST_NOT_FOUND);
+        }
+
         private List<SelectedCipherSuite> GetTlsCipherSuitesFromResults(TlsTestResultsWithoutCertificate tlsResults) =>
-            new List<SelectedCipherSuite>()
+            new List<SelectedCipherSuite>
             {
                 new SelectedCipherSuite(TlsTestType.Tls12AvailableWithBestCipherSuiteSelected.ToString(), tlsResults.Tls12AvailableWithBestCipherSuiteSelected?.CipherSuite?.ToString()),
                 new SelectedCipherSuite(TlsTestType.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList.ToString(), tlsResults.Tls12AvailableWithBestCipherSuiteSelectedFromReverseList?.CipherSuite?.ToString()),
